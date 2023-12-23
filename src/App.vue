@@ -1,6 +1,6 @@
 <template>
 <!--  <v-app :style="{background: $vuetify.theme.themes['light'].colors.themeWhiteColor}">-->
-  <v-app style="background-image: url('/background.jpg');">
+  <v-app style="background-image: url('./background.jpg');">
     <v-container :fluid="true">
       <v-app-bar
         color="themeLightgreenColor"
