@@ -1,0 +1,74 @@
+<template>
+  <v-app>
+    <v-main>
+      <v-container>
+        <v-form @submit.prevent="submitObservation">
+<!--          <v-text-field-->
+<!--            v-model="observation.name"-->
+<!--            :error-messages="v$.name.$errors.length > 0 ? v$.name.$errors[0].$message :''"-->
+<!--            required-->
+<!--            label="Nom de l'observation"-->
+<!--            @blur="v$.name.$touch()"-->
+<!--          />-->
+          <v-text-field
+            v-model="observation.location"
+            :error-messages="v$.location.$errors.length > 0 ? v$.location.$errors[0].$message :''"
+            required
+            label="Lieu"
+            @blur="v$.location.$touch()"
+          />
+          <v-row>
+            <v-col cols="6">
+              <input
+                type="datetime-local"
+                required
+                v-model="observation.startDate"
+                @blur="v$.startDate.$touch()"
+              >
+            </v-col>
+          </v-row>
+          <v-btn color="themeDarkGreenColor" :block="true" type="submit">Créer Observation</v-btn>
+        </v-form>
+      </v-container>
+    </v-main>
+  </v-app>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { useVuelidate } from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+import { format } from 'date-fns'
+import { v4 as uuidv4 } from 'uuid'
+import { useObservationsStore } from "@/store/observations";
+
+const observationStore = useObservationsStore()
+const { setCurrentObservation, addObservation } = observationStore
+
+const rules = {
+  startDate: { required },
+  location: { required },
+}
+
+const observation = ref({
+  id: uuidv4(),
+  startDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+  endDate: null,
+  location: 'Parc de voiron',
+  observedBirds: []
+})
+
+const v$ = useVuelidate(rules, observation.value)
+
+const submitObservation = () => {
+  v$.value.$touch()
+  if (!v$.value.$invalid) {
+    addObservation(observation)
+    setCurrentObservation(observation.value.id)
+  }
+}
+
+</script>
+
+<style>
+</style>
