@@ -1,13 +1,13 @@
 <template>
-  <v-card>
+  <v-card class="mt-3">
     <v-list>
       <v-list-group v-for="(observation, index) in Object.values(endedObservations)" :value="observation.id" :key="index">
         <template v-slot:activator="{ props }">
           <v-list-item v-bind="props">
             <v-list-item-title class="mb-1">
-              {{ observation.location }} | {{ observation.observedBirds.length }} espèce<span v-if="observation.observedBirds.length > 1">s</span> observée<span v-if="observation.observedBirds.length > 1">s</span>
+              {{ observation.location }} | <span style="font-size: 14px;" class="text-grey-darken-1">{{ observation.observedBirds.length }} espèce<span v-if="observation.observedBirds.length > 1">s</span></span>
             </v-list-item-title>
-            <v-list-item-subtitle class="mb-1">
+            <v-list-item-subtitle class="mb-1" style="font-size: 11px;">
               Du {{ format(observation.startDate, 'dd/MM/yyy HH:mm') }} au {{ format(observation.endDate, 'dd/MM/yyy HH:mm') }}
             </v-list-item-subtitle>
           </v-list-item>
@@ -19,7 +19,7 @@
           :value="observedBird.id"
         >
           <v-list-item-title>
-            {{ findBird(observedBird.id).text }} - <span class="text-grey-darken-1" style="font-size: 13px;">{{ observedBird.count }} observation<span v-if="observedBird.count > 1">s</span></span>
+            {{ findBird(observedBird.id).text }} - <span class="text-grey-darken-1" style="font-size: 13px;">{{ observedBird.count }} individu<span v-if="observedBird.count > 1">s</span></span>
           </v-list-item-title>
         </v-list-item>
       </v-list-group>
@@ -39,6 +39,9 @@ const { endedObservations } = storeToRefs(observationStore)
 </script>
 
 <style scoped>
+.v-list {
+  padding: 0;
+}
 .v-list-item--active.v-list-group__header {
   border-bottom: 1px black solid;
 }

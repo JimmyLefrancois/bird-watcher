@@ -1,8 +1,5 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container>
-        <v-form @submit.prevent="submitObservation">
+        <v-form @submit.prevent="submitObservation" class="mt-3">
 <!--          <v-text-field-->
 <!--            v-model="observation.name"-->
 <!--            :error-messages="v$.name.$errors.length > 0 ? v$.name.$errors[0].$message :''"-->
@@ -16,6 +13,7 @@
             required
             label="Lieu"
             @blur="v$.location.$touch()"
+            variant="solo-filled"
           />
           <v-row>
             <v-col cols="6">
@@ -27,11 +25,8 @@
               >
             </v-col>
           </v-row>
-          <v-btn color="themeDarkGreenColor" :block="true" type="submit">Créer Observation</v-btn>
+          <v-btn color="themeDarkGreenColor" class="mt-3" :block="true" type="submit">Créer Observation</v-btn>
         </v-form>
-      </v-container>
-    </v-main>
-  </v-app>
 </template>
 
 <script setup>
@@ -54,7 +49,7 @@ const observation = ref({
   id: uuidv4(),
   startDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   endDate: null,
-  location: 'Parc de voiron',
+  location: null,
   observedBirds: []
 })
 

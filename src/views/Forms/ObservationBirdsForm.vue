@@ -1,7 +1,8 @@
 <template>
-  <h3 class="py-2 text-center">Observations à '{{ currentObservationListItem.location }}'</h3>
+  <h3 class="py-2 text-center">{{ currentObservationListItem.location }}</h3>
   <EndObservation @endObservation="endObservation"/>
   <v-autocomplete
+    variant="solo-filled"
     :items="birdsList"
     item-value="value"
     item-title="text"
