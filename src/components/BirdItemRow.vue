@@ -12,19 +12,16 @@
       </v-btn>
       <v-btn
         density="compact"
+        class="mr-2"
         icon="mdi-plus"
         @click="incrementCount(bird.id)">
       </v-btn>
-    </td>
-    <td>
-      <v-icon
-          size="small"
-          class="me-2"
-          color="red"
-          @click="removeBirdFromobservedBirds(bird.id)"
-      >
-        mdi-delete
-      </v-icon>
+      <v-btn
+        color="red"
+        density="compact"
+        icon="mdi-delete"
+        @click="removeBirdFromobservedBirds(bird.id)">
+      </v-btn>
     </td>
   </tr>
 </template>

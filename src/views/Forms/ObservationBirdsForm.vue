@@ -48,7 +48,7 @@ function endObservation() {
 
 const selectedBird = ref(null)
 
-const headers = ref([{title: 'Nom', key: 'name'}, {title: 'Nombre', key: 'number'}, {title: 'Actions', key: 'actions', sortable: false}])
+const headers = ref([{title: 'Nom', key: 'name'}, {title: 'Nombre et compte', key: 'number'}])
 
 watch(
   () => selectedBird.value,
