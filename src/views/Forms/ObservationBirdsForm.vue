@@ -1,5 +1,5 @@
 <template>
-  <h3 class="py-2 text-center">{{ currentObservationListItem.location }}</h3>
+  <h3 class="py-2 text-center"><v-icon icon="mdi-map"></v-icon>{{ currentObservationListItem.location }}</h3>
   <EndObservation @endObservation="endObservation"/>
   <v-dialog
     v-model="displayBirdRemoveDialog"
