@@ -89,6 +89,8 @@ watch(
   () => selectedBird.value,
   (id) => {
     if (id !== null) {
+      //todo trouver plus propre
+      document.activeElement.blur();
       const existingBird = currentObservationListItem.value.observedBirds.find(bird => bird.id === id)
       if (existingBird) {
         existingBird.count++
