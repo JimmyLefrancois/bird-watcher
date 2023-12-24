@@ -4,7 +4,7 @@
     <td>
       <span class="mr-2">{{ bird.count }}</span>
       <v-btn
-        v-if="bird.count > 0"
+        :disabled="bird.count <= 0"
         class="mr-2"
         density="compact"
         icon="mdi-minus"
