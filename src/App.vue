@@ -14,9 +14,14 @@
         v-model="drawer"
         location="left"
       >
-        <v-list-item title="Mes observations ornitho"></v-list-item>
-        <v-divider></v-divider>
-        <v-list-item v-for="(route, index) in router.getRoutes()" :key="index" :link="true" :title="route.name" :href="route.path"></v-list-item>
+        <v-list
+          :nav="true"
+          density="compact"
+        >
+          <v-list-item title="Mes observations ornitho"></v-list-item>
+          <v-divider></v-divider>
+          <v-list-item v-for="(route, index) in router.getRoutes()" :key="index" :link="true" :title="route.name" :to="route.path"></v-list-item>
+        </v-list>
       </v-navigation-drawer>
       <v-row justify="center" align="center" class="mt-10">
         <v-col cols="12">
