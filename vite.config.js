@@ -29,7 +29,7 @@ export default defineConfig({
       },
     }),
   ],
-  base: '/bird-watcher/',
+  base: './',
   define: { 'process.env': {} },
   resolve: {
     alias: {
