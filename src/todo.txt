@@ -1,6 +1,0 @@
-//todo coup de coeur sortie
-//todo méteo
-//todo Commentaire
-//todo Ajout espece inconnue
-//todo Revenir sur une observation par oiseau
-//todo observation passée (config date de fin à la main)
