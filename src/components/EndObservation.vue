@@ -29,12 +29,10 @@
 </template>
 
 <script setup>
-  import router from "@/router"
 
   const emit = defineEmits(['endObservation'])
 
   function endObservation() {
       emit('endObservation')
-      router.push({name: 'Mes observations'})
   }
 </script>

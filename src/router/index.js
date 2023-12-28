@@ -1,4 +1,3 @@
-// Composables
 import {createRouter, createWebHistory} from 'vue-router'
 
 const routes = [
@@ -20,6 +19,16 @@ const routes = [
         name: 'Mes observations',
         component: () => import('@/views/ObservationsList.vue'),
       },
+      {
+        path: 'creer-mon-compte',
+        name: 'Créer mon compte',
+        component: () => import('@/views/Auth/Register'),
+      },
+      {
+        path: 'connexion',
+        name: 'Connexion',
+        component: () => import('@/views/Auth/Login'),
+      },
     ],
   },
 ]
@@ -27,6 +36,10 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach(async () => {
+
 })
 
 export default router

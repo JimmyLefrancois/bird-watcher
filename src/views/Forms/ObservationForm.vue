@@ -25,7 +25,13 @@
               >
             </v-col>
           </v-row>
-          <v-btn color="themeDarkGreenColor" class="mt-3" :block="true" type="submit">Créer Observation</v-btn>
+          <v-btn
+            color="themeDarkGreenColor"
+            class="mt-3"
+            :block="true"
+            type="submit">
+            Créer Observation
+          </v-btn>
         </v-form>
 </template>
 
@@ -34,11 +40,10 @@ import { ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import { format } from 'date-fns'
-import { v4 as uuidv4 } from 'uuid'
 import { useObservationsStore } from "@/store/observations";
 
 const observationStore = useObservationsStore()
-const { setCurrentObservation, addObservation } = observationStore
+const { addObservation } = observationStore
 
 const rules = {
   startDate: { required },
@@ -46,7 +51,7 @@ const rules = {
 }
 
 const observation = ref({
-  id: uuidv4(),
+  id: null,
   startDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   endDate: null,
   location: null,
@@ -59,7 +64,6 @@ const submitObservation = () => {
   v$.value.$touch()
   if (!v$.value.$invalid) {
     addObservation(observation)
-    setCurrentObservation(observation.value.id)
   }
 }
 
