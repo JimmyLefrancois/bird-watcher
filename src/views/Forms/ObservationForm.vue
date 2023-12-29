@@ -47,7 +47,7 @@ import {storeToRefs} from "pinia";
 const observationStore = useObservationsStore()
 const userStore = useUsersStore()
 const { addObservation } = observationStore
-const { loggedUser } = storeToRefs(userStore)
+const { currentUser } = storeToRefs(userStore)
 
 const rules = {
   startDate: { required },
@@ -60,7 +60,7 @@ const observation = ref({
   endDate: null,
   location: null,
   observedBirds: [],
-  user: loggedUser.value.uid
+  user: currentUser.value.uid
 })
 
 const v$ = useVuelidate(rules, observation.value)

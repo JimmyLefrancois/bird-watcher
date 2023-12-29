@@ -8,7 +8,7 @@
       >
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-app-bar-title>{{ router.currentRoute.value.name }}</v-app-bar-title>
-        <v-btn v-if="loggedUser && !loggedUser.isAnonymous" @click="logout" density="compact" icon="mdi-logout"></v-btn>
+        <v-btn v-if="currentUser && !currentUser.isAnonymous" @click="logout" density="compact" icon="mdi-logout"></v-btn>
       </v-app-bar>
 
       <v-navigation-drawer
@@ -20,13 +20,13 @@
           density="compact"
         >
           <v-list-subheader>Mes observation ornitho</v-list-subheader>
-          <v-list-item :link="true" title="Accueil" :to="{'name': 'Accueil'}" prepend-icon="mdi-home"></v-list-item>
-          <v-list-item :link="true" title="Nouvelle observation" :to="{'name': 'Nouvelle observation'}"  prepend-icon="mdi-plus"></v-list-item>
-          <v-list-item :link="true" title="Mes observations" :to="{'name': 'Mes observations'}"  prepend-icon="mdi-format-list-bulleted"></v-list-item>
+          <v-list-item @click="drawer = false" :link="true" title="Accueil" :to="{'name': 'Accueil'}" prepend-icon="mdi-home"></v-list-item>
+          <v-list-item @click="drawer = false" :link="true" title="Nouvelle observation" :to="{'name': 'Nouvelle observation'}"  prepend-icon="mdi-plus"></v-list-item>
+          <v-list-item @click="drawer = false" :link="true" title="Mes observations" :to="{'name': 'Mes observations'}"  prepend-icon="mdi-format-list-bulleted"></v-list-item>
           <v-list-subheader>Mon compte</v-list-subheader>
-          <template v-if="!loggedUser" >
-            <v-list-item :link="true" title="Me connecter" :to="{'name': 'Connexion'}" prepend-icon="mdi-account"></v-list-item>
-            <v-list-item :link="true" title="Créer mon compte" :to="{'name': 'Créer mon compte'}" prepend-icon="mdi-account-plus"></v-list-item>
+          <template v-if="!currentUser" >
+            <v-list-item @click="drawer = false" :link="true" title="Me connecter" :to="{'name': 'Connexion'}" prepend-icon="mdi-account"></v-list-item>
+            <v-list-item @click="drawer = false" :link="true" title="Créer mon compte" :to="{'name': 'Créer mon compte'}" prepend-icon="mdi-account-plus"></v-list-item>
           </template>
           <template v-else>
             <v-list-item :link="true" title="Me déconnecter" @click="logout" prepend-icon="mdi-logout"></v-list-item>
@@ -51,7 +51,7 @@
   import { auth } from './conf/firebase'
   import { signOut } from 'firebase/auth'
   const userStore = useUsersStore()
-  const { loggedUser } = storeToRefs(userStore)
+  const { currentUser } = storeToRefs(userStore)
   const drawer = ref(false)
 
   function logout() {
