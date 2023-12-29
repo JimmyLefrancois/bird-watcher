@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
-import {computed} from "vue"
-import {useCollection, useDocument, useFirestore} from 'vuefire'
+import {computed, ref} from "vue"
+import {useCollection, useFirestore} from 'vuefire'
 import { collection, addDoc, doc, updateDoc } from 'firebase/firestore'
 import {useStorage} from "@vueuse/core";
 import {format} from "date-fns";
@@ -18,6 +18,7 @@ export const useObservationsStore = defineStore('observations', () => {
   async function addObservation(observation) {
     await addDoc(collection(db, 'observations'), observation.value).then((data) => {
       setCurrentObservation(data.id)
+      setCurrentObservationListItem(data)
     })
   }
 
@@ -52,7 +53,11 @@ export const useObservationsStore = defineStore('observations', () => {
     return currentObservation.value
   })
 
-  const currentObservationListItem = currentObservationItem.value ? useDocument(doc(collection(db, 'observations'), currentObservationItem.value)) : null
+  const currentObservationListItem = ref(null)
+  function setCurrentObservationListItem(observation) {
+    currentObservationListItem.value = observation
+  }
+  // const currentObservationListItem = currentObservationItem.value ? useDocument(doc(collection(db, 'observations'), currentObservationItem.value)) : null
 
   return {
     observationsList,

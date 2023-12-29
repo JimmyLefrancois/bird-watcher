@@ -41,9 +41,13 @@ import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import { format } from 'date-fns'
 import { useObservationsStore } from "@/store/observations";
+import { useUsersStore } from "@/store/users";
+import {storeToRefs} from "pinia";
 
 const observationStore = useObservationsStore()
+const userStore = useUsersStore()
 const { addObservation } = observationStore
+const { loggedUser } = storeToRefs(userStore)
 
 const rules = {
   startDate: { required },
@@ -55,7 +59,8 @@ const observation = ref({
   startDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   endDate: null,
   location: null,
-  observedBirds: []
+  observedBirds: [],
+  user: loggedUser.value.uid
 })
 
 const v$ = useVuelidate(rules, observation.value)
