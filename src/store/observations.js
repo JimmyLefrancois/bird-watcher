@@ -1,13 +1,32 @@
 import {defineStore} from 'pinia'
 import {computed, ref} from "vue"
-import {useCollection, useFirestore} from 'vuefire'
-import { collection, addDoc, doc, updateDoc } from 'firebase/firestore'
+import {useFirestore} from 'vuefire'
+import { collection, addDoc, doc, updateDoc, query, where, getDocs} from 'firebase/firestore'
 import {useStorage} from "@vueuse/core";
 import {format} from "date-fns";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from '@/conf/firebase'
 
 const db = useFirestore()
 
 export const useObservationsStore = defineStore('observations', () => {
+
+  const observationsList = ref([])
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const observationsRef = collection(db, "observations");
+      const q = query(observationsRef, where("user", "==", user.uid));
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+        observationsList.value.push(doc.data())
+      });
+    } else {
+      // User is signed out
+      // ...
+    }
+  });
 
   const currentObservation = useStorage('currentObservation', null)
 
@@ -41,7 +60,7 @@ export const useObservationsStore = defineStore('observations', () => {
     return doc(db, "observations", currentObservation.value)
   })
 
-  const observationsList = useCollection(collection(db, 'observations'))
+  // const observationsList = useCollection(collection(db, 'observations'))
 
   const endedObservations = computed(() => {
     return observationsList.value.filter((observation) => {
