@@ -43,13 +43,13 @@
 import {required, minLength, email} from "@vuelidate/validators"
 import {ref} from 'vue'
 import {useVuelidate} from "@vuelidate/core";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '@/conf/firebase'
-import router from "@/router";
+import { useUsersStore } from "@/store/users";
 
 
 const showPassword = ref(false)
-const user = ref({email: 'jimmylefrancois38@gmail.com', password: 'Korn6677!aaaa'})
+const user = ref({email: 'jimmylefrancois38@gmail.com', password: 'XXX'})
+const userStore = useUsersStore()
+const { login } = userStore
 
 const rules = {
   email: {required, email},
@@ -59,20 +59,9 @@ const rules = {
 const v$ = useVuelidate(rules, user.value)
 
 function logUser() {
-  console.log('toto')
   v$.value.$touch()
   if (!v$.value.$invalid) {
-    signInWithEmailAndPassword(auth, user.value.email, user.value.password)
-      .then((userCredential) => {
-        // Signed up
-        const registeredUser = userCredential.user;
-        console.log(registeredUser);
-        router.push({'name': 'Accueil'})
-        // ...
-      })
-      .catch((error) => {
-        console(error)
-      });
+    login(user.value)
   }
 }
 </script>
