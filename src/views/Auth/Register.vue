@@ -27,7 +27,6 @@
           @click:append="showPassword = !showPassword"
         />
         <v-btn
-          class="mt-3"
           :block="true"
           size="large"
           @click="registerUser"
@@ -35,6 +34,11 @@
           Créer mon compte
         </v-btn>
       </v-form>
+    </v-card-text>
+    <v-card-text class="text-center">
+      <router-link style="color: #6C733D" class="text-decoration-none" :to="{'name': 'Connexion'}">
+        Vous avez déjà un compte ? <br /> Connectez-vous dès maintenant !
+      </router-link>
     </v-card-text>
   </v-card>
 </template>

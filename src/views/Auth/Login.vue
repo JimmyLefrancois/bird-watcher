@@ -27,7 +27,6 @@
           @click:append="showPassword = !showPassword"
         />
         <v-btn
-          class="mt-3"
           :block="true"
           size="large"
           @click="logUser"
@@ -35,6 +34,12 @@
           Me connecter
         </v-btn>
       </v-form>
+    </v-card-text>
+    <v-card-text class="text-center">
+      <router-link style="color: #6C733D" class="text-decoration-none" :to="{'name': 'Créer mon compte'}">
+        Vous n'avez pas encore de compte ? <br />
+        Créez le dès maintenant !
+      </router-link>
     </v-card-text>
   </v-card>
 </template>
@@ -47,7 +52,7 @@ import { useUsersStore } from "@/store/users";
 
 
 const showPassword = ref(false)
-const user = ref({email: 'jimmylefrancois38@gmail.com', password: 'XXX'})
+const user = ref({email: null, password: null})
 const userStore = useUsersStore()
 const { login } = userStore
 
