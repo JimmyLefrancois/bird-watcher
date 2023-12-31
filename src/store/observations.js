@@ -33,7 +33,6 @@ export const useObservationsStore = defineStore('observations', () => {
   }
 
   async function updateBirdsListFromCurrentObservation(observation) {
-    console.log(observation)
     await updateDoc(currentObservationQuery.value, {observedBirds: observation.observedBirds})
   }
 

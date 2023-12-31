@@ -10,8 +10,7 @@ export const useUsersStore = defineStore('users', () => {
   function fetchUser() {
     auth.onAuthStateChanged(async user => {
       if (user) {
-        console.log(user.uid)
-        currentUser.value=user
+        currentUser.value = user
       } else {
         signInAnonymously(auth)
       }

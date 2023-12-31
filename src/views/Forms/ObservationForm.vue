@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import {computed, ref, watch} from 'vue';
+import { ref, watch} from 'vue';
 import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import { format } from 'date-fns'
@@ -62,6 +62,10 @@ const observation = ref({
   location: null,
   observedBirds: [],
 })
+
+if (currentUser.value) {
+  observation.value.user = currentUser.value.uid
+}
 
 watch(
   () => currentUser.value,
