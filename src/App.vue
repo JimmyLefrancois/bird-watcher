@@ -8,7 +8,7 @@
       >
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-app-bar-title>{{ router.currentRoute.value.name }}</v-app-bar-title>
-        <v-btn v-if="currentUser && !currentUser.isAnonymous" @click="logout" density="compact" icon="mdi-logout"></v-btn>
+        <v-btn v-if="loggedUser && !loggedUser.isAnonymous" @click="logout" density="compact" icon="mdi-logout"></v-btn>
       </v-app-bar>
 
       <v-navigation-drawer
@@ -24,7 +24,7 @@
           <v-list-item @click="drawer = false" :link="true" title="Nouvelle observation" :to="{'name': 'Nouvelle observation'}"  prepend-icon="mdi-plus"></v-list-item>
           <v-list-item @click="drawer = false" :link="true" title="Mes observations" :to="{'name': 'Mes observations'}"  prepend-icon="mdi-format-list-bulleted"></v-list-item>
           <v-list-subheader>Mon compte</v-list-subheader>
-          <template v-if="!currentUser" >
+          <template v-if="!loggedUser || loggedUser.isAnonymous" >
             <v-list-item @click="drawer = false" :link="true" title="Me connecter" :to="{'name': 'Connexion'}" prepend-icon="mdi-account"></v-list-item>
             <v-list-item @click="drawer = false" :link="true" title="Créer mon compte" :to="{'name': 'Créer mon compte'}" prepend-icon="mdi-account-plus"></v-list-item>
           </template>
@@ -36,6 +36,37 @@
       <v-spacer />
       <v-row justify="center" align="center" class="mt-10">
         <v-col cols="12">
+          <v-dialog
+            v-if="loggedUser && loggedUser.isAnonymous === true"
+            transition="dialog-top-transition"
+            width="auto"
+          >
+            <template v-slot:activator="{ props }">
+              <v-alert
+                :closable="true"
+                class="mt-2"
+                variant="tonal"
+              >
+                Vous êtes connecté en tant qu'anonyme.<br />
+                <p v-bind="props" class="text-decoration-underline" style="cursor: pointer">En savoir +</p>
+
+              </v-alert>
+            </template>
+            <template v-slot:default="{ isActive }">
+              <v-card>
+                <v-card-title>Compte anonyme.</v-card-title>
+                <v-card-text>
+                  <p></p>
+                </v-card-text>
+                <v-card-actions class="justify-end">
+                  <v-btn
+                    variant="text"
+                    @click="isActive.value = false"
+                  >J'ai compris</v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog>
           <router-view/>
         </v-col>
       </v-row>
@@ -44,15 +75,22 @@
 </template>
 
 <script setup>
-  import {ref} from "vue";
+import {onBeforeMount, ref} from "vue";
   import router from "@/router"
   import {useUsersStore} from "@/store/users";
   import {storeToRefs} from "pinia";
   import { auth } from './conf/firebase'
   import { signOut } from 'firebase/auth'
   const userStore = useUsersStore()
-  const { currentUser } = storeToRefs(userStore)
+  const { loggedUser } = storeToRefs(userStore)
   const drawer = ref(false)
+
+  const store = useUsersStore()
+  const { fetchUser } = store
+
+  onBeforeMount(() => {
+    fetchUser()
+  })
 
   function logout() {
     signOut(auth).then(() => {

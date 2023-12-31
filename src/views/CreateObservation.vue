@@ -1,5 +1,5 @@
 <template>
-  <ObservationForm v-if="!currentObservationItem" />
+  <ObservationForm v-if="!currentObservation" />
   <ObservationBirdsForm v-else />
 </template>
 
@@ -10,7 +10,7 @@
   import {storeToRefs} from "pinia";
 
   const observationStore = useObservationsStore()
-  const { currentObservationItem } = storeToRefs(observationStore)
+  const { currentObservation } = storeToRefs(observationStore)
 
 
 </script>

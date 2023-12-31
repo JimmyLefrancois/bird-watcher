@@ -1,7 +1,7 @@
 <template>
   <v-card class="mt-3">
     <v-list>
-      <v-list-group v-for="(observation, index) in Object.values(endedObservations)" :value="observation.id" :key="index">
+      <v-list-group v-for="(observation, index) in endedObservations" :value="observation.id" :key="index">
         <template v-slot:activator="{ props }">
           <v-list-item v-bind="props">
             <v-list-item-title class="mb-1">

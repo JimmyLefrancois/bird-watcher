@@ -38,8 +38,15 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach(async () => {
-
+router.beforeEach(async (to) => {
+  // const store = useUsersStore()
+  // const { setCurrentUser } = store
+  // await auth.onAuthStateChanged((user) => {
+  //   if (user) {
+  //     setCurrentUser(user)
+  //   }
+  // })
+  // return {name: to.name}
 })
 
 export default router

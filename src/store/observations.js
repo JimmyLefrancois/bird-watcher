@@ -1,92 +1,106 @@
-import {defineStore} from 'pinia'
-import {computed, ref} from "vue"
-import {useFirestore} from 'vuefire'
-import { collection, addDoc, doc, updateDoc, query, where, getDocs} from 'firebase/firestore'
+import {defineStore, storeToRefs} from 'pinia'
+import {computed} from "vue"
+import { collection,query, where, addDoc, doc, updateDoc} from 'firebase/firestore'
+import { useUsersStore } from "@/store/users";
+import { useFirestore } from '@vueuse/firebase/useFirestore'
+import { db } from '@/conf/firebase'
 import {useStorage} from "@vueuse/core";
-import {format} from "date-fns";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from '@/conf/firebase'
-
-const db = useFirestore()
+import { format } from 'date-fns'
+import router from "@/router";
 
 export const useObservationsStore = defineStore('observations', () => {
 
-  const observationsList = ref([])
-
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const observationsRef = collection(db, "observations");
-      const q = query(observationsRef, where("user", "==", user.uid));
-      const querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach((doc) => {
-        observationsList.value.push(doc.data())
-      });
-    } else {
-      // User is signed out
-      // ...
-    }
-  });
+  const userStore = useUsersStore()
+  const { currentUser } = storeToRefs(userStore)
 
   const currentObservation = useStorage('currentObservation', null)
 
-  function setCurrentObservation(idObservation) {
-    currentObservation.value = idObservation
-  }
+  const userObservationsQuery = computed(() => currentUser.value && query(collection(db, 'observations'), where("user", "==", currentUser.value.uid)))
+
+  const observationsList = useFirestore(userObservationsQuery, null)
+
+  const endedObservations = computed(() => observationsList.value && observationsList.value.filter((observation) => {
+    return observation.endDate !== null
+  }))
+
+  const currentObservationQuery = computed(() => currentObservation.value && doc(db, 'observations', currentObservation.value))
+  const currentObservationListItem = useFirestore(currentObservationQuery, null)
 
   async function addObservation(observation) {
-    await addDoc(collection(db, 'observations'), observation.value).then((data) => {
-      setCurrentObservation(data.id)
-      setCurrentObservationListItem(data)
+    await addDoc(collection(db, 'observations'), observation).then((data) => {
+      currentObservation.value = data.id
     })
   }
 
-  function clearCurrentObservationItem() {
-    currentObservation.value = null
+  async function updateBirdsListFromCurrentObservation(observation) {
+    console.log(observation)
+    await updateDoc(currentObservationQuery.value, {observedBirds: observation.observedBirds})
   }
 
-  async function updateBirdsListFromCurrentObservation(observation) {
-    await updateDoc(currentObservationRef.value, {observedBirds: observation.observedBirds})
+  function clearCurrentObservation() {
+    currentObservation.value = null
   }
 
   async function endObservation() {
     const date = format(new Date(), "yyyy-MM-dd'T'HH:mm")
-    await updateDoc(currentObservationRef.value, {endDate: date}).then(() => {
-      clearCurrentObservationItem()
+    await updateDoc(currentObservationQuery.value, {endDate: date}).then(() => {
+      clearCurrentObservation()
     })
+    router.push({name: 'Mes observations'})
   }
 
-  const currentObservationRef = computed(() => {
-    return doc(db, "observations", currentObservation.value)
-  })
+  //
+  // const currentObservationRef = useFirestore(doc(db, 'observations', currentObservation.value))
+  // // const currentObservationRef = computed(() => {
+  // //   return doc(db, "observations", currentObservation.value)
+  // // })
+  // const currentObservationListItem = useFirestore(doc(db, 'observations', currentObservationRef.value))
+  //
+  //
+  // const endedObservations = computed(async () => {
+  //   return observationsList.value.filter((observation) => {
+  //     return observation.endDate !== null
+  //   })
+  // })
+  //
+  // async function endObservation() {
+  //   const date = format(new Date(), "yyyy-MM-dd'T'HH:mm")
+  //   await updateDoc(currentObservationRef, {endDate: date}).then(() => {
+  //     clearCurrentObservationItem()
+  //   })
+  // }
+  //
+  // function clearCurrentObservationItem() {
+  //   currentObservation.value = null
+  // }
 
-  // const observationsList = useCollection(collection(db, 'observations'))
-
-  const endedObservations = computed(() => {
-    return observationsList.value.filter((observation) => {
-      return observation.endDate !== null
-    })
-  })
-
-  const currentObservationItem = computed(() => {
-    return currentObservation.value
-  })
-
-  const currentObservationListItem = ref(null)
-  function setCurrentObservationListItem(observation) {
-    currentObservationListItem.value = observation
-  }
-  // const currentObservationListItem = currentObservationItem.value ? useDocument(doc(collection(db, 'observations'), currentObservationItem.value)) : null
 
   return {
-    observationsList,
-    currentObservationItem,
-    setCurrentObservation,
-    addObservation,
-    clearCurrentObservationItem,
-    currentObservationListItem,
+    endObservation,
+    clearCurrentObservation,
+    currentObservation,
     endedObservations,
-    updateBirdsListFromCurrentObservation,
-    endObservation
+    currentObservationListItem,
+    observationsList,
+    addObservation,
+    updateBirdsListFromCurrentObservation
   }
+  //
+  // const currentObservationListItem = ref(null)
+  // function setCurrentObservationListItem(observation) {
+  //   currentObservationListItem.value = observation
+  // }
+  // // const currentObservationListItem = currentObservationItem.value ? useDocument(doc(collection(db, 'observations'), currentObservationItem.value)) : null
+  //
+  // return {
+  //   observationsList,
+  //   currentObservationItem,
+  //   setCurrentObservation,
+  //   addObservation,
+  //   clearCurrentObservationItem,
+  //   currentObservationListItem,
+  //   endedObservations,
+  //   updateBirdsListFromCurrentObservation,
+  //   endObservation
+  // }
 })

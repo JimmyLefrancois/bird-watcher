@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {computed, ref, watch} from 'vue';
 import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import { format } from 'date-fns'
@@ -45,8 +45,9 @@ import { useUsersStore } from "@/store/users";
 import {storeToRefs} from "pinia";
 
 const observationStore = useObservationsStore()
-const userStore = useUsersStore()
 const { addObservation } = observationStore
+
+const userStore = useUsersStore();
 const { currentUser } = storeToRefs(userStore)
 
 const rules = {
@@ -60,15 +61,21 @@ const observation = ref({
   endDate: null,
   location: null,
   observedBirds: [],
-  user: currentUser.value.uid
 })
+
+watch(
+  () => currentUser.value,
+  (value) => {
+    observation.value.user = value.uid
+  }
+)
 
 const v$ = useVuelidate(rules, observation.value)
 
 const submitObservation = () => {
   v$.value.$touch()
   if (!v$.value.$invalid) {
-    addObservation(observation)
+    addObservation(observation.value)
   }
 }
 
