@@ -49,35 +49,8 @@ export const useObservationsStore = defineStore('observations', () => {
     router.push({name: 'Mes observations'})
   }
 
-  //
-  // const currentObservationRef = useFirestore(doc(db, 'observations', currentObservation.value))
-  // // const currentObservationRef = computed(() => {
-  // //   return doc(db, "observations", currentObservation.value)
-  // // })
-  // const currentObservationListItem = useFirestore(doc(db, 'observations', currentObservationRef.value))
-  //
-  //
-  // const endedObservations = computed(async () => {
-  //   return observationsList.value.filter((observation) => {
-  //     return observation.endDate !== null
-  //   })
-  // })
-  //
-  // async function endObservation() {
-  //   const date = format(new Date(), "yyyy-MM-dd'T'HH:mm")
-  //   await updateDoc(currentObservationRef, {endDate: date}).then(() => {
-  //     clearCurrentObservationItem()
-  //   })
-  // }
-  //
-  // function clearCurrentObservationItem() {
-  //   currentObservation.value = null
-  // }
-
-
   return {
     endObservation,
-    clearCurrentObservation,
     currentObservation,
     endedObservations,
     currentObservationListItem,
@@ -85,22 +58,4 @@ export const useObservationsStore = defineStore('observations', () => {
     addObservation,
     updateBirdsListFromCurrentObservation
   }
-  //
-  // const currentObservationListItem = ref(null)
-  // function setCurrentObservationListItem(observation) {
-  //   currentObservationListItem.value = observation
-  // }
-  // // const currentObservationListItem = currentObservationItem.value ? useDocument(doc(collection(db, 'observations'), currentObservationItem.value)) : null
-  //
-  // return {
-  //   observationsList,
-  //   currentObservationItem,
-  //   setCurrentObservation,
-  //   addObservation,
-  //   clearCurrentObservationItem,
-  //   currentObservationListItem,
-  //   endedObservations,
-  //   updateBirdsListFromCurrentObservation,
-  //   endObservation
-  // }
 })
