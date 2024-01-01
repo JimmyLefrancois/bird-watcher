@@ -1,41 +1,27 @@
 <template>
-  <v-card class="mt-3">
-    <v-list>
-      <v-list-group v-for="(observation, index) in endedObservations" :value="observation.id" :key="index">
-        <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props">
-            <v-list-item-title class="mb-1">
-              {{ observation.location }} | <span style="font-size: 14px;" class="text-grey-darken-1">{{ observation.observedBirds.length }} espèce<span v-if="observation.observedBirds.length > 1">s</span></span>
-            </v-list-item-title>
-            <v-list-item-subtitle class="mb-1" style="font-size: 11px;">
-              Du {{ format(observation.startDate, 'dd/MM/yyy HH:mm') }} au {{ format(observation.endDate, 'dd/MM/yyy HH:mm') }}
-            </v-list-item-subtitle>
-          </v-list-item>
-        </template>
-
-        <v-list-item
-          v-for="(observedBird, indexObservedBird) in observation.observedBirds"
-          :key="indexObservedBird"
-          :value="observedBird.id"
-        >
-          <v-list-item-title>
-            {{ findBird(observedBird.id).text }} - <span class="text-grey-darken-1" style="font-size: 13px;">{{ observedBird.count }} individu<span v-if="observedBird.count > 1">s</span></span>
-          </v-list-item-title>
-        </v-list-item>
-      </v-list-group>
-    </v-list>
+  <v-card class="mt-3" v-for="(observation, index) in endedObservations" :key="index">
+    <ObservationsListItem :observation="observation"/>
   </v-card>
+  <template v-if="endedObservations.length === 0">
+    <p class="text-center mt-3" >Aucune observation à afficher.</p>
+    <v-btn
+      :block="true"
+      :to="{name: 'Nouvelle observation'}"
+      prepend-icon="mdi-plus"
+      color="themeLightgreenColor"
+      class="mt-3"
+    >
+      Nouvelle observation
+    </v-btn>
+  </template>
 </template>
 
 <script setup>
-import {findBird} from "@/helpers/birdHelpers"
-import { format } from "date-fns"
 import { useObservationsStore } from "@/store/observations";
 import {storeToRefs} from "pinia";
+import ObservationsListItem from "@/components/ObservationsListItem";
 const observationStore = useObservationsStore()
-
 const { endedObservations } = storeToRefs(observationStore)
-
 </script>
 
 <style scoped>
