@@ -8,10 +8,11 @@
 import vuetify from './vuetify'
 import pinia from '../store'
 import router from '../router'
-import { VueFire, VueFireAuth, VueFireAppCheck } from 'vuefire'
+import { VueFire, VueFireAuth } from 'vuefire'
 import { firebaseApp } from '@/conf/firebase'
-import { ReCaptchaV3Provider } from 'firebase/app-check'
+// import { ReCaptchaV3Provider } from 'firebase/app-check'
 
+console.log(import.meta.env.VITE_API_KEY)
 export function registerPlugins (app) {
   app
     .use(vuetify)
@@ -21,11 +22,11 @@ export function registerPlugins (app) {
       firebaseApp,
       modules: [
         VueFireAuth,
-        VueFireAppCheck({
-          provider: new ReCaptchaV3Provider('6LeUVTspAAAAADuVR3bQQaUlyvzH0gJxHpVVeuk7'),
-          isTokenAutoRefreshEnabled: true,
-          debug: process.env.NODE_ENV !== 'production',
-        })
+        // VueFireAppCheck({
+        //   provider: new ReCaptchaV3Provider('6LeUVTspAAAAADuVR3bQQaUlyvzH0gJxHpVVeuk7'),
+        //   isTokenAutoRefreshEnabled: true,
+        //   debug: import.meta.env.VITE_API_KEY !== 'production',
+        // })
       ]
     })
 }
