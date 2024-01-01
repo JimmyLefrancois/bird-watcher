@@ -1,4 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
+import { useUsersStore } from "@/store/users";
 
 const routes = [
   {
@@ -8,16 +9,19 @@ const routes = [
         path: '',
         name: 'Accueil',
         component: () => import('@/views/Home.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: 'nouvelle-observation',
         name: 'Nouvelle observation',
         component: () => import('@/views/CreateObservation.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: 'mes-observations',
         name: 'Mes observations',
         component: () => import('@/views/ObservationsList.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: 'creer-mon-compte',
@@ -39,14 +43,17 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  // const store = useUsersStore()
-  // const { setCurrentUser } = store
-  // await auth.onAuthStateChanged((user) => {
-  //   if (user) {
-  //     setCurrentUser(user)
-  //   }
-  // })
-  // return {name: to.name}
+  const store = useUsersStore()
+  const { currentUser } = store
+  if (to.meta.requiresAuth && !currentUser) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    return {
+      path: '/connexion',
+      // save the location we were at to come back later
+      query: { redirect: to.fullPath },
+    }
+  }
 })
 
 export default router

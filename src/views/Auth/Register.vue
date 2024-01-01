@@ -27,6 +27,8 @@
           @click:append="showPassword = !showPassword"
         />
         <v-btn
+          :loading="userLoader"
+          :disabled="userLoader"
           :block="true"
           size="large"
           color="#9DA65D"
@@ -50,9 +52,11 @@ import {required, minLength, email} from "@vuelidate/validators"
 import {ref} from 'vue'
 import {useVuelidate} from "@vuelidate/core"
 import { useUsersStore } from "@/store/users"
+import {storeToRefs} from "pinia";
 
 const store = useUsersStore()
 const { createAccount } = store
+const { userLoader } = storeToRefs(store)
 
 
 const showPassword = ref(false)

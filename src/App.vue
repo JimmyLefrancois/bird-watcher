@@ -8,7 +8,7 @@
       >
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-app-bar-title>{{ router.currentRoute.value.name }}</v-app-bar-title>
-        <v-btn v-if="currentUser && !currentUser.isAnonymous" @click="logout" density="compact"
+        <v-btn v-if="currentUser" @click="logout" density="compact"
                icon="mdi-logout"></v-btn>
       </v-app-bar>
 
@@ -34,13 +34,23 @@
             <v-list-item @click="drawer = false" :link="true" title="Créer mon compte"
                          :to="{'name': 'Créer mon compte'}" prepend-icon="mdi-account-plus"></v-list-item>
           </template>
-          <template v-else>
+          <template v-if="currentUser && currentUser.isAnonymous">
+            <v-list-item @click="drawer = false" :link="true" title="dsdsfsdf" :to="{'name': 'Connexion'}"
+                         prepend-icon="mdi-account"></v-list-item>
+          </template>
+          <template v-if="currentUser">
             <v-list-item :link="true" title="Me déconnecter" @click="logout" prepend-icon="mdi-logout"></v-list-item>
           </template>
         </v-list>
       </v-navigation-drawer>
       <v-spacer/>
-      <AnonymousInformations/>
+
+      <v-row justify="center" align="center" class="mt-10">
+        <v-col cols="12">
+            <AnonymousInformations  v-if="currentUser && currentUser.isAnonymous" :key="userKey"/>
+          <router-view/>
+        </v-col>
+      </v-row>
     </v-container>
   </v-app>
 </template>
@@ -50,29 +60,17 @@ import {onBeforeMount, ref} from "vue";
 import router from "@/router"
 import {useUsersStore} from "@/store/users";
 import {storeToRefs} from "pinia";
-import {auth} from './conf/firebase'
-import {signOut} from 'firebase/auth'
 import AnonymousInformations from "@/AnonymousInformations";
 
 const userStore = useUsersStore()
-const {currentUser} = storeToRefs(userStore)
+const {currentUser, userKey} = storeToRefs(userStore)
 const drawer = ref(false)
 
 const store = useUsersStore()
-const {fetchUser} = store
+const {fetchUser, logout} = store
 
 onBeforeMount(() => {
   fetchUser()
 })
-
-function logout() {
-  signOut(auth).then(() => {
-    //todo snackbar
-    // Sign-out successful.
-  }).catch((error) => {
-    //todo snackbar
-    // An error happened.
-  });
-}
 
 </script>

@@ -27,6 +27,8 @@
           @click:append="showPassword = !showPassword"
         />
         <v-btn
+          :loading="userLoader"
+          :disabled="userLoader"
           :block="true"
           color="#9DA65D"
           elevation="3"
@@ -45,6 +47,8 @@
     </v-card-text>
     <v-card-text v-if="!currentUser" class="pt-1">
       <v-btn
+        :loading="userLoader"
+        :disabled="userLoader"
         :block="true"
         @click="loginAsAnonymous"
         size="large"
@@ -66,7 +70,7 @@ const showPassword = ref(false)
 const user = ref({email: null, password: null})
 const userStore = useUsersStore()
 const { loginWithEmail, loginAsAnonymous } = userStore
-const { currentUser } = storeToRefs(userStore)
+const { currentUser, userLoader } = storeToRefs(userStore)
 
 const rules = {
   email: {required, email},
