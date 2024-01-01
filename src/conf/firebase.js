@@ -17,4 +17,16 @@ export const firebaseApp = initializeApp(firebaseConfig)
 export const auth = getAuth(firebaseApp)
 export const user = auth.currentUser
 export const db = getFirestore(firebaseApp);
+
+
+
+export async function getCurrentUser() {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      unsubscribe();
+      resolve(user);
+    }, reject);
+  });
+}
+
 setPersistence(auth, browserLocalPersistence)

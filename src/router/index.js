@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import { useUsersStore } from "@/store/users";
+import { getCurrentUser } from '@/conf/firebase'
 
 const routes = [
   {
@@ -43,11 +43,8 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  const store = useUsersStore()
-  const { currentUser } = store
+  const currentUser = await getCurrentUser();
   if (to.meta.requiresAuth && !currentUser) {
-    // this route requires auth, check if logged in
-    // if not, redirect to login page.
     return {
       path: '/connexion',
       // save the location we were at to come back later
