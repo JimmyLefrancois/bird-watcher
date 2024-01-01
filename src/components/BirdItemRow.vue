@@ -2,26 +2,22 @@
   <tr>
     <td>{{ findBird(bird.id).text }}</td>
     <td>
-      <span class="mr-2">{{ bird.count }}</span>
+      <span class="mr-2">{{ currentBird.count }}</span>
       <v-btn
-        :disabled="bird.count <= 0"
+        :disabled="currentBird.count <= 0"
         class="mr-2"
         density="compact"
         icon="mdi-minus"
-        @click="decrementCount(bird.id)">
+        @click="decrementCount()">
       </v-btn>
       <v-btn
         density="compact"
         class="mr-2"
         icon="mdi-plus"
-        @click="incrementCount(bird.id)">
+        @click="incrementCount()">
       </v-btn>
-      <v-btn
-        color="red"
-        density="compact"
-        icon="mdi-delete"
-        @click="removeBirdFromobservedBirds(bird.id)">
-      </v-btn>
+      <RemoveBirdFromObservation @removeBirdFromObservation="removeBirdFromObservedBirds"/>
+
     </td>
   </tr>
 </template>
@@ -30,31 +26,42 @@
 import { findBird } from "@/helpers/birdHelpers";
 import { useObservationsStore } from "@/store/observations";
 import {storeToRefs} from "pinia";
+import {watch, computed} from "vue";
+import RemoveBirdFromObservation from "@/components/RemoveBirdFromObservation";
 
 const observationStore = useObservationsStore()
 const { currentObservationListItem } = storeToRefs(observationStore)
+const { updateBirdsListFromCurrentObservation } = observationStore
 
-defineProps({
+const props = defineProps({
   bird: Object
 })
 
-const emit = defineEmits(['removeBird'])
+const currentBird = computed(() => {
+  return currentObservationListItem.value.observedBirds.find(bird => bird.id === props.bird.id)
+})
 
-function incrementCount(birdId) {
-  const existingBird = currentObservationListItem.value.observedBirds.find(bird => bird.id === birdId)
-  existingBird.count++
+function incrementCount() {
+  currentBird.value.count++
 }
 
-function decrementCount(birdId) {
-  const existingBird = currentObservationListItem.value.observedBirds.find(bird => bird.id === birdId)
-  existingBird.count--
+function decrementCount() {
+  currentBird.value.count--
 }
 
-function removeBirdFromobservedBirds(birdId) {
+function removeBirdFromObservedBirds() {
   const observedBirdsIndex = currentObservationListItem.value.observedBirds.findIndex((bird) => {
-    return bird.id === birdId
+    return bird.id === props.bird.id
   })
 
-  emit('removeBird', observedBirdsIndex)
+  currentObservationListItem.value.observedBirds.splice(observedBirdsIndex, 1)
+  updateBirdsListFromCurrentObservation(currentObservationListItem.value)
 }
+
+watch(
+  () => currentBird.value.count,
+  () => {
+    updateBirdsListFromCurrentObservation(currentObservationListItem.value)
+  }
+)
 </script>

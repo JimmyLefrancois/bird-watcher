@@ -1,0 +1,88 @@
+<template>
+  <v-card class="mt-3">
+    <v-card-title style="color: #6C733D">Informations de connexion</v-card-title>
+    <v-card-text>
+      <v-form @submit.prevent="logUser" class="mt-3">
+        <v-text-field
+          v-model="user.email"
+          :error-messages="v$.email.$errors.length > 0 ? v$.email.$errors[0].$message :''"
+          required
+          label="Adresse e-mail"
+          prepend-inner-icon="mdi-email-outline"
+          hide-details="auto"
+          @blur="v$.email.$touch()"
+        />
+        <v-text-field
+          class="mt-3"
+          v-model="user.password"
+          :error-messages="v$.password.$errors.length > 0 ? v$.password.$errors[0].$message :''"
+          prepend-inner-icon="mdi-lock-outline"
+          :required="true"
+          :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          counter
+          label="Mot de passe"
+          hide-details="auto"
+          @blur="v$.password.$touch()"
+          @click:append="showPassword = !showPassword"
+        />
+        <v-btn
+          :loading="userLoader"
+          :disabled="userLoader"
+          :block="true"
+          color="#9DA65D"
+          elevation="3"
+          size="large"
+          @click="logUser"
+        >
+          Me connecter
+        </v-btn>
+      </v-form>
+    </v-card-text>
+    <v-card-text class="text-center pt-1">
+      <router-link style="color: #6C733D" class="text-decoration-none" :to="{'name': 'Créer mon compte'}">
+        Vous n'avez pas encore de compte ? <br />
+        Créez le dès maintenant !
+      </router-link>
+    </v-card-text>
+    <v-card-text v-if="!currentUser" class="pt-1">
+      <v-btn
+        :loading="userLoader"
+        :disabled="userLoader"
+        :block="true"
+        @click="loginAsAnonymous"
+        size="large"
+      >
+        Continuer en anonyme
+      </v-btn>
+    </v-card-text>
+  </v-card>
+</template>
+
+<script setup>
+import {required, minLength, email} from "@vuelidate/validators"
+import {ref} from 'vue'
+import {useVuelidate} from "@vuelidate/core";
+import { useUsersStore } from "@/store/users";
+import {storeToRefs} from "pinia";
+
+const showPassword = ref(false)
+const user = ref({email: null, password: null})
+const userStore = useUsersStore()
+const { loginWithEmail, loginAsAnonymous } = userStore
+const { currentUser, userLoader } = storeToRefs(userStore)
+
+const rules = {
+  email: {required, email},
+  password: {required, minLengthValue: minLength(13)},
+}
+
+const v$ = useVuelidate(rules, user.value)
+
+function logUser() {
+  v$.value.$touch()
+  if (!v$.value.$invalid) {
+    loginWithEmail(user.value)
+  }
+}
+</script>
