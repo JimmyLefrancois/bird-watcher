@@ -20,7 +20,7 @@
         color="red"
         density="compact"
         icon="mdi-delete"
-        @click="removeBirdFromobservedBirds()">
+        @click="removeBirdFromObservedBirds()">
       </v-btn>
     </td>
   </tr>
@@ -52,7 +52,7 @@ function decrementCount() {
   currentBird.value.count--
 }
 
-function removeBirdFromobservedBirds() {
+function removeBirdFromObservedBirds() {
   const observedBirdsIndex = currentObservationListItem.value.observedBirds.findIndex((bird) => {
     return bird.id === props.bird.id
   })
