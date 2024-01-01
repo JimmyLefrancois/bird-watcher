@@ -1,6 +1,6 @@
 <template>
   <v-card class="mt-3">
-    <v-card-title>Informations de votre compte</v-card-title>
+    <v-card-title style="color: #6C733D">Vos identifiants</v-card-title>
     <v-card-text>
       <v-form @submit.prevent="registerUser" class="mt-3">
         <v-text-field
@@ -29,13 +29,15 @@
         <v-btn
           :block="true"
           size="large"
+          color="#9DA65D"
+          elevation="3"
           @click="registerUser"
         >
           Créer mon compte
         </v-btn>
       </v-form>
     </v-card-text>
-    <v-card-text class="text-center">
+    <v-card-text class="text-center pt-1">
       <router-link style="color: #6C733D" class="text-decoration-none" :to="{'name': 'Connexion'}">
         Vous avez déjà un compte ? <br /> Connectez-vous dès maintenant !
       </router-link>
@@ -46,13 +48,15 @@
 <script setup>
 import {required, minLength, email} from "@vuelidate/validators"
 import {ref} from 'vue'
-import {useVuelidate} from "@vuelidate/core";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {useVuelidate} from "@vuelidate/core"
+import { useUsersStore } from "@/store/users"
+
+const store = useUsersStore()
+const { createAccount } = store
 
 
 const showPassword = ref(false)
 const user = ref({email: null, password: null})
-const auth = getAuth();
 
 const rules = {
   email: {required, email},
@@ -62,19 +66,9 @@ const rules = {
 const v$ = useVuelidate(rules, user.value)
 
 function registerUser() {
-  console.log('toto')
   v$.value.$touch()
   if (!v$.value.$invalid) {
-    createUserWithEmailAndPassword(auth, user.value.email, user.value.password)
-      .then((userCredential) => {
-        // Signed up
-        const registeredUser = userCredential.user;
-        console.log(registeredUser);
-        // ...
-      })
-      .catch((error) => {
-        console(error)
-      });
+    createAccount(user.value)
   }
 }
 </script>

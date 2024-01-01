@@ -1,6 +1,6 @@
 <template>
   <v-card class="mt-3">
-    <v-card-title>Informations de connexion</v-card-title>
+    <v-card-title style="color: #6C733D">Informations de connexion</v-card-title>
     <v-card-text>
       <v-form @submit.prevent="logUser" class="mt-3">
         <v-text-field
@@ -28,6 +28,8 @@
         />
         <v-btn
           :block="true"
+          color="#9DA65D"
+          elevation="3"
           size="large"
           @click="logUser"
         >
@@ -35,11 +37,20 @@
         </v-btn>
       </v-form>
     </v-card-text>
-    <v-card-text class="text-center">
+    <v-card-text class="text-center pt-1">
       <router-link style="color: #6C733D" class="text-decoration-none" :to="{'name': 'Créer mon compte'}">
         Vous n'avez pas encore de compte ? <br />
         Créez le dès maintenant !
       </router-link>
+    </v-card-text>
+    <v-card-text v-if="!currentUser" class="pt-1">
+      <v-btn
+        :block="true"
+        @click="loginAsAnonymous"
+        size="large"
+      >
+        Continuer en anonyme
+      </v-btn>
     </v-card-text>
   </v-card>
 </template>
@@ -49,12 +60,13 @@ import {required, minLength, email} from "@vuelidate/validators"
 import {ref} from 'vue'
 import {useVuelidate} from "@vuelidate/core";
 import { useUsersStore } from "@/store/users";
-
+import {storeToRefs} from "pinia";
 
 const showPassword = ref(false)
 const user = ref({email: null, password: null})
 const userStore = useUsersStore()
-const { login } = userStore
+const { loginWithEmail, loginAsAnonymous } = userStore
+const { currentUser } = storeToRefs(userStore)
 
 const rules = {
   email: {required, email},
@@ -66,7 +78,7 @@ const v$ = useVuelidate(rules, user.value)
 function logUser() {
   v$.value.$touch()
   if (!v$.value.$invalid) {
-    login(user.value)
+    loginWithEmail(user.value)
   }
 }
 </script>
