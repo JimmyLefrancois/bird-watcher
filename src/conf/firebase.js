@@ -3,14 +3,14 @@ import { getAuth, browserLocalPersistence, setPersistence } from "firebase/auth"
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD_87nu_409WL2Cz82OQg1CoGzDeuEfeg4",
-  authDomain: "bird-watcher-85fb3.firebaseapp.com",
-  projectId: "bird-watcher-85fb3",
-  storageBucket: "bird-watcher-85fb3.appspot.com",
-  messagingSenderId: "985807872428",
-  appId: "1:985807872428:web:6587e56a6b6c21e252da09",
-  measurementId: "G-B40L12VDKL",
-  auth: true
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID,
+  auth: import.meta.env.VITE_AUTH
 }
 
 export const firebaseApp = initializeApp(firebaseConfig)
