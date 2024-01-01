@@ -42,10 +42,11 @@ export const useObservationsStore = defineStore('observations', () => {
 
   async function endObservation() {
     const date = format(new Date(), "yyyy-MM-dd'T'HH:mm")
-    await updateDoc(currentObservationQuery.value, {endDate: date}).then(() => {
-      clearCurrentObservation()
+    await updateDoc(currentObservationQuery.value, {endDate: date}).catch((error) => {
+      console.log(error)
     })
     router.push({name: 'Mes observations'})
+    clearCurrentObservation()
   }
 
   return {
