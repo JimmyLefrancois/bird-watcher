@@ -16,12 +16,8 @@
         icon="mdi-plus"
         @click="incrementCount()">
       </v-btn>
-      <v-btn
-        color="red"
-        density="compact"
-        icon="mdi-delete"
-        @click="removeBirdFromObservedBirds()">
-      </v-btn>
+      <RemoveBirdFromObservation @removeBirdFromObservation="removeBirdFromObservedBirds"/>
+
     </td>
   </tr>
 </template>
@@ -31,6 +27,7 @@ import { findBird } from "@/helpers/birdHelpers";
 import { useObservationsStore } from "@/store/observations";
 import {storeToRefs} from "pinia";
 import {watch, computed} from "vue";
+import RemoveBirdFromObservation from "@/components/RemoveBirdFromObservation";
 
 const observationStore = useObservationsStore()
 const { currentObservationListItem } = storeToRefs(observationStore)

@@ -50,7 +50,7 @@ const show = ref(false)
 import {findBird} from "@/helpers/birdHelpers"
 import { format } from "date-fns";
 import { useObservationsStore } from "@/store/observations";
-import RemoveObservation from "@/components/removeObservation";
+import RemoveObservation from "@/components/RemoveObservation";
 const store = useObservationsStore()
 const { removeObservation } = store
 
