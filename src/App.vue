@@ -21,21 +21,21 @@
           density="compact"
         >
           <v-list-subheader>Mes observation ornitho</v-list-subheader>
-          <v-list-item @click="drawer = false" :link="true" title="Accueil" :to="{'name': 'Accueil'}"
+          <v-list-item @click="drawer = false" value="accueil" :link="true" title="Accueil" :to="{'name': 'Accueil'}"
                        prepend-icon="mdi-home"></v-list-item>
-          <v-list-item @click="drawer = false" :link="true" title="Nouvelle observation"
+          <v-list-item @click="drawer = false" value="nouvelle-observation" :link="true" title="Nouvelle observation"
                        :to="{'name': 'Nouvelle observation'}" prepend-icon="mdi-plus"></v-list-item>
-          <v-list-item @click="drawer = false" :link="true" title="Mes observations" :to="{'name': 'Mes observations'}"
+          <v-list-item @click="drawer = false" :link="true" value="mes-observations" title="Mes observations" :to="{'name': 'Mes observations'}"
                        prepend-icon="mdi-format-list-bulleted"></v-list-item>
           <v-list-subheader>Mon compte</v-list-subheader>
           <template v-if="!currentUser || currentUser.isAnonymous">
-            <v-list-item @click="drawer = false" :link="true" title="Me connecter" :to="{'name': 'Connexion'}"
+            <v-list-item @click="drawer = false" value="connexion" :link="true" title="Me connecter" :to="{'name': 'Connexion'}"
                          prepend-icon="mdi-account"></v-list-item>
-            <v-list-item @click="drawer = false" :link="true" title="Créer mon compte"
+            <v-list-item @click="drawer = false" value="create" :link="true" title="Créer mon compte"
                          :to="{'name': 'Créer mon compte'}" prepend-icon="mdi-account-plus"></v-list-item>
           </template>
           <template v-if="currentUser">
-            <v-list-item :link="true" title="Me déconnecter" @click="logout" prepend-icon="mdi-logout"></v-list-item>
+            <v-list-item :link="true" title="Me déconnecter" value="logout" @click="logout" prepend-icon="mdi-logout"></v-list-item>
           </template>
         </v-list>
       </v-navigation-drawer>
