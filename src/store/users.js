@@ -39,7 +39,7 @@ export const useUsersStore = defineStore('users', () => {
 
   function loginWithEmail(user) {
     userLoader.value = true
-    signInWithEmailAndPassword(user.email, user.password).then(() => {
+    signInWithEmailAndPassword(auth, user.email, user.password).then(() => {
       userLoader.value = false
     }).catch((error) => {
       console.log(error)
