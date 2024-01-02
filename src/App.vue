@@ -34,10 +34,6 @@
             <v-list-item @click="drawer = false" :link="true" title="Créer mon compte"
                          :to="{'name': 'Créer mon compte'}" prepend-icon="mdi-account-plus"></v-list-item>
           </template>
-          <template v-if="currentUser && currentUser.isAnonymous">
-            <v-list-item @click="drawer = false" :link="true" title="dsdsfsdf" :to="{'name': 'Connexion'}"
-                         prepend-icon="mdi-account"></v-list-item>
-          </template>
           <template v-if="currentUser">
             <v-list-item :link="true" title="Me déconnecter" @click="logout" prepend-icon="mdi-logout"></v-list-item>
           </template>
