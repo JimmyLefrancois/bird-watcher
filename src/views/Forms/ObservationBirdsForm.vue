@@ -106,6 +106,7 @@ watch(
         currentObservationListItem.value.observedBirds.push({id: id, count: 1})
       }
       updateBirdsListFromCurrentObservation(currentObservationListItem.value)
+      selectedBird.value = null
     }
   }
 )
