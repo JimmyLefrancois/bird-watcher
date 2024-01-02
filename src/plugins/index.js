@@ -12,7 +12,6 @@ import { VueFire, VueFireAuth } from 'vuefire'
 import { firebaseApp } from '@/conf/firebase'
 // import { ReCaptchaV3Provider } from 'firebase/app-check'
 
-console.log(import.meta.env.VITE_API_KEY)
 export function registerPlugins (app) {
   app
     .use(vuetify)
