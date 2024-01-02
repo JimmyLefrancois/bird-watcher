@@ -41,6 +41,7 @@ export const useUsersStore = defineStore('users', () => {
     userLoader.value = true
     signInWithEmailAndPassword(auth, user.email, user.password).then(() => {
       userLoader.value = false
+      router.push({'name': 'Accueil'})
     }).catch((error) => {
       console.log(error)
     })
