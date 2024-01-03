@@ -1,6 +1,12 @@
 <template>
-  <router-link :to="{name: 'Nouvelle observation'}" class="text-decoration-none">
-    <v-card class="mt-3" elevation="3">
+  <router-link
+    :to="{name: 'nouvelle-observation'}"
+    class="text-decoration-none"
+  >
+    <v-card
+      class="mt-3"
+      elevation="3"
+    >
       <v-img
         src="/add-background.jpg"
         class="align-end"
@@ -14,8 +20,14 @@
       </v-img>
     </v-card>
   </router-link>
-  <router-link :to="{name: 'Mes observations'}" class="text-decoration-none">
-    <v-card class="mt-3" elevation="3">
+  <router-link
+    :to="{name: 'mes-observations'}"
+    class="text-decoration-none"
+  >
+    <v-card
+      class="mt-3"
+      elevation="3"
+    >
       <v-img
         src="/add-background.jpg"
         class="align-end"

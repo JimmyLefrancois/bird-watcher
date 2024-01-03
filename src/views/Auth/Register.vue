@@ -1,8 +1,13 @@
 <template>
   <v-card class="mt-3">
-    <v-card-title style="color: #6C733D">Vos identifiants</v-card-title>
+    <v-card-title style="color: #6C733D">
+      Vos identifiants
+    </v-card-title>
     <v-card-text>
-      <v-form @submit.prevent="registerUser" class="mt-3">
+      <v-form
+        @submit.prevent="registerUser"
+        class="mt-3"
+      >
         <v-text-field
           v-model="user.email"
           :error-messages="v$.email.$errors.length > 0 ? v$.email.$errors[0].$message :''"
@@ -40,8 +45,12 @@
       </v-form>
     </v-card-text>
     <v-card-text class="text-center pt-1">
-      <router-link style="color: #6C733D" class="text-decoration-none" :to="{'name': 'Connexion'}">
-        Vous avez déjà un compte ? <br /> Connectez-vous dès maintenant !
+      <router-link
+        style="color: #6C733D"
+        class="text-decoration-none"
+        :to="{'name': 'connexion'}"
+      >
+        Vous avez déjà un compte ? <br> Connectez-vous dès maintenant !
       </router-link>
     </v-card-text>
   </v-card>

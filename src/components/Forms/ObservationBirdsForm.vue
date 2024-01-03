@@ -1,12 +1,13 @@
 <template>
   <div v-if="currentObservationListItem">
     <h3
-        class="py-3 text-center"
-        style="color: #37474f">
-      <v-icon icon="mdi-map"></v-icon>
+      class="py-3 text-center"
+      style="color: #37474f"
+    >
+      <v-icon icon="mdi-map" />
       {{ currentObservationListItem.location }}
     </h3>
-    <EndObservation @endObservation="finaliseObservation"/>
+    <EndObservation @end-observation="finaliseObservation" />
     <v-dialog
       v-model="displayBirdRemoveDialog"
       width="auto"
@@ -17,18 +18,20 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             color="red"
             prepend-icon="mdi-cancel"
             @click="displayBirdRemoveDialog = false"
-          >Annuler
+          >
+            Annuler
           </v-btn>
           <v-btn
             color="green"
             prepend-icon="mdi-check"
             @click="removeBirdFormList"
-          >Supprimer
+          >
+            Supprimer
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -41,18 +44,19 @@
       class="mt-5"
       label="Chercher un oiseau"
       v-model="selectedBird"
-    >
-    </v-autocomplete>
+    />
     <v-data-table
       :headers="headers"
       :items="currentObservationListItem.observedBirds"
       no-data-text="Aucun oiseau observé."
     >
-      <template v-slot:item="{ item }">
-        <BirdItemRow :bird="item" @removeBird="tryToRemoveBirdFromList($event)"/>
+      <template #item="{ item }">
+        <BirdItemRow
+          :bird="item"
+          @remove-bird="tryToRemoveBirdFromList($event)"
+        />
       </template>
-      <template v-slot:bottom>
-      </template>
+      <template #bottom />
     </v-data-table>
   </div>
 </template>
@@ -64,7 +68,8 @@ import BirdItemRow from "@/components/BirdItemRow";
 import EndObservation from "@/components/EndObservation";
 import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
-import router from "@/router";
+import {minLength, required} from "@vuelidate/validators";
+import {useVuelidate} from "@vuelidate/core";
 
 const observationStore = useObservationsStore()
 const {updateBirdsListFromCurrentObservation, endObservation} = observationStore
@@ -72,10 +77,18 @@ const { currentObservationListItem } = storeToRefs(observationStore)
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 
+const rules = {
+  birds: {minLengthValue: minLength(1), required}
+}
+
+const v$ = useVuelidate(rules, currentObservationListItem.value)
+
 function finaliseObservation()
 {
-  endObservation()
-  router.push({name: 'Mes observations'})
+  v$.value.$touch()
+  if (!v$.value.$invalid) {
+    endObservation()
+  }
 }
 
 function removeBirdFormList() {
@@ -97,7 +110,6 @@ watch(
   () => selectedBird.value,
   (id) => {
     if (id !== null) {
-      //todo trouver plus propre
       document.activeElement.blur();
       const existingBird = currentObservationListItem.value.observedBirds.find(bird => bird.id === id)
       if (existingBird) {

@@ -1,8 +1,13 @@
 <template>
   <v-card class="mt-3">
-    <v-card-title style="color: #6C733D">Informations de connexion</v-card-title>
+    <v-card-title style="color: #6C733D">
+      Informations de connexion
+    </v-card-title>
     <v-card-text>
-      <v-form @submit.prevent="logUser" class="mt-3">
+      <v-form
+        @submit.prevent="logUser"
+        class="mt-3"
+      >
         <v-text-field
           v-model="user.email"
           :error-messages="v$.email.$errors.length > 0 ? v$.email.$errors[0].$message :''"
@@ -40,12 +45,19 @@
       </v-form>
     </v-card-text>
     <v-card-text class="text-center pt-1">
-      <router-link style="color: #6C733D" class="text-decoration-none" :to="{'name': 'Créer mon compte'}">
-        Vous n'avez pas encore de compte ? <br />
+      <router-link
+        style="color: #6C733D"
+        class="text-decoration-none"
+        :to="{'name': 'creer-mon-compte'}"
+      >
+        Vous n'avez pas encore de compte ? <br>
         Créez le dès maintenant !
       </router-link>
     </v-card-text>
-    <v-card-text v-if="!currentUser" class="pt-1">
+    <v-card-text
+      v-if="!currentUser"
+      class="pt-1"
+    >
       <v-btn
         :loading="userLoader"
         :disabled="userLoader"

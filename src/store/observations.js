@@ -56,7 +56,20 @@ export const useObservationsStore = defineStore('observations', () => {
       observationLoader.value = false
       console.log(error)
     })
-    router.push({name: 'Mes observations'})
+    await router.push({name: 'mes-observations'})
+    clearCurrentObservation()
+  }
+
+  async function editObservation() {
+    observationLoader.value = true
+    currentObservationListItem.value.updatedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm")
+    await updateDoc(currentObservationQuery.value, currentObservationListItem.value).then(() => {
+      observationLoader.value = false
+    }).catch((error) => {
+      observationLoader.value = false
+      console.log(error)
+    })
+    await router.push({name: 'mes-observations'})
     clearCurrentObservation()
   }
 
@@ -72,6 +85,7 @@ export const useObservationsStore = defineStore('observations', () => {
 
   return {
     observationLoader,
+    editObservation,
     endObservation,
     currentObservation,
     endedObservations,

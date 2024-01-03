@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {auth} from '@/conf/firebase'
 import {ref} from "vue";
+import { useObservationsStore } from "@/store/observations";
 import {
   EmailAuthProvider,
   linkWithCredential,
@@ -9,7 +10,6 @@ import {
   createUserWithEmailAndPassword, signOut
 } from "firebase/auth";
 import router from "@/router";
-
 
 export const useUsersStore = defineStore('users', () => {
 
@@ -29,7 +29,7 @@ export const useUsersStore = defineStore('users', () => {
   function logout() {
     signOut(auth).then(() => {
       currentUser.value = null
-      router.push({'name': 'Connexion'})
+      router.push({'name': 'connexion'})
     }).catch((error) => {
       //todo snackbar
       console.log(error)
@@ -41,7 +41,7 @@ export const useUsersStore = defineStore('users', () => {
     userLoader.value = true
     signInWithEmailAndPassword(auth, user.email, user.password).then(() => {
       userLoader.value = false
-      router.push({'name': 'Accueil'})
+      router.push({'name': 'accueil'})
     }).catch((error) => {
       console.log(error)
     })
@@ -51,10 +51,25 @@ export const useUsersStore = defineStore('users', () => {
     userLoader.value = true
     signInAnonymously(auth).then(() => {
       userLoader.value = false
-      router.push({'name': 'Accueil'})
+      router.push({'name': 'accueil'})
     }).catch((error) => {
       console.log(error)
     })
+  }
+
+  function redirecAfterCreatedAccount()
+  {
+    const observationStore = useObservationsStore()
+    const { currentObservationListItem } = observationStore
+    if (!currentObservationListItem.value) {
+      router.push({name: 'accueil'})
+    } else {
+      if (currentObservationListItem.value.endDate) {
+        router.push({name: 'modifier-mon-observation'})
+      } else {
+        router.push({name: 'nouvelle-observation'})
+      }
+    }
   }
 
   function createAccount(user) {
@@ -69,7 +84,7 @@ export const useUsersStore = defineStore('users', () => {
           currentUser.value = userCredential.user
           userKey.value = userCredential.user.uid + userCredential.user.isAnonymous
           console.log(userCredential)
-          router.push({name: 'Accueil'})
+          redirecAfterCreatedAccount()
         })
         .catch((error) => {
           //todo snackbar
@@ -85,7 +100,7 @@ export const useUsersStore = defineStore('users', () => {
         userLoader.value = false
         currentUser.value = userCredential.user
         userKey.value = userCredential.user.uid + userCredential.user.isAnonymous
-        router.push({name: 'Accueil'})
+        redirecAfterCreatedAccount()
       }).catch((error) => {
       console.log("Error upgrading anonymous account", error);
     });

@@ -8,16 +8,15 @@
         class="mr-2"
         density="compact"
         icon="mdi-minus"
-        @click="decrementCount()">
-      </v-btn>
+        @click="decrementCount()"
+      />
       <v-btn
         density="compact"
         class="mr-2"
         icon="mdi-plus"
-        @click="incrementCount()">
-      </v-btn>
-      <RemoveBirdFromObservation @removeBirdFromObservation="removeBirdFromObservedBirds"/>
-
+        @click="incrementCount()"
+      />
+      <RemoveBirdFromObservation @remove-bird-from-observation="removeBirdFromObservedBirds" />
     </td>
   </tr>
 </template>
@@ -55,13 +54,17 @@ function removeBirdFromObservedBirds() {
   })
 
   currentObservationListItem.value.observedBirds.splice(observedBirdsIndex, 1)
-  updateBirdsListFromCurrentObservation(currentObservationListItem.value)
+  if (!currentObservationListItem.value.endDate) {
+    updateBirdsListFromCurrentObservation(currentObservationListItem.value)
+  }
 }
 
 watch(
   () => currentBird.value.count,
   () => {
-    updateBirdsListFromCurrentObservation(currentObservationListItem.value)
+    if (!currentObservationListItem.value.endDate) {
+      updateBirdsListFromCurrentObservation(currentObservationListItem.value)
+    }
   }
 )
 </script>

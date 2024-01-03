@@ -1,12 +1,18 @@
 <template>
-  <v-card class="mt-3" v-for="(observation, index) in endedObservations" :key="index">
-    <ObservationsListItem :observation="observation"/>
+  <v-card
+    class="mt-3"
+    v-for="(observation, index) in endedObservations"
+    :key="index"
+  >
+    <ObservationsListItem :observation="observation" />
   </v-card>
-  <template v-if="endedObservations.length === 0">
-    <p class="text-center mt-3" >Aucune observation à afficher.</p>
+  <template v-if="endedObservations && endedObservations.length === 0">
+    <p class="text-center mt-3">
+      Aucune observation à afficher.
+    </p>
     <v-btn
       :block="true"
-      :to="{name: 'Nouvelle observation'}"
+      :to="{name: 'nouvelle-observation'}"
       prepend-icon="mdi-plus"
       color="themeLightgreenColor"
       class="mt-3"

@@ -4,8 +4,8 @@
 </template>
 
 <script setup>
-  import ObservationForm from "@/views/Forms/ObservationForm"
-  import ObservationBirdsForm from "@/views/Forms/ObservationBirdsForm";
+  import ObservationForm from "@/components/Forms/ObservationForm"
+  import ObservationBirdsForm from "@/components/Forms/ObservationBirdsForm";
   import { useObservationsStore } from "@/store/observations";
   import {storeToRefs} from "pinia";
 

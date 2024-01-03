@@ -1,0 +1,22 @@
+/*input[type="datetime-local"]{*/
+/*    align-items: center;*/
+/*    color: inherit;*/
+/*    column-gap: 2px;*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    letter-spacing: 0.009375em;*/
+/*    opacity: var(--v-high-emphasis-opacity);*/
+/*    min-height: max(var(--v-input-control-height, 56px), 1.5rem + var(--v-field-input-padding-top) + var(--v-field-input-padding-bottom));*/
+/*    min-width: 0;*/
+/*    padding-inline: var(--v-field-padding-start) var(--v-field-padding-end);*/
+/*    padding-top: var(--v-field-input-padding-top);*/
+/*    padding-bottom: var(--v-field-input-padding-bottom);*/
+/*    position: relative;*/
+/*    width: 100%;*/
+/*}*/
+/*::-webkit-calendar-picker-indicator{*/
+/*    background-color: #ffffff;*/
+/*    padding: 5px;*/
+/*    cursor: pointer;*/
+/*    border-radius: 3px;*/
+/*}*/

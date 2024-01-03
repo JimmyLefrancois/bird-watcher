@@ -1,34 +1,38 @@
 <template>
   <v-dialog width="500">
-    <template v-slot:activator="{ props }">
+    <template #activator="{ props }">
       <v-btn
         v-bind="props"
         color="red"
         density="compact"
-        icon="mdi-delete">
-      </v-btn>
+        icon="mdi-delete"
+      />
     </template>
 
-    <template v-slot:default="{ isActive }">
+    <template #default="{ isActive }">
       <v-card title="Retirer cette espèce">
         <v-card-text>
           Souhaitez-vous vraiment retirer cette espèce de votre liste ?
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             color="red"
             prepend-icon="mdi-cancel"
             @click="isActive.value = false"
-          >Annuler</v-btn>
+          >
+            Annuler
+          </v-btn>
           <v-btn
             :disabled="observationLoader"
             :loading="observationLoader"
             color="green"
             prepend-icon="mdi-check"
             @click="removeBirdFromObservation"
-          >Supprimer</v-btn>
+          >
+            Supprimer
+          </v-btn>
         </v-card-actions>
       </v-card>
     </template>
@@ -41,9 +45,9 @@ import {storeToRefs} from "pinia";
 const store = useObservationsStore()
 const { observationLoader } = storeToRefs(store)
 
-const emit = defineEmits(['removeBirdFromObservation'])
+const emit = defineEmits(['remove-bird-from-observation'])
 
 function removeBirdFromObservation() {
-  emit('removeBirdFromObservation')
+  emit('remove-bird-from-observation')
 }
 </script>

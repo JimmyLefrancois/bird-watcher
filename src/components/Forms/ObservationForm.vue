@@ -1,5 +1,8 @@
 <template>
-  <v-form @submit.prevent="submitObservation" class="mt-3">
+  <v-form
+    @submit.prevent="submitObservation"
+    class="mt-3"
+  >
     <v-text-field
       v-model="observation.location"
       :error-messages="v$.location.$errors.length > 0 ? v$.location.$errors[0].$message :''"
@@ -8,21 +11,12 @@
       @blur="v$.location.$touch()"
       variant="solo-filled"
     />
-    <v-row>
-      <v-col cols="6">
-        <input
-          type="datetime-local"
-          required
-          v-model="observation.startDate"
-          @blur="v$.startDate.$touch()"
-        >
-      </v-col>
-    </v-row>
     <v-btn
       color="themeDarkGreenColor"
       class="mt-3"
       :block="true"
-      type="submit">
+      type="submit"
+    >
       Créer Observation
     </v-btn>
   </v-form>
@@ -44,7 +38,6 @@ const userStore = useUsersStore();
 const {currentUser} = storeToRefs(userStore)
 
 const rules = {
-  startDate: {required},
   location: {required},
 }
 

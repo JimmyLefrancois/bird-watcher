@@ -1,5 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import { getCurrentUser } from '@/conf/firebase'
+import {useHead} from "@unhead/vue";
 
 const routes = [
   {
@@ -7,31 +8,39 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'Accueil',
+        name: 'accueil',
         component: () => import('@/views/Home.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, title: 'Accueil' },
       },
       {
         path: 'nouvelle-observation',
-        name: 'Nouvelle observation',
+        name: 'nouvelle-observation',
         component: () => import('@/views/CreateObservation.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, title: 'Nouvelle observation'},
+      },
+      {
+        path: 'modifier-mon-observation',
+        name: 'modifier-mon-observation',
+        component: () => import('@/views/EditObservation.vue'),
+        meta: { requiresAuth: true, title: 'Modifier mon observation'},
       },
       {
         path: 'mes-observations',
-        name: 'Mes observations',
+        name: 'mes-observations',
         component: () => import('@/views/ObservationsList.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, title: 'Mes observations'},
       },
       {
         path: 'creer-mon-compte',
-        name: 'Créer mon compte',
+        name: 'creer-mon-compte',
         component: () => import('@/views/Auth/Register'),
+        meta: { title: 'Créer mon compte'},
       },
       {
         path: 'connexion',
-        name: 'Connexion',
+        name: 'connexion',
         component: () => import('@/views/Auth/Login'),
+        meta: { title: 'Connexion'},
       },
     ],
   },
@@ -43,6 +52,9 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
+  useHead({
+    title: to?.meta?.title || 'Mes observations ornitho'
+  })
   const currentUser = await getCurrentUser();
   if (to.meta.requiresAuth && !currentUser) {
     return {

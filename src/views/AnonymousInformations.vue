@@ -3,36 +3,45 @@
 
     transition="dialog-top-transition"
     width="auto"
-    :fullscreen=true
+    :fullscreen="true"
   >
-    <template v-slot:activator="{ props }">
+    <template #activator="{ props }">
       <v-alert
         class="mt-2"
         variant="tonal"
       >
-        Vous êtes connecté en tant qu'invité.<br/>
-        <p v-bind="props" class="text-decoration-underline" style="cursor: pointer">En savoir +</p>
-
+        Vous êtes connecté en tant qu'invité.<br>
+        <p
+          v-bind="props"
+          class="text-decoration-underline"
+          style="cursor: pointer"
+        >
+          En savoir +
+        </p>
       </v-alert>
     </template>
-    <template v-slot:default="{ isActive }">
+    <template #default="{ isActive }">
       <v-card>
         <v-card-title style="color: #6C733D">
-          <v-icon class="mr-2" icon="mdi-incognito"/>
+          <v-icon
+            class="mr-2"
+            icon="mdi-incognito"
+          />
           Votre compte invité.
         </v-card-title>
         <v-card-text>
-          <p>Nous sommes ravis de vous compter parmi nos utilisateurs ! <br/> <br/>
+          <p>
+            Nous sommes ravis de vous compter parmi nos utilisateurs ! <br> <br>
             Actuellement, vous utilisez notre application en tant qu'invité, ce qui vous permet de profiter
             pleinement de toutes les fonctionnalités disponibles.
           </p>
-          <br/>
+          <br>
           <p>
             Cependant, pour assurer la sauvegarde et la conservation de vos données existantes, nous vous recommandons
-            de créer un compte utilisateur.<br/> <br/> Toutes les informations que vous avez
+            de créer un compte utilisateur.<br> <br> Toutes les informations que vous avez
             déjà enregistrées seront conservées.
           </p>
-          <br/>
+          <br>
           <p>
             Créer un compte ne prend que quelques instants et vous permettra de retrouver vos données sur différents
             appareils.
@@ -42,7 +51,7 @@
             color="#9DA65D"
             class="mt-3"
             :block="true"
-            :to="{name: 'Créer mon compte'}"
+            :to="{name: 'creer-mon-compte'}"
             prepend-icon="mdi-account-plus"
           >
             Créer mon compte
@@ -53,7 +62,8 @@
             color="#6C733D"
             variant="text"
             @click="isActive.value = false"
-          >Continuer en anonyme
+          >
+            Continuer en anonyme
           </v-btn>
         </v-card-actions>
       </v-card>

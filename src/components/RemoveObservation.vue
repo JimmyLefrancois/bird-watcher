@@ -1,6 +1,6 @@
 <template>
   <v-dialog width="500">
-    <template v-slot:activator="{ props }">
+    <template #activator="{ props }">
       <v-btn
         v-bind="props"
         color="red"
@@ -11,26 +11,30 @@
       </v-btn>
     </template>
 
-    <template v-slot:default="{ isActive }">
+    <template #default="{ isActive }">
       <v-card title="Supprimer l'observation">
         <v-card-text>
           Souhaitez-vous vraiment supprimer cette observation ?
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             color="red"
             prepend-icon="mdi-cancel"
             @click="isActive.value = false"
-          >Annuler</v-btn>
+          >
+            Annuler
+          </v-btn>
           <v-btn
             :disabled="observationLoader"
             :loading="observationLoader"
             color="green"
             prepend-icon="mdi-check"
             @click="removeObservation"
-          >Supprimer</v-btn>
+          >
+            Supprimer
+          </v-btn>
         </v-card-actions>
       </v-card>
     </template>
