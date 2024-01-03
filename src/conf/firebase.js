@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, browserLocalPersistence, setPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
 
 const firebaseConfig = {
@@ -20,7 +20,7 @@ export const user = auth.currentUser
 export const db = getFirestore(firebaseApp);
 
 initializeAppCheck(firebaseApp, {
-  provider: new ReCaptchaEnterpriseProvider('6LeUVTspAAAAADuVR3bQQaUlyvzH0gJxHpVVeuk7'),
+  provider: new ReCaptchaV3Provider ('6Ld_HUUpAAAAAKMvI2Gz_jZgFlXihPNHrMdGyVFu'),
   isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
 });
 
