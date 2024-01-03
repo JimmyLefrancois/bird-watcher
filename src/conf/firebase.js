@@ -1,6 +1,8 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, browserLocalPersistence, setPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
+
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -17,7 +19,10 @@ export const auth = getAuth(firebaseApp)
 export const user = auth.currentUser
 export const db = getFirestore(firebaseApp);
 
-
+initializeAppCheck(firebaseApp, {
+  provider: new ReCaptchaEnterpriseProvider('6LeUVTspAAAAADuVR3bQQaUlyvzH0gJxHpVVeuk7'),
+  isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
+});
 
 export async function getCurrentUser() {
   return new Promise((resolve, reject) => {
