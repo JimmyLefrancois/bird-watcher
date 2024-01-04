@@ -84,7 +84,7 @@ export const useUsersStore = defineStore('users', () => {
           currentUser.value = userCredential.user
           userKey.value = userCredential.user.uid + userCredential.user.isAnonymous
           console.log(userCredential)
-          redirecAfterCreatedAccount()
+          router.push({name: 'accueil'})
         })
         .catch((error) => {
           //todo snackbar
@@ -100,7 +100,8 @@ export const useUsersStore = defineStore('users', () => {
         userLoader.value = false
         currentUser.value = userCredential.user
         userKey.value = userCredential.user.uid + userCredential.user.isAnonymous
-        redirecAfterCreatedAccount()
+        router.push({name: 'accueil'})
+        //redirecAfterCreatedAccount()
       }).catch((error) => {
       console.log("Error upgrading anonymous account", error);
     });
