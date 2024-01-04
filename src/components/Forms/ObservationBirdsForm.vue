@@ -77,18 +77,18 @@ const { currentObservationListItem } = storeToRefs(observationStore)
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 
-const rules = {
-  birds: {minLengthValue: minLength(1), required}
-}
+//const rules = {
+//  birds: {minLengthValue: minLength(1), required}
+//}
 
-const v$ = useVuelidate(rules, currentObservationListItem.value)
+//const v$ = useVuelidate(rules, currentObservationListItem.value)
 
 function finaliseObservation()
 {
-  v$.value.$touch()
-  if (!v$.value.$invalid) {
+  //v$.value.$touch()
+  //if (!v$.value.$invalid) {
     endObservation()
-  }
+  //}
 }
 
 function removeBirdFormList() {
