@@ -29,7 +29,7 @@
           <v-btn
             color="green"
             prepend-icon="mdi-check"
-            @click="endObservation"
+            @click="emit('endObservation')"
           >
             Finaliser
           </v-btn>
@@ -40,10 +40,5 @@
 </template>
 
 <script setup>
-
   const emit = defineEmits(['endObservation'])
-
-  function endObservation() {
-      emit('endObservation')
-  }
 </script>

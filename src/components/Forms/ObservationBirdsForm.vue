@@ -7,7 +7,7 @@
       <v-icon icon="mdi-map" />
       {{ currentObservationListItem.location }}
     </h3>
-    <EndObservation @end-observation="finaliseObservation" />
+    <EndObservation @endObservation="finaliseObservation" />
     <v-dialog
       v-model="displayBirdRemoveDialog"
       width="auto"
