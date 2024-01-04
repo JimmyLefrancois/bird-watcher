@@ -30,24 +30,18 @@
           <v-list-subheader>Mes observations ornitho</v-list-subheader>
           <v-list-item
             @click="drawer = false"
-            value="accueil"
-            :link="true"
             title="Accueil"
             :to="{'name': 'accueil'}"
             prepend-icon="mdi-home"
           />
           <v-list-item
             @click="drawer = false"
-            value="nouvelle-observation"
-            :link="true"
             title="Nouvelle observation"
             :to="{'name': 'nouvelle-observation'}"
             prepend-icon="mdi-plus"
           />
           <v-list-item
             @click="drawer = false"
-            :link="true"
-            value="mes-observations"
             title="Mes observations"
             :to="{'name': 'mes-observations'}"
             prepend-icon="mdi-format-list-bulleted"
@@ -56,16 +50,12 @@
           <template v-if="!currentUser || currentUser.isAnonymous">
             <v-list-item
               @click="drawer = false"
-              value="connexion"
-              :link="true"
               title="Me connecter"
               :to="{'name': 'connexion'}"
               prepend-icon="mdi-account"
             />
             <v-list-item
               @click="drawer = false"
-              value="create"
-              :link="true"
               title="Créer mon compte"
               :to="{'name': 'creer-mon-compte'}"
               prepend-icon="mdi-account-plus"
@@ -73,8 +63,6 @@
           </template>
           <template v-if="currentUser">
             <v-list-item
-              :link="true"
-              title="Me déconnecter"
               value="logout"
               @click="logout"
               prepend-icon="mdi-logout"
