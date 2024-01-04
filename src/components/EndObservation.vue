@@ -41,9 +41,9 @@
 
 <script setup>
 
-  const emit = defineEmits(['endObservation'])
+  const emit = defineEmits(['end-observation'])
 
   function endObservation() {
-      emit('endObservation')
+      emit('end-observation')
   }
 </script>
