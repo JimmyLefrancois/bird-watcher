@@ -63,7 +63,7 @@
           </template>
           <template v-if="currentUser">
             <v-list-item
-              value="logout"
+              title="Me déconnecter"
               @click="logout"
               prepend-icon="mdi-logout"
             />
