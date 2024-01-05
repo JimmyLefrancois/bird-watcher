@@ -1,7 +1,9 @@
 import {defineStore} from "pinia";
 import {auth} from '@/conf/firebase'
 import {ref} from "vue";
-import { useObservationsStore } from "@/store/observations";
+import { deleteUser } from "firebase/auth";
+import { useSnackbarStore } from "@/store/snackbar";
+
 import {
   EmailAuthProvider,
   linkWithCredential,
@@ -16,6 +18,7 @@ export const useUsersStore = defineStore('users', () => {
   const currentUser = ref(null)
   const userLoader = ref(false)
   const userKey = ref(null)
+  const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
   function fetchUser() {
     auth.onAuthStateChanged(async user => {
@@ -29,11 +32,13 @@ export const useUsersStore = defineStore('users', () => {
   function logout() {
     signOut(auth).then(() => {
       currentUser.value = null
+      updateSnackbar({
+        type: 'success',
+        text: 'Vous avez correctement été déconnecté.'
+      })
       router.push({'name': 'connexion'})
-    }).catch((error) => {
-      //todo snackbar
-      console.log(error)
-      // An error happened.
+    }).catch(() => {
+      errorSnackbar()
     });
   }
 
@@ -41,9 +46,13 @@ export const useUsersStore = defineStore('users', () => {
     userLoader.value = true
     signInWithEmailAndPassword(auth, user.email, user.password).then(() => {
       userLoader.value = false
+      updateSnackbar({
+        type: 'success',
+        text: 'Vous êtes désormais connecté.'
+      })
       router.push({'name': 'accueil'})
-    }).catch((error) => {
-      console.log(error)
+    }).catch(() => {
+      errorSnackbar()
     })
   }
 
@@ -51,25 +60,14 @@ export const useUsersStore = defineStore('users', () => {
     userLoader.value = true
     signInAnonymously(auth).then(() => {
       userLoader.value = false
+      updateSnackbar({
+        type: 'success',
+        text: 'Vous êtes désormais connecté en tant qu\'anonyme.'
+      })
       router.push({'name': 'accueil'})
-    }).catch((error) => {
-      console.log(error)
+    }).catch(() => {
+      errorSnackbar()
     })
-  }
-
-  function redirecAfterCreatedAccount()
-  {
-    const observationStore = useObservationsStore()
-    const { currentObservationListItem } = observationStore
-    if (!currentObservationListItem.value) {
-      router.push({name: 'accueil'})
-    } else {
-      if (currentObservationListItem.value.endDate) {
-        router.push({name: 'modifier-mon-observation'})
-      } else {
-        router.push({name: 'nouvelle-observation'})
-      }
-    }
   }
 
   function createAccount(user) {
@@ -79,18 +77,27 @@ export const useUsersStore = defineStore('users', () => {
     } else {
       createUserWithEmailAndPassword(auth, user.email, user.password)
         .then((userCredential) => {
-          //todo snackbar
           userLoader.value = false
           currentUser.value = userCredential.user
           userKey.value = userCredential.user.uid + userCredential.user.isAnonymous
-          console.log(userCredential)
+          updateSnackbar({
+            type: 'success',
+            text: 'Votre compte a bien été créé et vous êtes désormais connecté.'
+          })
           router.push({name: 'accueil'})
         })
-        .catch((error) => {
-          //todo snackbar
-          console.log(error)
+        .catch(() => {
+          errorSnackbar()
         });
     }
+  }
+
+  function removeAccount() {
+    const user = auth.currentUser
+    deleteUser(user).then(() => {
+    }).catch(() => {
+      errorSnackbar()
+    });
   }
 
   function linkAnonymousAccountToCreatedAccount(email, password) {
@@ -100,14 +107,17 @@ export const useUsersStore = defineStore('users', () => {
         userLoader.value = false
         currentUser.value = userCredential.user
         userKey.value = userCredential.user.uid + userCredential.user.isAnonymous
+        updateSnackbar({
+          type: 'success',
+          text: 'Votre compte a bien été créé et vous êtes désormais connecté.'
+        })
         router.push({name: 'accueil'})
-        //redirecAfterCreatedAccount()
-      }).catch((error) => {
-      console.log("Error upgrading anonymous account", error);
+      }).catch(() => { 
+      errorSnackbar()
     });
   }
 
   return {
-    currentUser, loginWithEmail, loginAsAnonymous, fetchUser, createAccount, logout, userLoader, userKey
+    currentUser, loginWithEmail, loginAsAnonymous, fetchUser, createAccount, logout, userLoader, userKey, removeAccount
   }
 })

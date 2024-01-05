@@ -19,7 +19,7 @@
 
 <script setup>
 
-import {useSnackbarStore} from '@/stores/snackbar'
+import {useSnackbarStore} from '@/store/snackbar'
 import {storeToRefs} from 'pinia'
 
 const snackbarStore = useSnackbarStore()

@@ -7,6 +7,7 @@ import { db } from '@/conf/firebase'
 import {useStorage} from "@vueuse/core";
 import { format } from 'date-fns'
 import router from "@/router";
+import { useSnackbarStore } from "@/store/snackbar";
 
 export const useObservationsStore = defineStore('observations', () => {
 
@@ -18,6 +19,7 @@ export const useObservationsStore = defineStore('observations', () => {
   const currentObservationQuery = computed(() => currentObservation.value && doc(db, 'observations', currentObservation.value))
   const currentObservationListItem = useFirestore(currentObservationQuery, null)
   const observationLoader = ref(false)
+  const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
   const endedObservations = computed(() => observationsList.value && observationsList.value.filter((observation) => {
     return observation.endDate !== null
@@ -28,8 +30,8 @@ export const useObservationsStore = defineStore('observations', () => {
     await addDoc(collection(db, 'observations'), observation).then((data) => {
       currentObservation.value = data.id
       observationLoader.value = false
-    }).catch((error) => {
-      console.log(error)
+    }).catch(() => {
+      errorSnackbar()
       observationLoader.value = false
     })
   }
@@ -52,9 +54,13 @@ export const useObservationsStore = defineStore('observations', () => {
     const date = format(new Date(), "yyyy-MM-dd'T'HH:mm")
     await updateDoc(currentObservationQuery.value, {endDate: date}).then(() => {
       observationLoader.value = false
-    }).catch((error) => {
+      updateSnackbar({
+        type: 'success',
+        text: 'Votre observation a bien été enregistrée.'
+      })
+    }).catch(() => {
       observationLoader.value = false
-      console.log(error)
+      errorSnackbar()
     })
     await router.push({name: 'mes-observations'})
     clearCurrentObservation()
@@ -65,9 +71,13 @@ export const useObservationsStore = defineStore('observations', () => {
     currentObservationListItem.value.updatedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm")
     await updateDoc(currentObservationQuery.value, currentObservationListItem.value).then(() => {
       observationLoader.value = false
-    }).catch((error) => {
+      updateSnackbar({
+        type: 'success',
+        text: 'Votre observation a bien été modifié.'
+      })
+    }).catch(() => {
       observationLoader.value = false
-      console.log(error)
+      errorSnackbar()
     })
     await router.push({name: 'mes-observations'})
     clearCurrentObservation()
@@ -77,9 +87,13 @@ export const useObservationsStore = defineStore('observations', () => {
     observationLoader.value = true
     await deleteDoc(doc(db, "observations", observation.id)).then(() => {
       observationLoader.value = false
-    }).catch((error) => {
+      updateSnackbar({
+        type: 'success',
+        text: 'Votre observation a bien été supprimé.'
+      })
+    }).catch(() => {
       observationLoader.value = false
-      console.log(error)
+      errorSnackbar()
     });
   }
 

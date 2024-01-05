@@ -82,6 +82,7 @@
             v-if="currentUser && currentUser.isAnonymous"
             :key="userKey"
           />
+          <BaseSnackbar />
           <router-view />
         </v-col>
       </v-row>
@@ -95,6 +96,7 @@ import router from "@/router"
 import {useUsersStore} from "@/store/users";
 import {storeToRefs} from "pinia";
 import AnonymousInformations from "@/views/AnonymousInformations";
+import BaseSnackbar from "@/components/BaseSnackbar";
 
 const userStore = useUsersStore()
 const {currentUser, userKey} = storeToRefs(userStore)
