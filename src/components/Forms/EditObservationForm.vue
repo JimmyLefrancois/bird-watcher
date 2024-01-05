@@ -51,41 +51,33 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-row>
-      <v-col
-        cols="12"
-        class="pb-0"
-      >
-        <label
-          for="start"
-          class="pl-1"
-        >Date de début :</label>
-        <input
-          id="start"
-          type="datetime-local"
-          required
-          v-model="currentObservationListItem.startDate"
-          @blur="v$.startDate.$touch()"
-        >
-      </v-col>
-    </v-row>
-    <v-row class="mt-3 mb-2">
-      <v-col
-        cols="12"
-      >
-        <label
-          for="end"
-          class="pl-1"
-        >Date de fin :</label>
-        <input
-          id="end"
-          type="datetime-local"
-          required
-          v-model="currentObservationListItem.endDate"
-          @blur="v$.endDate.$touch()"
-        >
-      </v-col>
-    </v-row>
+    <p>Date de début : </p>
+    <VueDatePicker
+      required
+      locale="fr"
+      placeholder="Select Date"
+      cancel-text="Fermer"
+      select-text="Valider"
+      class="mb-2"
+      auto-apply
+      format="dd/MM/yyy HH:mm"
+      :model-value="currentObservationListItem.startDate"
+      @update:model-value="setFormatedStartDate"
+      @blur="v$.endDate.$touch()"
+    />
+    <p>Date de fin : </p>
+    <VueDatePicker
+      required
+      locale="fr"
+      cancel-text="Fermer"
+      select-text="Valider"
+      class="mb-5"
+      auto-apply
+      format="dd/MM/yyy HH:mm"
+      :model-value="currentObservationListItem.endDate"
+      @update:model-value="setFormatedEndDate"
+      @blur="v$.startDate.$touch()"
+    />
     <v-autocomplete
       variant="solo-filled"
       :items="birdsList"
@@ -120,6 +112,7 @@ import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
 import {useVuelidate} from "@vuelidate/core";
 import {minLength, required} from "@vuelidate/validators";
+import { format } from 'date-fns'
 
 const observationStore = useObservationsStore()
 const { editObservation } = observationStore
@@ -132,6 +125,13 @@ const rules = {
   location: {required},
   startDate: {required},
   endDate: {required},
+}
+
+function setFormatedStartDate(date) {
+  currentObservationListItem.value.startDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
+}
+function setFormatedEndDate(date) {
+  currentObservationListItem.value.endDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
 }
 
 let v$ = useVuelidate(rules, currentObservationListItem.value)
