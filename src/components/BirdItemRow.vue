@@ -4,7 +4,7 @@
     <td>
       <span class="mr-2">{{ currentBird.count }}</span>
       <v-btn
-        :disabled="currentBird.count <= 0"
+        :disabled="currentBird.count <= 1"
         class="mr-2"
         density="compact"
         icon="mdi-minus"

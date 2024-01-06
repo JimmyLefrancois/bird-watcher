@@ -5,44 +5,39 @@ import {useHead} from "@unhead/vue";
 const routes = [
   {
     path: '/',
-    children: [
-      {
-        path: '',
-        name: 'accueil',
-        component: () => import('@/views/Home.vue'),
-        meta: { requiresAuth: true, title: 'Accueil' },
-      },
-      {
-        path: 'nouvelle-observation',
-        name: 'nouvelle-observation',
-        component: () => import('@/views/CreateObservation.vue'),
-        meta: { requiresAuth: true, title: 'Nouvelle observation'},
-      },
-      {
-        path: 'modifier-mon-observation',
-        name: 'modifier-mon-observation',
-        component: () => import('@/views/EditObservation.vue'),
-        meta: { requiresAuth: true, title: 'Modifier mon observation'},
-      },
-      {
-        path: 'mes-observations',
-        name: 'mes-observations',
-        component: () => import('@/views/ObservationsList.vue'),
-        meta: { requiresAuth: true, title: 'Mes observations'},
-      },
-      {
-        path: 'creer-mon-compte',
-        name: 'creer-mon-compte',
-        component: () => import('@/views/Auth/Register'),
-        meta: { title: 'Créer mon compte'},
-      },
-      {
-        path: 'connexion',
-        name: 'connexion',
-        component: () => import('@/views/Auth/Login'),
-        meta: { title: 'Connexion'},
-      },
-    ],
+    name: 'accueil',
+    component: () => import('@/views/Home.vue'),
+    meta: { requiresAuth: true, title: 'Accueil' },
+  },
+  {
+    path: '/nouvelle-observation',
+    name: 'nouvelle-observation',
+    component: () => import('@/views/CreateObservation.vue'),
+    meta: { requiresAuth: true, title: 'Nouvelle observation'},
+  },
+  {
+    path: '/modifier-mon-observation',
+    name: 'modifier-mon-observation',
+    component: () => import('@/views/EditObservation.vue'),
+    meta: { requiresAuth: true, title: 'Modifier mon observation'},
+  },
+  {
+    path: '/mes-observations',
+    name: 'mes-observations',
+    component: () => import('@/views/ObservationsList.vue'),
+    meta: { requiresAuth: true, title: 'Mes observations'},
+  },
+  {
+    path: '/creer-mon-compte',
+    name: 'creer-mon-compte',
+    component: () => import('@/views/Auth/Register'),
+    meta: { title: 'Créer mon compte'},
+  },
+  {
+    path: '/connexion',
+    name: 'connexion',
+    component: () => import('@/views/Auth/Login'),
+    meta: { title: 'Connexion'},
   },
 ]
 
