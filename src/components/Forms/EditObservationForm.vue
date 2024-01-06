@@ -90,6 +90,7 @@
     />
     <v-data-table
       :headers="headers"
+      :custom-key-sort="sortBirds"
       :items="currentEditingObservationListItem.observedBirds"
       no-data-text="Aucun oiseau observé."
     >
@@ -106,6 +107,7 @@
 
 <script setup>
 import {birdsList} from '@/conf/birds.js'
+import { sortBirds } from "@/helpers/birdHelpers";
 import {ref, watch} from "vue";
 import BirdItemRow from "@/components/BirdItemRow";
 import {useObservationsStore} from "@/store/observations";
@@ -157,7 +159,7 @@ function tryToRemoveBirdFromList(index) {
 
 const selectedBird = ref(null)
 
-const headers = ref([{title: 'Nom', key: 'name'}, {title: 'Nombre et compte', key: 'number'}])
+const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Nombre et compte', key: 'count'}])
 
 watch(
   () => selectedBird.value,

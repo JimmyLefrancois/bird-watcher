@@ -7,7 +7,7 @@
       <v-icon icon="mdi-map" />
       {{ currentObservationListItem.location }}
     </h3>
-    <EndObservation @endObservation="finaliseObservation" />
+    <EndObservation @end-observation="finaliseObservation" />
     <v-dialog
       v-model="displayBirdRemoveDialog"
       width="auto"
@@ -47,6 +47,7 @@
     />
     <v-data-table
       :headers="headers"
+      :custom-key-sort="sortBirds"
       :items="currentObservationListItem.observedBirds"
       no-data-text="Aucun oiseau observé."
     >
@@ -63,6 +64,7 @@
 
 <script setup>
 import {birdsList} from '@/conf/birds.js'
+import { sortBirds } from "@/helpers/birdHelpers";
 import {ref, watch} from "vue";
 import BirdItemRow from "@/components/BirdItemRow";
 import EndObservation from "@/components/EndObservation";
@@ -77,11 +79,13 @@ const { currentObservationListItem } = storeToRefs(observationStore)
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 
+
+
 //const rules = {
 //  birds: {minLengthValue: minLength(1), required}
 //}
 
-//const v$ = useVuelidate(rules, currentObservationListItem.value)
+//const v$ = useVuelidate(rules, currentObservationListItem)
 
 function finaliseObservation()
 {
@@ -104,7 +108,7 @@ function tryToRemoveBirdFromList(index) {
 
 const selectedBird = ref(null)
 
-const headers = ref([{title: 'Nom', key: 'name'}, {title: 'Nombre et compte', key: 'number'}])
+const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Nombre et compte', key: 'count'}])
 
 watch(
   () => selectedBird.value,
