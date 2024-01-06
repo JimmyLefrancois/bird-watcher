@@ -134,7 +134,7 @@ function setFormatedEndDate(date) {
   currentEditingObservationListItem.value.endDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
 }
 
-let v$ = useVuelidate(rules, currentEditingObservationListItem.value)
+let v$ = useVuelidate(rules, currentEditingObservationListItem)
 
 function updateObservation()
 {
@@ -158,14 +158,6 @@ function tryToRemoveBirdFromList(index) {
 const selectedBird = ref(null)
 
 const headers = ref([{title: 'Nom', key: 'name'}, {title: 'Nombre et compte', key: 'number'}])
-
-//todo On peut faire mieux ?
-watch(
-  () => currentEditingObservationListItem.value,
-  () => {
-    v$ = useVuelidate(rules, currentEditingObservationListItem.value)
-  }
-)
 
 watch(
   () => selectedBird.value,
