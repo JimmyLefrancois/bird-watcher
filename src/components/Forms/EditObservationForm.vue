@@ -1,7 +1,7 @@
 <template>
   <v-form
     @submit.prevent="updateObservation"
-    v-if="currentObservationListItem"
+    v-if="currentEditingObservationListItem"
     class="mt-4"
   >
     <v-btn
@@ -16,7 +16,7 @@
     />
     <v-text-field
       class="pt-5"
-      v-model="currentObservationListItem.location"
+      v-model="currentEditingObservationListItem.location"
       :error-messages="v$.location.$errors.length > 0 ? v$.location.$errors[0].$message :''"
       required
       label="Lieu"
@@ -61,7 +61,7 @@
       class="mb-2"
       auto-apply
       format="dd/MM/yyy HH:mm"
-      :model-value="currentObservationListItem.startDate"
+      :model-value="currentEditingObservationListItem.startDate"
       @update:model-value="setFormatedStartDate"
       @blur="v$.endDate.$touch()"
     />
@@ -74,7 +74,7 @@
       class="mb-5"
       auto-apply
       format="dd/MM/yyy HH:mm"
-      :model-value="currentObservationListItem.endDate"
+      :model-value="currentEditingObservationListItem.endDate"
       @update:model-value="setFormatedEndDate"
       @blur="v$.startDate.$touch()"
     />
@@ -90,7 +90,7 @@
     />
     <v-data-table
       :headers="headers"
-      :items="currentObservationListItem.observedBirds"
+      :items="currentEditingObservationListItem.observedBirds"
       no-data-text="Aucun oiseau observé."
     >
       <template #item="{ item }">
@@ -116,7 +116,7 @@ import { format } from 'date-fns'
 
 const observationStore = useObservationsStore()
 const { editObservation } = observationStore
-const { currentObservationListItem, observationLoader } = storeToRefs(observationStore)
+const { currentEditingObservationListItem, observationLoader } = storeToRefs(observationStore)
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 
@@ -128,13 +128,13 @@ const rules = {
 }
 
 function setFormatedStartDate(date) {
-  currentObservationListItem.value.startDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
+  currentEditingObservationListItem.value.startDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
 }
 function setFormatedEndDate(date) {
-  currentObservationListItem.value.endDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
+  currentEditingObservationListItem.value.endDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
 }
 
-let v$ = useVuelidate(rules, currentObservationListItem.value)
+let v$ = useVuelidate(rules, currentEditingObservationListItem.value)
 
 function updateObservation()
 {
@@ -145,7 +145,7 @@ function updateObservation()
 }
 
 function removeBirdFormList() {
-  currentObservationListItem.value.observedBirds.splice(birdToRemoveIndex.value, 1)
+  currentEditingObservationListItem.value.observedBirds.splice(birdToRemoveIndex.value, 1)
   birdToRemoveIndex.value = null
   displayBirdRemoveDialog.value = false
 }
@@ -161,9 +161,9 @@ const headers = ref([{title: 'Nom', key: 'name'}, {title: 'Nombre et compte', ke
 
 //todo On peut faire mieux ?
 watch(
-  () => currentObservationListItem.value,
+  () => currentEditingObservationListItem.value,
   () => {
-    v$ = useVuelidate(rules, currentObservationListItem.value)
+    v$ = useVuelidate(rules, currentEditingObservationListItem.value)
   }
 )
 
@@ -172,11 +172,11 @@ watch(
   (id) => {
     if (id !== null) {
       document.activeElement.blur();
-      const existingBird = currentObservationListItem.value.observedBirds.find(bird => bird.id === id)
+      const existingBird = currentEditingObservationListItem.value.observedBirds.find(bird => bird.id === id)
       if (existingBird) {
         existingBird.count++
       } else {
-        currentObservationListItem.value.observedBirds.push({id: id, count: 1})
+        currentEditingObservationListItem.value.observedBirds.push({id: id, count: 1})
       }
       selectedBird.value = null
     }

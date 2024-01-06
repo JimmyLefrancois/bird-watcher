@@ -27,17 +27,20 @@ import { useObservationsStore } from "@/store/observations";
 import {storeToRefs} from "pinia";
 import {watch, computed} from "vue";
 import RemoveBirdFromObservation from "@/components/RemoveBirdFromObservation";
+import router from "@/router";
 
 const observationStore = useObservationsStore()
-const { currentObservationListItem } = storeToRefs(observationStore)
+const { currentObservationListItem, currentEditingObservationListItem } = storeToRefs(observationStore)
 const { updateBirdsListFromCurrentObservation } = observationStore
 
+const currentObservation = router.currentRoute.value.name === 'nouvelle-observation' ? currentObservationListItem : currentEditingObservationListItem
+
 const props = defineProps({
-  bird: Object
+  bird: {type: Object, default: null}
 })
 
 const currentBird = computed(() => {
-  return currentObservationListItem.value.observedBirds.find(bird => bird.id === props.bird.id)
+  return currentObservation.value.observedBirds.find(bird => bird.id === props.bird.id)
 })
 
 function incrementCount() {
@@ -49,21 +52,21 @@ function decrementCount() {
 }
 
 function removeBirdFromObservedBirds() {
-  const observedBirdsIndex = currentObservationListItem.value.observedBirds.findIndex((bird) => {
+  const observedBirdsIndex = currentObservation.value.observedBirds.findIndex((bird) => {
     return bird.id === props.bird.id
   })
 
-  currentObservationListItem.value.observedBirds.splice(observedBirdsIndex, 1)
-  if (!currentObservationListItem.value.endDate) {
-    updateBirdsListFromCurrentObservation(currentObservationListItem.value)
+  currentObservation.value.observedBirds.splice(observedBirdsIndex, 1)
+  if (!currentObservation.value.endDate) {
+    updateBirdsListFromCurrentObservation(currentObservation.value)
   }
 }
 
 watch(
   () => currentBird.value.count,
   () => {
-    if (!currentObservationListItem.value.endDate) {
-      updateBirdsListFromCurrentObservation(currentObservationListItem.value)
+    if (!currentObservation.value.endDate) {
+      updateBirdsListFromCurrentObservation(currentObservation.value)
     }
   }
 )

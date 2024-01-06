@@ -72,14 +72,14 @@ import {storeToRefs} from "pinia";
 import router from "@/router";
 const store = useObservationsStore()
 const { removeObservation } = store
-const { currentObservation } = storeToRefs(store)
+const { editingObservation } = storeToRefs(store)
 
 defineProps({
-  observation: Object
+  observation: {type: Object, default: null}
 })
 
 function edit(id) {
-  currentObservation.value = id
+  editingObservation.value = id
   router.push({name: 'modifier-mon-observation'})
 }
 

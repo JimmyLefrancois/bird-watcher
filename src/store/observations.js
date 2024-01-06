@@ -14,10 +14,13 @@ export const useObservationsStore = defineStore('observations', () => {
   const userStore = useUsersStore()
   const { currentUser } = storeToRefs(userStore)
   const currentObservation = useStorage('currentObservation', null)
+  const editingObservation = useStorage('editingObservation', null)
   const userObservationsQuery = computed(() => currentUser.value && query(collection(db, 'observations'), where("user", "==", currentUser.value.uid)))
   const observationsList = useFirestore(userObservationsQuery, null)
   const currentObservationQuery = computed(() => currentObservation.value && doc(db, 'observations', currentObservation.value))
   const currentObservationListItem = useFirestore(currentObservationQuery, null)
+  const currentEditingObservationQuery = computed(() => editingObservation.value && doc(db, 'observations', editingObservation.value))
+  const currentEditingObservationListItem = useFirestore(currentEditingObservationQuery, null)
   const observationLoader = ref(false)
   const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
@@ -68,19 +71,19 @@ export const useObservationsStore = defineStore('observations', () => {
 
   async function editObservation() {
     observationLoader.value = true
-    currentObservationListItem.value.updatedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm")
-    await updateDoc(currentObservationQuery.value, currentObservationListItem.value).then(() => {
+    currentEditingObservationListItem.value.updatedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm")
+    await updateDoc(currentEditingObservationQuery.value, currentEditingObservationListItem.value).then(() => {
       observationLoader.value = false
       updateSnackbar({
         type: 'success',
         text: 'Votre observation a bien été modifié.'
       })
+      editingObservation.value = null
     }).catch(() => {
       observationLoader.value = false
       errorSnackbar()
     })
     await router.push({name: 'mes-observations'})
-    clearCurrentObservation()
   }
 
   async function removeObservation(observation) {
@@ -102,8 +105,10 @@ export const useObservationsStore = defineStore('observations', () => {
     editObservation,
     endObservation,
     currentObservation,
+    editingObservation,
     endedObservations,
     currentObservationListItem,
+    currentEditingObservationListItem,
     observationsList,
     addObservation,
     updateBirdsListFromCurrentObservation,
