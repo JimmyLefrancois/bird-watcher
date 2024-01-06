@@ -7,7 +7,20 @@
       <v-icon icon="mdi-map" />
       {{ currentObservationListItem.location }}
     </h3>
-    <EndObservation @end-observation="finaliseObservation" />
+    <v-row>
+      <v-col
+        cols="10"
+        class="pr-0"
+      >
+        <EndObservation @end-observation="finaliseObservation" />
+      </v-col>
+      <v-col
+        cols="2"
+      >
+        <CancelObservation @cancel-observation="cancelObservation" />
+      </v-col>
+    </v-row>
+
     <v-dialog
       v-model="displayBirdRemoveDialog"
       width="auto"
@@ -72,10 +85,12 @@ import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
 import {minLength, required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
+import CancelObservation from "@/components/CancelObservation";
+import router from "@/router";
 
 const observationStore = useObservationsStore()
 const {updateBirdsListFromCurrentObservation, endObservation} = observationStore
-const { currentObservationListItem } = storeToRefs(observationStore)
+const { currentObservationListItem, currentObservation } = storeToRefs(observationStore)
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 
@@ -93,6 +108,13 @@ function finaliseObservation()
   //if (!v$.value.$invalid) {
     endObservation()
   //}
+}
+
+function cancelObservation()
+{
+  currentObservationListItem.value = null
+  currentObservation.value = null
+  router.push({name: 'accueil'})
 }
 
 function removeBirdFormList() {

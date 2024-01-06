@@ -3,19 +3,17 @@
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
-        prepend-icon="mdi-check"
-        color="themeLightgreenColor"
-        elevation="2"
-        height="100%"
         :block="true"
-        text="Finaliser la sortie"
+        color="red"
+        icon="mdi-cancel"
+        variant="plain"
       />
     </template>
 
     <template #default="{ isActive }">
-      <v-card title="Terminer la sortie en cours">
+      <v-card title="Annuler la sortie en cours">
         <v-card-text>
-          Souhaitez-vous finaliser la sortie en cours ?
+          Souhaitez-vous annuler la sortie en cours ?
         </v-card-text>
 
         <v-card-actions>
@@ -25,14 +23,14 @@
             prepend-icon="mdi-cancel"
             @click="isActive.value = false"
           >
-            Annuler
+            Non
           </v-btn>
           <v-btn
             color="green"
             prepend-icon="mdi-check"
-            @click="endObservation"
+            @click="cancelObservation"
           >
-            Finaliser
+            Oui
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -42,9 +40,9 @@
 
 <script setup>
 
-  const emit = defineEmits(['endObservation'])
+  const emit = defineEmits(['cancelObservation'])
 
-  function endObservation() {
-      emit('endObservation')
+  function cancelObservation() {
+      emit('cancelObservation')
   }
 </script>
