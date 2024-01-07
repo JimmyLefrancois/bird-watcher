@@ -110,6 +110,7 @@ function finaliseObservation()
   //}
 }
 
+//todo supprimer l'observation, à faire après la refacto du store
 function cancelObservation()
 {
   currentObservationListItem.value = null

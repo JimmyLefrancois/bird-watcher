@@ -10,6 +10,7 @@
     :clearable="true"
     :multiple="true"
     hide-details
+    @click:clear="blur"
   />
   <v-text-field
     variant="solo-filled"
@@ -18,6 +19,7 @@
     :clearable="true"
     hide-details
     class="mt-0"
+    @click:clear="blur"
   />
   <hr class="mt-3">
   <template v-if="filteredObservations && filteredObservations.length > 0">
@@ -68,6 +70,11 @@ const filteredObservations = computed(() => {
   }
   return filteredResults
 })
+
+function blur()
+{
+  document.activeElement.blur();
+}
 
 function filterByBirds()
 {
