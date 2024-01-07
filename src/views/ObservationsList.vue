@@ -4,10 +4,11 @@
     :items="birdsList"
     item-value="value"
     item-title="text"
-    class="mt-5 mb-3"
+    class="mt-3 mb-3"
     label="Filtrer par oiseau"
-    v-model="selectedBird"
+    v-model="selectedBirds"
     :clearable="true"
+    :multiple="true"
     hide-details
   />
   <v-text-field
@@ -18,6 +19,7 @@
     hide-details
     class="mt-0"
   />
+  <hr class="mt-3">
   <template v-if="filteredObservations && filteredObservations.length > 0">
     <v-card
       class="mt-3"
@@ -50,17 +52,16 @@ import ObservationsListItem from "@/components/ObservationsListItem";
 const observationStore = useObservationsStore()
 const { endedObservations } = storeToRefs(observationStore)
 import {birdsList} from '@/conf/birds.js'
-import { filter } from 'lodash'
 import {computed} from "vue";
 import { ref } from 'vue'
 
-const selectedBird = ref(null)
+const selectedBirds = ref([])
 const locationFilter = ref('')
 
 const filteredObservations = computed(() => {
   let filteredResults = endedObservations.value
-  if (selectedBird.value !== null) {
-    filteredResults = filterByBird()
+  if (selectedBirds.value.length > 0) {
+    filteredResults = filterByBirds()
   }
   if (locationFilter.value && locationFilter.value !== '') {
     filteredResults = filterByLocation()
@@ -68,9 +69,11 @@ const filteredObservations = computed(() => {
   return filteredResults
 })
 
-function filterByBird()
+function filterByBirds()
 {
-    return filter(endedObservations.value, {observedBirds: [{id: selectedBird.value}]})
+  return endedObservations.value.filter((observation) => {
+    return selectedBirds.value.every(elem => observation.observedBirds.some(item => item.id === elem));
+  })
 }
 
 function filterByLocation()
