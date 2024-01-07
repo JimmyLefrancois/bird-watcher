@@ -55,7 +55,7 @@
       item-value="value"
       item-title="text"
       class="mt-5"
-      label="Chercher un oiseau"
+      label="Chercher et ajouter un oiseau"
       v-model="selectedBird"
     />
     <v-data-table

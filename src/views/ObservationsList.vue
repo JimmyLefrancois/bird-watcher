@@ -1,12 +1,33 @@
 <template>
-  <v-card
-    class="mt-3"
-    v-for="(observation, index) in endedObservations"
-    :key="index"
-  >
-    <ObservationsListItem :observation="observation" />
-  </v-card>
-  <template v-if="endedObservations && endedObservations.length === 0">
+  <v-autocomplete
+    variant="solo-filled"
+    :items="birdsList"
+    item-value="value"
+    item-title="text"
+    class="mt-5 mb-3"
+    label="Filtrer par oiseau"
+    v-model="selectedBird"
+    :clearable="true"
+    hide-details
+  />
+  <v-text-field
+    variant="solo-filled"
+    v-model="locationFilter"
+    label="Filtrer par lieu"
+    :clearable="true"
+    hide-details
+    class="mt-0"
+  />
+  <template v-if="filteredObservations && filteredObservations.length > 0">
+    <v-card
+      class="mt-3"
+      v-for="(observation, index) in filteredObservations"
+      :key="index"
+    >
+      <ObservationsListItem :observation="observation" />
+    </v-card>
+  </template>
+  <template v-if="filteredObservations && filteredObservations.length === 0">
     <p class="text-center mt-3">
       Aucune observation à afficher.
     </p>
@@ -28,6 +49,35 @@ import {storeToRefs} from "pinia";
 import ObservationsListItem from "@/components/ObservationsListItem";
 const observationStore = useObservationsStore()
 const { endedObservations } = storeToRefs(observationStore)
+import {birdsList} from '@/conf/birds.js'
+import { filter } from 'lodash'
+import {computed} from "vue";
+import { ref } from 'vue'
+
+const selectedBird = ref(null)
+const locationFilter = ref('')
+
+const filteredObservations = computed(() => {
+  let filteredResults = endedObservations.value
+  if (selectedBird.value !== null) {
+    filteredResults = filterByBird()
+  }
+  if (locationFilter.value && locationFilter.value !== '') {
+    filteredResults = filterByLocation()
+  }
+  return filteredResults
+})
+
+function filterByBird()
+{
+    return filter(endedObservations.value, {observedBirds: [{id: selectedBird.value}]})
+}
+
+function filterByLocation()
+{
+    return endedObservations.value.filter(observation => observation.location.toLowerCase().indexOf(locationFilter.value.toLowerCase()) >= 0);
+}
+
 </script>
 
 <style scoped>
