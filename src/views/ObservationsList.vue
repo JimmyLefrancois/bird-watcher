@@ -79,6 +79,8 @@ function blur()
 function filterByBirds()
 {
   return endedObservations.value.filter((observation) => {
+    //todo 1er ligne, contient au moins une valeur, ligne 2 contient toutes les valeur, faire les deux via les filtres ?
+    // return selectedBirds.value.some(elem => observation.observedBirds.some(item => item.id === elem));
     return selectedBirds.value.every(elem => observation.observedBirds.some(item => item.id === elem));
   })
 }
