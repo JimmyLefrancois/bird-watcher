@@ -8,6 +8,8 @@
         elevation="2"
         height="100%"
         :block="true"
+        :disabled="observationLoader"
+        :loading="observationLoader"
         text="Finaliser la sortie"
       />
     </template>
@@ -28,6 +30,8 @@
             Annuler
           </v-btn>
           <v-btn
+            :disabled="observationLoader"
+            :loading="observationLoader"
             color="green"
             prepend-icon="mdi-check"
             @click="endObservation"
@@ -43,6 +47,9 @@
 <script setup>
 
   const emit = defineEmits(['endObservation'])
+  defineProps({
+    observationLoader: {type: Object, default: null}
+  })
 
   function endObservation() {
       emit('endObservation')

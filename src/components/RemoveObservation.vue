@@ -42,12 +42,12 @@
 </template>
 
 <script setup>
-import { useObservationsStore } from "@/store/observations";
-import {storeToRefs} from "pinia";
-const store = useObservationsStore()
-const { observationLoader } = storeToRefs(store)
 
 const emit = defineEmits(['removeObservation'])
+
+defineProps({
+  observationLoader: {type: Object, default: null}
+})
 
 function removeObservation() {
   emit('removeObservation')
