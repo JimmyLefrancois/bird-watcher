@@ -5,7 +5,7 @@ import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_API_KEY,
+  apiKey: 'AIzaSyD_87nu_409WL2Cz82OQg1CoGzDeuEfeg4',
   authDomain: "bird-watcher-85fb3.firebaseapp.com",
   projectId: "bird-watcher-85fb3",
   storageBucket: "bird-watcher-85fb3.appspot.com",
