@@ -1,5 +1,5 @@
 import {defineStore, storeToRefs} from 'pinia'
-import {computed, ref} from "vue"
+import {computed} from "vue"
 import {collection, doc, query, where} from 'firebase/firestore'
 import {useUsersStore} from "@/store/users";
 import {useFirestore} from '@vueuse/firebase/useFirestore'
@@ -24,7 +24,6 @@ export const useObservationsStore = defineStore('observations', () => {
   const currentObservationListItem = useFirestore(currentObservationQuery, null)
   const currentEditingObservationQuery = computed(() => editingObservation.value && doc(db, 'observations', editingObservation.value))
   const currentEditingObservationListItem = useFirestore(currentEditingObservationQuery, null)
-  const observationLoader = ref(false)
 
   const endedObservations = computed(() => observationsList.value && observationsList.value.filter((observation) => {
     return observation.endDate !== null
@@ -83,7 +82,6 @@ export const useObservationsStore = defineStore('observations', () => {
   }
 
   return {
-    observationLoader,
     editObservation,
     endObservation,
     clearCurrentObservation,
