@@ -63,20 +63,15 @@ const locationFilter = ref('')
 const filteredObservations = computed(() => {
   let filteredResults = endedObservations.value
   if (selectedBirds.value.length > 0) {
-    filteredResults = filterByBirds()
+    filteredResults = getObservationsFilteredByBirds()
   }
   if (locationFilter.value && locationFilter.value !== '') {
-    filteredResults = filterByLocation()
+    filteredResults = getObservationsFilteredByLocation()
   }
   return filteredResults
 })
 
-function blur()
-{
-  document.activeElement.blur();
-}
-
-function filterByBirds()
+function getObservationsFilteredByBirds()
 {
   return endedObservations.value.filter((observation) => {
     //todo 1er ligne, contient au moins une valeur, ligne 2 contient toutes les valeur, faire les deux via les filtres ?
@@ -85,9 +80,14 @@ function filterByBirds()
   })
 }
 
-function filterByLocation()
+function getObservationsFilteredByLocation()
 {
-    return endedObservations.value.filter(observation => observation.location.toLowerCase().indexOf(locationFilter.value.toLowerCase()) >= 0);
+  return endedObservations.value.filter(observation => observation.location.toLowerCase().indexOf(locationFilter.value.toLowerCase()) >= 0);
+}
+
+function blur()
+{
+  document.activeElement.blur();
 }
 
 </script>
