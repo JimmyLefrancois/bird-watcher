@@ -48,6 +48,9 @@ export const useObservationsStore = defineStore('observations', () => {
   }
 
   function clearCurrentObservation() {
+    if (currentObservationListItem.value) {
+      currentObservationListItem.value = null
+    }
     currentObservation.value = null
   }
 
@@ -83,6 +86,7 @@ export const useObservationsStore = defineStore('observations', () => {
     observationLoader,
     editObservation,
     endObservation,
+    clearCurrentObservation,
     currentObservation,
     editingObservation,
     endedObservations,

@@ -96,8 +96,8 @@ import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
 
 const observationStore = useObservationsStore()
-const {updateBirdsListFromCurrentObservation, endObservation} = observationStore
-const { currentObservationListItem, currentObservation } = storeToRefs(observationStore)
+const {updateBirdsListFromCurrentObservation, endObservation, removeObservation, clearCurrentObservation} = observationStore
+const { currentObservationListItem } = storeToRefs(observationStore)
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
@@ -129,11 +129,15 @@ async function finaliseObservation()
   //}
 }
 
-function cancelObservation()
+async function cancelObservation()
 {
-  currentObservationListItem.value = null
-  currentObservation.value = null
-  router.push({name: 'accueil'})
+  try {
+    await removeObservation(currentObservationListItem.value)
+    await clearCurrentObservation()
+  } catch (error) {
+    errorSnackbar()
+  }
+  await router.push({name: 'accueil'})
 }
 
 function removeBirdFormList() {
