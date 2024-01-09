@@ -16,6 +16,8 @@
       class="mt-1"
       :block="true"
       type="submit"
+      :loading="observationLoader"
+      :disabled="observationLoader"
     >
       Créer Observation
     </v-btn>
@@ -30,12 +32,15 @@ import {format} from 'date-fns'
 import {useObservationsStore} from "@/store/observations";
 import {useUsersStore} from "@/store/users";
 import {storeToRefs} from "pinia";
+import { useSnackbarStore } from "@/store/snackbar";
 
 const observationStore = useObservationsStore()
-const {addObservation} = observationStore
+const { addObservation } = observationStore
+const {errorSnackbar} = useSnackbarStore()
 
 const userStore = useUsersStore();
 const {currentUser} = storeToRefs(userStore)
+const observationLoader = ref(false)
 
 const rules = {
   location: {required},
@@ -53,21 +58,28 @@ if (currentUser.value) {
   observation.value.user = currentUser.value.uid
 }
 
+const v$ = useVuelidate(rules, observation.value)
+
+const submitObservation = async () => {
+  v$.value.$touch()
+  if (!v$.value.$invalid) {
+    observationLoader.value = true
+    try {
+      await addObservation(observation.value)
+      observationLoader.value = false
+    }catch (error) {
+      errorSnackbar()
+    }
+    observationLoader.value = false
+  }
+}
+
 watch(
   () => currentUser.value,
   (value) => {
     observation.value.user = value.uid
   }
 )
-
-const v$ = useVuelidate(rules, observation.value)
-
-const submitObservation = () => {
-  v$.value.$touch()
-  if (!v$.value.$invalid) {
-    addObservation(observation.value)
-  }
-}
 
 </script>
 

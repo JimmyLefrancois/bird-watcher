@@ -85,7 +85,7 @@
       item-title="text"
       :error-messages="v$.observedBirds.$errors.length > 0 ? v$.observedBirds.$errors[0].$message :''"
       @blur="v$.observedBirds.$touch()"
-      label="Chercher un oiseau"
+      label="Chercher et ajouter un oiseau"
       v-model="selectedBird"
     />
     <v-data-table
@@ -115,12 +115,16 @@ import {storeToRefs} from "pinia";
 import {useVuelidate} from "@vuelidate/core";
 import {minLength, required} from "@vuelidate/validators";
 import { format } from 'date-fns'
+import router from "@/router";
+import {useSnackbarStore} from "@/store/snackbar";
 
 const observationStore = useObservationsStore()
 const { editObservation } = observationStore
-const { currentEditingObservationListItem, observationLoader } = storeToRefs(observationStore)
+const {updateSnackbar, errorSnackbar} = useSnackbarStore()
+const { currentEditingObservationListItem } = storeToRefs(observationStore)
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
+const observationLoader = ref(false)
 
 const rules = {
   observedBirds: {minLength: minLength(1), required},
@@ -138,11 +142,22 @@ function setFormatedEndDate(date) {
 
 let v$ = useVuelidate(rules, currentEditingObservationListItem)
 
-function updateObservation()
+async function updateObservation()
 {
   v$.value.$touch()
   if (!v$.value.$invalid) {
-    editObservation()
+    observationLoader.value = true
+    try {
+      await editObservation()
+      updateSnackbar({
+        type: 'success',
+        text: 'Votre observation a bien été modifié.'
+      })
+      await router.push({name: 'mes-observations'})
+    } catch (error) {
+      errorSnackbar()
+    }
+    observationLoader.value = false
   }
 }
 

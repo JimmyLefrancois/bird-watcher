@@ -21,7 +21,10 @@
     >
       Modifier
     </v-btn>
-    <RemoveObservation @remove-observation="removeObservation(observation)" />
+    <RemoveObservation
+      :observation-loader="observationLoader"
+      @remove-observation="deleteObservation(observation)"
+    />
   </v-card-actions>
   <v-card-actions class="py-0">
     <v-btn
@@ -70,13 +73,30 @@ import { useObservationsStore } from "@/store/observations";
 import RemoveObservation from "@/components/RemoveObservation";
 import {storeToRefs} from "pinia";
 import router from "@/router";
+import {useSnackbarStore} from "@/store/snackbar";
 const store = useObservationsStore()
 const { removeObservation } = store
 const { editingObservation } = storeToRefs(store)
+const {updateSnackbar, errorSnackbar} = useSnackbarStore()
+const observationLoader = ref(false)
 
 defineProps({
   observation: {type: Object, default: null}
 })
+
+async function deleteObservation(observation) {
+  observationLoader.value = true
+  try {
+    await removeObservation(observation)
+    updateSnackbar({
+      type: 'success',
+      text: 'Votre observation a bien été supprimé.'
+    })
+  } catch (error) {
+    errorSnackbar()
+  }
+  observationLoader.value = false
+}
 
 function edit(id) {
   editingObservation.value = id

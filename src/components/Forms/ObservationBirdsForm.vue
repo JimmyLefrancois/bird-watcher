@@ -12,12 +12,18 @@
         cols="10"
         class="pr-0"
       >
-        <EndObservation @end-observation="finaliseObservation" />
+        <EndObservation
+          :observation-loader="observationLoader"
+          @end-observation="finaliseObservation"
+        />
       </v-col>
       <v-col
         cols="2"
       >
-        <CancelObservation @cancel-observation="cancelObservation" />
+        <CancelObservation
+          :observation-loader="observationLoader"
+          @cancel-observation="cancelObservation"
+        />
       </v-col>
     </v-row>
 
@@ -87,14 +93,15 @@ import {minLength, required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
 import CancelObservation from "@/components/CancelObservation";
 import router from "@/router";
+import {useSnackbarStore} from "@/store/snackbar";
 
 const observationStore = useObservationsStore()
-const {updateBirdsListFromCurrentObservation, endObservation} = observationStore
-const { currentObservationListItem, currentObservation } = storeToRefs(observationStore)
+const {updateBirdsListFromCurrentObservation, endObservation, removeObservation, clearCurrentObservation} = observationStore
+const { currentObservationListItem } = storeToRefs(observationStore)
+const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
-
-
+const observationLoader = ref(false)
 
 //const rules = {
 //  birds: {minLengthValue: minLength(1), required}
@@ -102,20 +109,35 @@ const displayBirdRemoveDialog = ref(false)
 
 //const v$ = useVuelidate(rules, currentObservationListItem)
 
-function finaliseObservation()
+async function finaliseObservation()
 {
   //v$.value.$touch()
   //if (!v$.value.$invalid) {
-    endObservation()
+  observationLoader.value = true
+  try {
+    await endObservation()
+    updateSnackbar({
+      type: 'success',
+      text: 'Votre observation a bien été enregistrée.'
+    })
+    await router.push({name: 'mes-observations'})
+  } catch (error) {
+    errorSnackbar()
+  }
+  observationLoader.value = false
+
   //}
 }
 
-//todo supprimer l'observation, à faire après la refacto du store
-function cancelObservation()
+async function cancelObservation()
 {
-  currentObservationListItem.value = null
-  currentObservation.value = null
-  router.push({name: 'accueil'})
+  try {
+    await removeObservation(currentObservationListItem.value)
+    await clearCurrentObservation()
+  } catch (error) {
+    errorSnackbar()
+  }
+  await router.push({name: 'accueil'})
 }
 
 function removeBirdFormList() {
