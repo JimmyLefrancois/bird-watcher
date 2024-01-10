@@ -59,26 +59,28 @@ const selectedBirds = ref([])
 const locationFilter = ref('')
 
 const filteredObservations = computed(() => {
-  let filteredResults = endedObservations.value
-  if (selectedBirds.value.length > 0) {
-    filteredResults = filterByBirds()
-  }
-  if (locationFilter.value && locationFilter.value !== '') {
-    filteredResults = filterByLocation()
-  }
-  return filteredResults
+  return endedObservations.value.filter((observation) => {
+    
+    const result = []
+    if (selectedBirds.value.length > 0) {
+      result.push(getObservationsFilteredByBirds(observation))
+    }
+    if (locationFilter.value && locationFilter.value !== '') {
+      result.push(getObservationsFilteredByLocation(observation))
+    }
+    //exclusif - todo conditionner le &&
+    return result.reduce((acc, current) => acc && current, true)
+  })
 })
 
-function filterByBirds()
+function getObservationsFilteredByBirds(observation)
 {
-  return endedObservations.value.filter((observation) => {
-    return selectedBirds.value.every(elem => observation.observedBirds.some(item => item.id === elem));
-  })
+  return selectedBirds.value.every(elem => observation.observedBirds.some(item => item.id === elem));
 }
 
-function filterByLocation()
+function getObservationsFilteredByLocation(observation)
 {
-    return endedObservations.value.filter(observation => observation.location.toLowerCase().indexOf(locationFilter.value.toLowerCase()) >= 0);
+  return observation.location.toLowerCase().indexOf(locationFilter.value.toLowerCase()) >= 0;
 }
 
 </script>
