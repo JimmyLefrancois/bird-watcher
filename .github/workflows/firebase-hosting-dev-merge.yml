@@ -10,27 +10,16 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Make envfile
-        run: |
-          touch .env
-          VITE_API_KEY="AIzaSyD20jPe8y4FuJUQSP9pPRdgZDcAjn0CCiA"
-          VITE_AUTH_DOMAIN="preprod-bird-watcher.firebaseapp.com"
-          VITE_PROJECT_ID="preprod-bird-watcher"
-          VITE_STORAGE_BUCKET="preprod-bird-watcher.appspot.com"
-          VITE_MESSAGING_SENDER_ID="940959059701"
-          VITE_APP_ID="1:940959059701:web:6f3024e38fbdabd183ffbc"
-          
-          echo "cat .env"
-          cat .env
       - uses: actions/checkout@v3
       - run: npm ci && npm run build
         env:
           VITE_API_KEY: ${{ secrets.API_KEY }}
-          VITE_AUTH_DOMAIN: "preprod-bird-watcher.firebaseapp.com"
-          VITE_PROJECT_ID: "preprod-bird-watcher"
-          VITE_STORAGE_BUCKET: "preprod-bird-watcher.appspot.com"
-          VITE_MESSAGING_SENDER_ID: "940959059701"
-          VITE_APP_ID: "1:940959059701:web:6f3024e38fbdabd183ffbc"
+          VITE_AUTH_DOMAIN: ${{ vars.VITE_AUTH_DOMAIN }}
+          VITE_PROJECT_ID: ${{ vars.VITE_PROJECT_ID }}
+          VITE_STORAGE_BUCKET: ${{ vars.VITE_STORAGE_BUCKET }}
+          VITE_MESSAGING_SENDER_ID: ${{ vars.VITE_MESSAGING_SENDER_ID }}
+          VITE_APP_ID: ${{ vars.VITE_APP_ID }}
+          VITE_MEASUREMENT_ID: ${{ vars.VITE_MEASUREMENT_ID }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
