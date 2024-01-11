@@ -23,5 +23,3 @@ todo.txt
 *.sw?
 /.firebase/hosting.ZGlzdA.cache
 /firebase-debug.log
-/.firebaserc
-/firebase.json
