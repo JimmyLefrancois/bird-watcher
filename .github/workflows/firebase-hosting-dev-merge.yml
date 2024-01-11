@@ -13,20 +13,24 @@ jobs:
       - name: Make envfile
         run: |
           touch .env
-          echo VITE_API_KEY="AIzaSyD20jPe8y4FuJUQSP9pPRdgZDcAjn0CCiA" >> .env
-          echo VITE_AUTH_DOMAIN="preprod-bird-watcher.firebaseapp.com" >> .env
-          echo VITE_PROJECT_ID="preprod-bird-watcher" >> .env
-          echo VITE_STORAGE_BUCKET="preprod-bird-watcher.appspot.com" >> .env
-          echo VITE_MESSAGING_SENDER_ID="940959059701" >> .env
-          echo VITE_APP_ID="1:940959059701:web:6f3024e38fbdabd183ffbc" >> .env
+          VITE_API_KEY="AIzaSyD20jPe8y4FuJUQSP9pPRdgZDcAjn0CCiA"
+          VITE_AUTH_DOMAIN="preprod-bird-watcher.firebaseapp.com"
+          VITE_PROJECT_ID="preprod-bird-watcher"
+          VITE_STORAGE_BUCKET="preprod-bird-watcher.appspot.com"
+          VITE_MESSAGING_SENDER_ID="940959059701"
+          VITE_APP_ID="1:940959059701:web:6f3024e38fbdabd183ffbc"
           
           echo "cat .env"
           cat .env
       - uses: actions/checkout@v3
       - run: npm ci && npm run build
         env:
-          COUCOU: 'COUCOU'
-          VITE_COUCOU: 'COUCOU'
+          VITE_API_KEY: {{ secrets.API_KEY }}
+          VITE_AUTH_DOMAIN: "preprod-bird-watcher.firebaseapp.com"
+          VITE_PROJECT_ID: "preprod-bird-watcher"
+          VITE_STORAGE_BUCKET: "preprod-bird-watcher.appspot.com"
+          VITE_MESSAGING_SENDER_ID: "940959059701"
+          VITE_APP_ID: "1:940959059701:web:6f3024e38fbdabd183ffbc"
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
