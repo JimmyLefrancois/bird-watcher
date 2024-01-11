@@ -10,6 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: npm ci && npm run build
+      - name: Make envfile
+      - uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_VITE_API_KEY: "AIzaSyD20jPe8y4FuJUQSP9pPRdgZDcAjn0CCiA"
+          envkey_VITE_AUTH_DOMAIN: "preprod-bird-watcher.firebaseapp.com"
+          envkey_VITE_PROJECT_ID: "preprod-bird-watcher"
+          envkey_VITE_STORAGE_BUCKET: "preprod-bird-watcher.appspot.com"
+          envkey_VITE_MESSAGING_SENDER_ID: "940959059701"
+          envkey_VITE_APP_ID: "1:940959059701:web:6f3024e38fbdabd183ffbc"
+          envkey_VITE_MEASUREMENT_ID: "G-QYDJ1S56HW"
+          directory: ./
+          file_name: .env
+          fail_on_empty: false
+          sort_keys: false
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
