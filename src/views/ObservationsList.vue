@@ -59,18 +59,21 @@ const selectedBirds = ref([])
 const locationFilter = ref('')
 
 const filteredObservations = computed(() => {
-  return endedObservations.value.filter((observation) => {
-    
-    const result = []
-    if (selectedBirds.value.length > 0) {
-      result.push(getObservationsFilteredByBirds(observation))
-    }
-    if (locationFilter.value && locationFilter.value !== '') {
-      result.push(getObservationsFilteredByLocation(observation))
-    }
-    //exclusif - todo conditionner le &&
-    return result.reduce((acc, current) => acc && current, true)
-  })
+  if (endedObservations.value) {
+    return endedObservations.value.filter((observation) => {
+
+      const result = []
+      if (selectedBirds.value.length > 0) {
+        result.push(getObservationsFilteredByBirds(observation))
+      }
+      if (locationFilter.value && locationFilter.value !== '') {
+        result.push(getObservationsFilteredByLocation(observation))
+      }
+      //exclusif - todo conditionner le &&
+      return result.reduce((acc, current) => acc && current, true)
+    })
+  }
+  return []
 })
 
 function getObservationsFilteredByBirds(observation)
