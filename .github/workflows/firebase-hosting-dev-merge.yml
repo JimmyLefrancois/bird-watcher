@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: npm ci && npm run build
         env:
-          VITE_API_KEY: {{ secrets.API_KEY }}
+          VITE_API_KEY: ${{ secrets.API_KEY }}
           VITE_AUTH_DOMAIN: "preprod-bird-watcher.firebaseapp.com"
           VITE_PROJECT_ID: "preprod-bird-watcher"
           VITE_STORAGE_BUCKET: "preprod-bird-watcher.appspot.com"
