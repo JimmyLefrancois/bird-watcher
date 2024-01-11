@@ -16,6 +16,7 @@ const firebaseConfig = {
 
 console.log(import.meta.env)
 console.log(firebaseConfig)
+console.log(process.env)
 
 export const firebaseApp = initializeApp(firebaseConfig)
 export const auth = getAuth(firebaseApp)
