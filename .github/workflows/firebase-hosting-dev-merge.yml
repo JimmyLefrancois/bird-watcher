@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Make envfile
         run: |
-          touch .env
+          touch .env.production
           echo VITE_API_KEY="AIzaSyD20jPe8y4FuJUQSP9pPRdgZDcAjn0CCiA" >> .env
           echo VITE_AUTH_DOMAIN="preprod-bird-watcher.firebaseapp.com" >> .env
           echo VITE_PROJECT_ID="preprod-bird-watcher" >> .env
@@ -21,7 +21,7 @@ jobs:
           echo VITE_APP_ID="1:940959059701:web:6f3024e38fbdabd183ffbc" >> .env
           
           echo "cat .env"
-          cat .env
+          cat .env.production
       - uses: actions/checkout@v3
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
