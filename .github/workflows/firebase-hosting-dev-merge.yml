@@ -23,7 +23,7 @@ jobs:
           echo VITE_APP_ID="1:940959059701:web:6f3024e38fbdabd183ffbc" >> .env
           
           echo "cat .env"
-          cat .Renviron
+          cat .env
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
