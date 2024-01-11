@@ -24,6 +24,9 @@ jobs:
           cat .env
       - uses: actions/checkout@v3
       - run: npm ci && npm run build
+        env:
+          COUCOU: 'COUCOU'
+          VITE_COUCOU: 'COUCOU'
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
