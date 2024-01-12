@@ -62,7 +62,7 @@
         :loading="userLoader"
         :disabled="userLoader"
         :block="true"
-        @click="loginAsAnonymous"
+        @click="loginAsAnonymousUser"
         size="large"
       >
         Continuer en anonyme
@@ -77,12 +77,16 @@ import {ref} from 'vue'
 import {useVuelidate} from "@vuelidate/core";
 import { useUsersStore } from "@/store/users";
 import {storeToRefs} from "pinia";
+import {useSnackbarStore} from "@/store/snackbar";
+import router from "@/router";
 
 const showPassword = ref(false)
 const user = ref({email: null, password: null})
 const userStore = useUsersStore()
 const { loginWithEmail, loginAsAnonymous } = userStore
-const { currentUser, userLoader } = storeToRefs(userStore)
+const { currentUser } = storeToRefs(userStore)
+const {updateSnackbar, errorSnackbar} = useSnackbarStore()
+const userLoader = ref(false)
 
 const rules = {
   email: {required, email},
@@ -91,10 +95,35 @@ const rules = {
 
 const v$ = useVuelidate(rules, user.value)
 
-function logUser() {
+async function loginAsAnonymousUser() {
+  userLoader.value = true
+  try {
+    await loginAsAnonymous()
+    updateSnackbar({
+      type: 'success',
+      text: 'Vous êtes désormais connecté en tant qu\'anonyme.'
+    })
+    await router.push({'name': 'accueil'})
+  } catch (error) {
+    errorSnackbar()
+  }
+  userLoader.value = false
+}
+
+async function logUser() {
   v$.value.$touch()
   if (!v$.value.$invalid) {
-    loginWithEmail(user.value)
+    userLoader.value = true
+    try {
+      await loginWithEmail(user.value)
+      updateSnackbar({
+        type: 'success',
+        text: 'Vous êtes désormais connecté.'
+      })
+    } catch (error) {
+      errorSnackbar()
+    }
+    userLoader.value = false
   }
 }
 </script>

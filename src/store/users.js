@@ -2,7 +2,6 @@ import {defineStore} from "pinia";
 import {auth} from '@/conf/firebase'
 import {ref} from "vue";
 import { deleteUser } from "firebase/auth";
-import { useSnackbarStore } from "@/store/snackbar";
 
 import {
   EmailAuthProvider,
@@ -11,14 +10,11 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword, signOut
 } from "firebase/auth";
-import router from "@/router";
 
 export const useUsersStore = defineStore('users', () => {
 
   const currentUser = ref(null)
-  const userLoader = ref(false)
   const userKey = ref(null)
-  const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
   function fetchUser() {
     auth.onAuthStateChanged(async user => {
@@ -29,95 +25,58 @@ export const useUsersStore = defineStore('users', () => {
     })
   }
 
-  function logout() {
-    signOut(auth).then(() => {
+  async function logout() {
+    try {
+      await signOut(auth)
       currentUser.value = null
-      updateSnackbar({
-        type: 'success',
-        text: 'Vous avez correctement été déconnecté.'
-      })
-      router.push({'name': 'connexion'})
-    }).catch(() => {
-      errorSnackbar()
-    });
-  }
-
-  function loginWithEmail(user) {
-    userLoader.value = true
-    signInWithEmailAndPassword(auth, user.email, user.password).then(() => {
-      userLoader.value = false
-      updateSnackbar({
-        type: 'success',
-        text: 'Vous êtes désormais connecté.'
-      })
-      router.push({'name': 'accueil'})
-    }).catch(() => {
-      errorSnackbar()
-    })
-  }
-
-  function loginAsAnonymous() {
-    userLoader.value = true
-    signInAnonymously(auth).then(() => {
-      userLoader.value = false
-      updateSnackbar({
-        type: 'success',
-        text: 'Vous êtes désormais connecté en tant qu\'anonyme.'
-      })
-      router.push({'name': 'accueil'})
-    }).catch(() => {
-      errorSnackbar()
-    })
-  }
-
-  function createAccount(user) {
-    userLoader.value = true
-    if (currentUser.value && currentUser.value.isAnonymous) {
-      linkAnonymousAccountToCreatedAccount(user.email, user.password)
-    } else {
-      createUserWithEmailAndPassword(auth, user.email, user.password)
-        .then((userCredential) => {
-          userLoader.value = false
-          currentUser.value = userCredential.user
-          userKey.value = userCredential.user.uid + userCredential.user.isAnonymous
-          updateSnackbar({
-            type: 'success',
-            text: 'Votre compte a bien été créé et vous êtes désormais connecté.'
-          })
-          router.push({name: 'accueil'})
-        })
-        .catch(() => {
-          errorSnackbar()
-        });
+    } catch (error) {
+      console.log(error)
     }
   }
 
-  function removeAccount() {
-    const user = auth.currentUser
-    deleteUser(user).then(() => {
-    }).catch(() => {
-      errorSnackbar()
-    });
+  async function loginWithEmail(user) {
+    try {
+      await signInWithEmailAndPassword(auth, user.email, user.password)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  function linkAnonymousAccountToCreatedAccount(email, password) {
-    const credential = EmailAuthProvider.credential(email, password)
-    linkWithCredential(auth.currentUser, credential)
-      .then((userCredential) => {
-        userLoader.value = false
-        currentUser.value = userCredential.user
-        userKey.value = userCredential.user.uid + userCredential.user.isAnonymous
-        updateSnackbar({
-          type: 'success',
-          text: 'Votre compte a bien été créé et vous êtes désormais connecté.'
-        })
-        router.push({name: 'accueil'})
-      }).catch(() => { 
-      errorSnackbar()
-    });
+  async function loginAsAnonymous() {
+    try {
+      await signInAnonymously(auth)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function createAccount(user) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, user.email, user.password)
+      currentUser.value = userCredential.user
+      userKey.value = userCredential.user.uid + userCredential.user.isAnonymous
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function removeAccount() {
+    const user = auth.currentUser
+    await deleteUser(user)
+  }
+
+  async function linkAnonymousAccountToCreatedAccount(user) {
+    const credential = EmailAuthProvider.credential(user.email, user.password)
+    try {
+      const userCredential = await linkWithCredential(auth.currentUser, credential)
+      currentUser.value = userCredential.user
+      userKey.value = userCredential.user.uid + userCredential.user.isAnonymous
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return {
-    currentUser, loginWithEmail, loginAsAnonymous, fetchUser, createAccount, logout, userLoader, userKey, removeAccount
+    currentUser, loginWithEmail, loginAsAnonymous, fetchUser, createAccount, logout, userKey, removeAccount, linkAnonymousAccountToCreatedAccount
   }
 })
