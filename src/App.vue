@@ -13,7 +13,7 @@
         <v-app-bar-title>{{ router.currentRoute.value.meta.title }}</v-app-bar-title>
         <v-btn
           v-if="currentUser"
-          @click="logout"
+          @click="logoutUser"
           density="compact"
           icon="mdi-logout"
         />
@@ -64,7 +64,7 @@
           <template v-if="currentUser">
             <v-list-item
               title="Me déconnecter"
-              @click="logout"
+              @click="logoutUser"
               prepend-icon="mdi-logout"
             />
           </template>
@@ -100,6 +100,7 @@ import {useUsersStore} from "@/store/users";
 import {storeToRefs} from "pinia";
 import AnonymousInformations from "@/views/AnonymousInformations";
 import BaseSnackbar from "@/components/BaseSnackbar";
+import {useSnackbarStore} from "@/store/snackbar";
 
 const userStore = useUsersStore()
 const {currentUser, userKey} = storeToRefs(userStore)
@@ -107,6 +108,24 @@ const drawer = ref(false)
 
 const store = useUsersStore()
 const {fetchUser, logout} = store
+const {updateSnackbar, errorSnackbar} = useSnackbarStore()
+
+async function logoutUser() {
+  try {
+    console.log('try')
+    await logout()
+    console.log('loggedout')
+    updateSnackbar({
+      type: 'success',
+      text: 'Vous avez correctement été déconnecté.'
+    })
+    console.log('snack')
+    await router.push({'name': 'connexion'})
+    console.log('router')
+  } catch (error) {
+    errorSnackbar()
+  }
+}
 
 onBeforeMount(() => {
   fetchUser()

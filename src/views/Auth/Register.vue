@@ -60,14 +60,17 @@
 import {required, minLength, email} from "@vuelidate/validators"
 import {ref} from 'vue'
 import {useVuelidate} from "@vuelidate/core"
-import { useUsersStore } from "@/store/users"
+import {useUsersStore} from "@/store/users"
+import {useSnackbarStore} from "@/store/snackbar";
+import router from "@/router";
 import {storeToRefs} from "pinia";
 
-const store = useUsersStore()
-const { createAccount } = store
-const { userLoader } = storeToRefs(store)
+const userStore = useUsersStore()
+const {currentUser} = storeToRefs(userStore)
+const {createAccount, linkAnonymousAccountToCreatedAccount} = userStore
+const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
-
+const userLoader = ref(false)
 const showPassword = ref(false)
 const user = ref({email: null, password: null})
 
@@ -78,10 +81,25 @@ const rules = {
 
 const v$ = useVuelidate(rules, user.value)
 
-function registerUser() {
+async function registerUser() {
   v$.value.$touch()
   if (!v$.value.$invalid) {
-    createAccount(user.value)
+    userLoader.value = true
+    try {
+      if (currentUser.value && currentUser.value.isAnonymous) {
+        await linkAnonymousAccountToCreatedAccount(user.value)
+      } else {
+        await createAccount(user.value)
+      }
+      updateSnackbar({
+        type: 'success',
+        text: 'Votre compte a bien été créé et vous êtes désormais connecté.'
+      })
+      await router.push({name: 'accueil'})
+    } catch (error) {
+      errorSnackbar()
+    }
+    userLoader.value = true
   }
 }
 </script>
