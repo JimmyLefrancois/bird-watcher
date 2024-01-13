@@ -120,6 +120,7 @@ async function logUser() {
         type: 'success',
         text: 'Vous êtes désormais connecté.'
       })
+      await router.push({'name': 'accueil'})
     } catch (error) {
       errorSnackbar()
     }
