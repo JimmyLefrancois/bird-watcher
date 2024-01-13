@@ -3,7 +3,6 @@ import { getAuth, browserLocalPersistence, setPersistence } from "firebase/auth"
 import { getFirestore } from "firebase/firestore";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
-
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -16,6 +15,7 @@ const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig)
 export const auth = getAuth(firebaseApp)
+auth.languageCode = 'fr'
 export const user = auth.currentUser
 export const db = getFirestore(firebaseApp);
 
