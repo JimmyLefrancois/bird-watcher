@@ -33,7 +33,7 @@
       size="small"
       @click="show = !show"
     >
-      Voir les espèces
+      Voir en détail
     </v-btn>
 
     <v-spacer />
@@ -46,7 +46,7 @@
   <v-expand-transition>
     <div v-show="show">
       <v-divider />
-      <v-card-text>
+      <v-card-text class="pt-2">
         <ul style="list-style-type: none">
           <li
             v-for="(observedBird, indexObservedBird) in observation.observedBirds"
@@ -59,6 +59,13 @@
             >{{ observedBird.count }} individu<span v-if="observedBird.count > 1">s</span></span>
           </li>
         </ul>
+        <v-divider class="pt-2" />
+        <template v-if="observation.commentaire">
+          <p class="font-weight-bold">
+            Commentaire :
+          </p>
+          <p>{{ observation.commentaire }}</p>
+        </template>
       </v-card-text>
     </div>
   </v-expand-transition>

@@ -54,36 +54,41 @@
 
 <script setup>
 import {computed, ref} from 'vue'
-  import {useSnackbarStore} from "@/store/snackbar";
-  import {useObservationsStore} from "@/store/observations";
-  import {storeToRefs} from "pinia";
+import {useSnackbarStore} from "@/store/snackbar";
+import {useObservationsStore} from "@/store/observations";
+import {storeToRefs} from "pinia";
+import router from "@/router";
 
-  const commentaire = computed({
-    get() {
-      if (currentObservationListItem.value.commentaire) {
-        return currentObservationListItem.value.commentaire
-      } else {
-        return null
-      }
-    },
-    set(newValue) {
-      currentObservationListItem.value.commentaire = newValue
-    }
-  })
-  const observationLoader = ref(false)
-  const {errorSnackbar} = useSnackbarStore()
-  const observationStore = useObservationsStore()
-  const { addCommentaireToObservation } = observationStore
-  const { currentObservationListItem } = storeToRefs(observationStore)
+const observationLoader = ref(false)
+const {errorSnackbar} = useSnackbarStore()
+const observationStore = useObservationsStore()
+const {addCommentaireToObservation} = observationStore
+const {currentObservationListItem, currentEditingObservationListItem} = storeToRefs(observationStore)
 
-  async function addCommentaire(isActive) {
-    observationLoader.value = true
-    try {
-      await addCommentaireToObservation(commentaire.value)
-      isActive.value = false
-    } catch (error) {
-      errorSnackbar()
+const mode = router.currentRoute.value.name === 'nouvelle-observation' ? 'create' : 'update'
+const observationToComment = mode === 'create' ? currentObservationListItem : currentEditingObservationListItem
+
+const commentaire = computed({
+  get() {
+    if (observationToComment.value.commentaire) {
+      return observationToComment.value.commentaire
+    } else {
+      return null
     }
-    observationLoader.value = false
+  },
+  set(newValue) {
+    observationToComment.value.commentaire = newValue
   }
+})
+
+async function addCommentaire(isActive) {
+  observationLoader.value = true
+  try {
+    await addCommentaireToObservation(commentaire.value, mode)
+    isActive.value = false
+  } catch (error) {
+    errorSnackbar()
+  }
+  observationLoader.value = false
+}
 </script>
