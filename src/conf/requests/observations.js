@@ -13,6 +13,10 @@ export async function endObservationRequest(currentObservationQuery, date) {
   await updateDoc(currentObservationQuery, {endDate: date})
 }
 
+export async function addCommentaireToCurrentObservationRequest(currentObservationQuery, commentaire) {
+  await updateDoc(currentObservationQuery, {commentaire: commentaire})
+}
+
 export async function editObservationRequest(currentEditingObservationQuery, currentEditingObservationListItem) {
   await updateDoc(currentEditingObservationQuery, currentEditingObservationListItem)
 }

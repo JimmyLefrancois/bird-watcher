@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "preprod-bird-watcher"
+    "default": "bird-watcher-85fb3"
+    "dev": "preprod-bird-watcher"
   }
 }

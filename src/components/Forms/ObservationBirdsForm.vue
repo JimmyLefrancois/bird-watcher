@@ -4,10 +4,10 @@
       class="py-3 text-center"
       style="color: #37474f"
     >
-      <v-icon icon="mdi-map" />
+      <v-icon icon="mdi-map-marker" />
       {{ currentObservationListItem.location }}
     </h3>
-    <v-row>
+    <v-row class="mb-1">
       <v-col
         cols="10"
         class="pr-0"
@@ -26,6 +26,10 @@
         />
       </v-col>
     </v-row>
+
+    <v-divider />
+
+    <AddCommentaireToObservation />
 
     <v-dialog
       v-model="displayBirdRemoveDialog"
@@ -55,12 +59,14 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-divider />
     <v-autocomplete
       variant="solo-filled"
       :items="birdsList"
       item-value="value"
       item-title="text"
-      class="mt-5"
+      class="mt-3"
+      hide-details
       label="Chercher et ajouter un oiseau"
       v-model="selectedBird"
     />
@@ -68,6 +74,7 @@
       :headers="headers"
       :custom-key-sort="sortBirds"
       :items="currentObservationListItem.observedBirds"
+      class="mt-3"
       no-data-text="Aucun oiseau observé."
     >
       <template #item="{ item }">
@@ -94,6 +101,7 @@ import {useVuelidate} from "@vuelidate/core";
 import CancelObservation from "@/components/CancelObservation";
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
+import AddCommentaireToObservation from "@/components/AddCommentaireToObservation";
 
 const observationStore = useObservationsStore()
 const {updateBirdsListFromCurrentObservation, endObservation, removeObservation, clearCurrentObservation} = observationStore

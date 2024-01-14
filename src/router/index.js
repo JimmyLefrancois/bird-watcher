@@ -39,6 +39,15 @@ const routes = [
     component: () => import('@/views/Auth/Login'),
     meta: { title: 'Connexion'},
   },
+  {
+    path: "/:catchAll(.*)",
+    name: "notFound",
+    component: () => import('@/views/NotFoundView.vue'),
+    meta: {
+      title: 'Page introuvable',
+        requiresAuth: false
+    }
+  }
 ]
 
 const router = createRouter({

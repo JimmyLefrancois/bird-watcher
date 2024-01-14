@@ -1,5 +1,5 @@
 import {defineStore, storeToRefs} from 'pinia'
-import {computed, ref} from "vue"
+import {computed} from "vue"
 import {collection, doc, query, where} from 'firebase/firestore'
 import {useUsersStore} from "@/store/users";
 import {useFirestore} from '@vueuse/firebase/useFirestore'
@@ -7,6 +7,7 @@ import {db} from '@/conf/firebase'
 import {useStorage} from "@vueuse/core";
 import {format} from 'date-fns'
 import {
+  addCommentaireToCurrentObservationRequest,
   addObservationRequest, editObservationRequest,
   endObservationRequest, removeObservationRequest,
   updateBirdsListFromCurrentObservationRequest
@@ -24,7 +25,6 @@ export const useObservationsStore = defineStore('observations', () => {
   const currentObservationListItem = useFirestore(currentObservationQuery, null)
   const currentEditingObservationQuery = computed(() => editingObservation.value && doc(db, 'observations', editingObservation.value))
   const currentEditingObservationListItem = useFirestore(currentEditingObservationQuery, null)
-  const observationLoader = ref(false)
 
   const endedObservations = computed(() => observationsList.value && observationsList.value.filter((observation) => {
     return observation.endDate !== null
@@ -52,6 +52,14 @@ export const useObservationsStore = defineStore('observations', () => {
       currentObservationListItem.value = null
     }
     currentObservation.value = null
+  }
+
+  async function addCommentaireToObservation(commentaire) {
+    try {
+      await addCommentaireToCurrentObservationRequest(currentObservationQuery.value, commentaire)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async function endObservation() {
@@ -83,7 +91,6 @@ export const useObservationsStore = defineStore('observations', () => {
   }
 
   return {
-    observationLoader,
     editObservation,
     endObservation,
     clearCurrentObservation,
@@ -95,6 +102,7 @@ export const useObservationsStore = defineStore('observations', () => {
     observationsList,
     addObservation,
     updateBirdsListFromCurrentObservation,
-    removeObservation
+    removeObservation,
+    addCommentaireToObservation
   }
 })
