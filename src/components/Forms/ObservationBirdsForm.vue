@@ -27,10 +27,6 @@
       </v-col>
     </v-row>
 
-    <v-divider />
-
-    <AddCommentaireToObservation />
-
     <v-dialog
       v-model="displayBirdRemoveDialog"
       width="auto"
@@ -74,7 +70,7 @@
       :headers="headers"
       :custom-key-sort="sortBirds"
       :items="currentObservationListItem.observedBirds"
-      class="mt-3"
+      class="mt-3 mb-3"
       no-data-text="Aucun oiseau observé."
     >
       <template #item="{ item }">
@@ -85,6 +81,8 @@
       </template>
       <template #bottom />
     </v-data-table>
+
+    <AddCommentaireToObservation />
   </div>
 </template>
 
