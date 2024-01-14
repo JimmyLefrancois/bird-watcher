@@ -70,7 +70,7 @@ const observationToComment = mode === 'create' ? currentObservationListItem : cu
 
 const commentaire = computed({
   get() {
-    if (observationToComment.value.commentaire) {
+    if (observationToComment.value?.commentaire) {
       return observationToComment.value.commentaire
     } else {
       return null
