@@ -1,10 +1,7 @@
 <template>
   <v-dialog
     transition="dialog-bottom-transition"
-    class="mt-0 ml-0"
-    width="100%"
-    location="bottom"
-    location-strategy="connected"
+    :fullscreen="true"
   >
     <template #activator="{ props }">
       <v-btn
@@ -13,7 +10,7 @@
         color="themeLightgreenColor"
         prepend-icon="mdi-filter"
       >
-        Filtrer
+        Filtrer({{ activeFilters }})
       </v-btn>
     </template>
     <template #default="{ isActive }">
@@ -67,10 +64,22 @@
 
 <script setup>
 import {birdsList} from '@/conf/birds.js'
-import {ref} from "vue";
+import {computed, ref} from "vue";
 
 const selectedBirds = ref([])
 const locationFilter = ref('')
+
+const activeFilters = computed(() => {
+  let count = 0
+  if (selectedBirds.value.length > 0) {
+    count++
+  }
+  if (locationFilter.value !== '') {
+    count++
+  }
+
+  return count
+})
 
 const emit = defineEmits(['updateFilters'])
 defineProps({

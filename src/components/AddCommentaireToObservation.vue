@@ -21,7 +21,7 @@
             :clearable="true"
             hide-details
             rows="4"
-            v-model="commentaire"
+            v-model="observationToComment.commentaire"
             class="mt-5 mb-0 pb-0"
             variant="solo-filled"
             label="Commenter l'observation"
@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue'
+import {ref} from 'vue'
 import {useSnackbarStore} from "@/store/snackbar";
 import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
@@ -68,23 +68,10 @@ const {currentObservationListItem, currentEditingObservationListItem} = storeToR
 const mode = router.currentRoute.value.name === 'nouvelle-observation' ? 'create' : 'update'
 const observationToComment = mode === 'create' ? currentObservationListItem : currentEditingObservationListItem
 
-const commentaire = computed({
-  get() {
-    if (observationToComment.value?.commentaire) {
-      return observationToComment.value.commentaire
-    } else {
-      return null
-    }
-  },
-  set(newValue) {
-    observationToComment.value.commentaire = newValue
-  }
-})
-
 async function addCommentaire(isActive) {
   observationLoader.value = true
   try {
-    await addCommentaireToObservation(commentaire.value, mode)
+    await addCommentaireToObservation(observationToComment.value.commentaire, mode)
     isActive.value = false
   } catch (error) {
     errorSnackbar()
