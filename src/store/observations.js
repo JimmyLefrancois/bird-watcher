@@ -7,6 +7,7 @@ import {db} from '@/conf/firebase'
 import {useStorage} from "@vueuse/core";
 import {format} from 'date-fns'
 import {
+  addCommentaireToCurrentObservationRequest,
   addObservationRequest, editObservationRequest,
   endObservationRequest, removeObservationRequest,
   updateBirdsListFromCurrentObservationRequest
@@ -53,6 +54,14 @@ export const useObservationsStore = defineStore('observations', () => {
     currentObservation.value = null
   }
 
+  async function addCommentaireToObservation(commentaire) {
+    try {
+      await addCommentaireToCurrentObservationRequest(currentObservationQuery.value, commentaire)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async function endObservation() {
     const date = format(new Date(), "yyyy-MM-dd'T'HH:mm")
     try {
@@ -93,6 +102,7 @@ export const useObservationsStore = defineStore('observations', () => {
     observationsList,
     addObservation,
     updateBirdsListFromCurrentObservation,
-    removeObservation
+    removeObservation,
+    addCommentaireToObservation
   }
 })
