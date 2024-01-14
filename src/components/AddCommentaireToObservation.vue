@@ -9,13 +9,13 @@
         :block="true"
         :disabled="observationLoader"
         :loading="observationLoader"
-        text="Ajouter un commentaire"
+        text="Commenter l'observation"
       />
     </template>
 
     <template #default="{ isActive }">
-      <v-card title="Ajouter un commentaire">
-        <v-card-text>
+      <v-card>
+        <v-card-text class="py-0">
           <v-textarea
             :auto-grow="true"
             :clearable="true"
@@ -28,7 +28,7 @@
           />
         </v-card-text>
 
-        <v-card-actions>
+        <v-card-actions class="pr-4">
           <v-spacer />
           <v-btn
             color="red"
@@ -40,7 +40,7 @@
           <v-btn
             :disabled="observationLoader"
             :loading="observationLoader"
-            color="green"
+            color="themeLightgreenColor"
             prepend-icon="mdi-check"
             @click="addCommentaire(isActive)"
           >
