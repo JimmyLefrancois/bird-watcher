@@ -1,27 +1,4 @@
 <template>
-  <v-autocomplete
-    variant="solo-filled"
-    :items="birdsList"
-    item-value="value"
-    item-title="text"
-    class="mt-3 mb-3"
-    label="Filtrer par oiseau"
-    v-model="selectedBirds"
-    :clearable="true"
-    :multiple="true"
-    hide-details
-    @click:clear="blur"
-  />
-  <v-text-field
-    variant="solo-filled"
-    v-model="locationFilter"
-    label="Filtrer par lieu"
-    :clearable="true"
-    hide-details
-    class="mt-0"
-    @click:clear="blur"
-  />
-  <hr class="mt-3">
   <template v-if="filteredObservations && filteredObservations.length > 0">
     <v-card
       class="mt-3"
@@ -45,6 +22,12 @@
       Nouvelle observation
     </v-btn>
   </template>
+  <v-footer
+    color="transparent"
+    :app="true"
+  >
+    <ObservationFilters @update-filters="updateFilters($event)" />
+  </v-footer>
 </template>
 
 <script setup>
@@ -53,12 +36,17 @@ import {storeToRefs} from "pinia";
 import ObservationsListItem from "@/components/ObservationsListItem";
 const observationStore = useObservationsStore()
 const { endedObservations } = storeToRefs(observationStore)
-import {birdsList} from '@/conf/birds.js'
 import {computed} from "vue";
 import { ref } from 'vue'
+import ObservationFilters from "@/components/ObservationFilters";
 
 const selectedBirds = ref([])
 const locationFilter = ref('')
+
+function updateFilters(filters) {
+  selectedBirds.value = filters.selectedBirds.value
+  locationFilter.value = filters.locationFilter.value
+}
 
 const filteredObservations = computed(() => {
   if (endedObservations.value) {
