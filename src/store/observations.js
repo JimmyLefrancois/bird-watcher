@@ -54,9 +54,10 @@ export const useObservationsStore = defineStore('observations', () => {
     currentObservation.value = null
   }
 
-  async function addCommentaireToObservation(commentaire) {
+  async function addCommentaireToObservation(commentaire, mode) {
     try {
-      await addCommentaireToCurrentObservationRequest(currentObservationQuery.value, commentaire)
+      const query = mode === 'create' ? currentObservationQuery.value : currentEditingObservationQuery.value
+      await addCommentaireToCurrentObservationRequest(query, commentaire)
     } catch (error) {
       console.log(error)
     }

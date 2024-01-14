@@ -92,6 +92,7 @@
       :headers="headers"
       :custom-key-sort="sortBirds"
       :items="currentEditingObservationListItem.observedBirds"
+      class="mb-3"
       no-data-text="Aucun oiseau observé."
     >
       <template #item="{ item }">
@@ -102,6 +103,7 @@
       </template>
       <template #bottom />
     </v-data-table>
+    <AddCommentaireToObservation />
   </v-form>
 </template>
 
@@ -117,6 +119,7 @@ import {minLength, required} from "@vuelidate/validators";
 import { format } from 'date-fns'
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
+import AddCommentaireToObservation from "@/components/AddCommentaireToObservation";
 
 const observationStore = useObservationsStore()
 const { editObservation } = observationStore
