@@ -25,3 +25,6 @@ todo.txt
 /firebase-debug.log
 /.firebaserc
 /firebase.json
+/dev-dist/registerSW.js
+/dev-dist/sw.js
+/dev-dist/workbox-b5f7729d.js
