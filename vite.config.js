@@ -31,7 +31,7 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}']
       },
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg', 'pwa-192x192.png', 'pwa-512x512.png', 'pwa-64x64.png'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'maskable-icon-512x512.png', 'pwa-192x192.png', 'pwa-512x512.png', 'pwa-64x64.png'],
       manifest: {
         name: "Plumes en vue",
         short_name: 'Plumes en vue',
