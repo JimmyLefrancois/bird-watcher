@@ -27,7 +27,7 @@
           :nav="true"
           density="compact"
         >
-          <v-list-subheader>Mes observations ornitho</v-list-subheader>
+          <v-list-subheader>Plumes en vue</v-list-subheader>
           <v-list-item
             @click="drawer = false"
             title="Accueil"

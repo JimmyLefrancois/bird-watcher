@@ -22,7 +22,7 @@ export default defineConfig({
       },
     }),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       injectRegister: 'auto',
       devOptions: {
         enabled: true
@@ -31,10 +31,10 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}']
       },
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg', 'pwa-192x192.png', 'pwa-512x512.png', 'pwa-64x64.png'],
       manifest: {
         name: "Plumes en vue",
-        short_name: 'Plumesenvue',
+        short_name: 'Plumes en vue',
         description: 'Recensez toutes vos observations ornithologiques au même endroit !',
         theme_color: '#9DA65D',
         icons: [
