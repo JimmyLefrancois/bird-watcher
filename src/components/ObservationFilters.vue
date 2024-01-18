@@ -25,13 +25,22 @@
           />
         </v-toolbar>
         <v-card-text>
+          <p
+            class="text-decoration-underline text-center dp__pointer"
+            @click="resetFilters(isActive)"
+          >
+            <v-icon
+              class="mr-1"
+              icon="mdi-filter-off"
+            />Réinitialiser les filtres
+          </p>
           <v-autocomplete
             variant="solo-filled"
             :items="birdsList"
             item-value="value"
             item-title="text"
             class="mt-3 mb-3"
-            label="Filtrer par oiseau"
+            label="Filtrer par oiseaux observés"
             v-model="selectedBirds"
             :clearable="true"
             :multiple="true"
@@ -41,22 +50,21 @@
           <v-text-field
             variant="solo-filled"
             v-model="locationFilter"
-            label="Filtrer par lieu"
+            label="Filtrer par lieu d'observation"
             :clearable="true"
             hide-details
             class="mt-0"
             @click:clear="blur"
           />
-        </v-card-text>
-        <v-card-actions class="justify-end">
           <v-btn
-            variant="text"
             color="themeDarkGreenColor"
             @click="setFilters(isActive)"
+            :block="true"
+            class="mt-3"
           >
             Valider
           </v-btn>
-        </v-card-actions>
+        </v-card-text>
       </v-card>
     </template>
   </v-dialog>
@@ -67,19 +75,25 @@ import {birdsList} from '@/conf/birds.js'
 import {computed, ref} from "vue";
 
 const selectedBirds = ref([])
-const locationFilter = ref('')
+const locationFilter = ref(null)
 
 const activeFilters = computed(() => {
   let count = 0
   if (selectedBirds.value.length > 0) {
     count++
   }
-  if (locationFilter.value !== '') {
+  if (locationFilter.value) {
     count++
   }
 
   return count
 })
+
+function resetFilters(isActive) {
+  isActive.value = false
+  selectedBirds.value = []
+  locationFilter.value = null
+}
 
 const emit = defineEmits(['updateFilters'])
 defineProps({
