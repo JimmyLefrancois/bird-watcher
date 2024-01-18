@@ -28,6 +28,7 @@ export default defineConfig({
         enabled: true
       },
       workbox: {
+        sourcemap: true,
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}']
       },
