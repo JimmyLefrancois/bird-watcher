@@ -94,6 +94,7 @@ function resetFilters(isActive) {
   isActive.value = false
   selectedBirds.value = []
   locationFilter.value = null
+  emit('updateFilters', {selectedBirds, locationFilter})
 }
 
 const emit = defineEmits(['updateFilters'])
