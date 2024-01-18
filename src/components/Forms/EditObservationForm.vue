@@ -156,8 +156,9 @@ async function updateObservation()
         type: 'success',
         text: 'Votre observation a bien été modifié.'
       })
-      await router.push({name: 'mes-observations'})
+      await router.push({ name: 'observation', params: { observation: router.currentRoute.value.params.observation } })
     } catch (error) {
+      console.log(error)
       errorSnackbar()
     }
     observationLoader.value = false

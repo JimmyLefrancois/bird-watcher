@@ -1,6 +1,8 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import { getCurrentUser } from '@/conf/firebase'
 import {useHead} from "@unhead/vue";
+import { useObservationsStore } from "@/store/observations";
+import {storeToRefs} from "pinia";
 
 const routes = [
   {
@@ -16,10 +18,25 @@ const routes = [
     meta: { requiresAuth: true, title: 'Nouvelle observation'},
   },
   {
-    path: '/modifier-mon-observation',
+    path: '/modifier-mon-observation/:observation',
     name: 'modifier-mon-observation',
-    component: () => import('@/views/EditObservation.vue'),
+    component: () => import('@/views/EditObservation.vue'),beforeEnter: (to) => {
+      const store = useObservationsStore()
+      const { editingObservation } = storeToRefs(store)
+      editingObservation.value = to.params.observation
+    },
     meta: { requiresAuth: true, title: 'Modifier mon observation'},
+  },
+  {
+    path: '/observation/:observation',
+    name: 'observation',
+    component: () => import('@/views/ShowObservation'),
+    beforeEnter: (to) => {
+      const store = useObservationsStore()
+      const { observationToShow } = storeToRefs(store)
+      observationToShow.value = to.params.observation
+    },
+    meta: { requiresAuth: true, title: 'Mon observation'}
   },
   {
     path: '/mes-observations',

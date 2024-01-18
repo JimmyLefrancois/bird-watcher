@@ -2,6 +2,16 @@
   <v-dialog width="500">
     <template #activator="{ props }">
       <v-btn
+        v-if="mode === 'condensed'"
+        v-bind="props"
+        size="small"
+        variant="text"
+        color="red"
+        density="compact"
+        icon="mdi-delete"
+      />
+      <v-btn
+        v-else
         v-bind="props"
         color="red"
         size="small"
@@ -46,7 +56,8 @@
 const emit = defineEmits(['removeObservation'])
 
 defineProps({
-  observationLoader: {type: Object, default: null}
+  observationLoader: {type: Boolean, default: null},
+  mode: {type: String, default: null}
 })
 
 function removeObservation() {

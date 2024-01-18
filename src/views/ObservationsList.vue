@@ -29,12 +29,12 @@
 import { useObservationsStore } from "@/store/observations";
 import {storeToRefs} from "pinia";
 import ObservationsListItem from "@/components/ObservationsListItem";
-const observationStore = useObservationsStore()
-const { endedObservations } = storeToRefs(observationStore)
 import {computed} from "vue";
 import { ref } from 'vue'
 import ObservationFilters from "@/components/ObservationFilters";
 
+const observationStore = useObservationsStore()
+const { endedObservations } = storeToRefs(observationStore)
 const selectedBirds = ref([])
 const locationFilter = ref('')
 
