@@ -59,8 +59,8 @@
             >{{ observedBird.count }} individu<span v-if="observedBird.count > 1">s</span></span>
           </li>
         </ul>
-        <v-divider class="pt-2" />
         <template v-if="observation.commentaire">
+          <v-divider class="pt-2" />
           <p class="font-weight-bold">
             Commentaire :
           </p>
