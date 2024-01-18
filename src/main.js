@@ -13,6 +13,7 @@ import App from './App.vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
+import { registerSW } from 'virtual:pwa-register'
 
 // Composables
 import { createApp } from 'vue'
@@ -23,4 +24,5 @@ app.component('VueDatePicker', VueDatePicker);
 
 registerPlugins(app)
 
+registerSW({ immediate: true })
 app.mount('#app')
