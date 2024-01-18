@@ -9,7 +9,7 @@
         :block="true"
         :disabled="observationLoader"
         :loading="observationLoader"
-        text="Commenter l'observation"
+        :text="observationToComment.commentaire === '' ? 'Commenter l\'observation' : 'Modifier le commentaire'"
       />
     </template>
 

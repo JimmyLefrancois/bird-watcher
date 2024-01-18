@@ -51,7 +51,7 @@ const observation = ref({
   startDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   endDate: null,
   location: null,
-  commentaire: null,
+  commentaire: '',
   observedBirds: [],
 })
 
