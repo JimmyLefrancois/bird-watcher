@@ -1,4 +1,10 @@
 <template>
+  <p
+    class="text-decoration-underline text-center dp__pointer mt-3"
+    @click="router.push({name: 'mes-observations'})"
+  >
+    Retour à la liste de mes observations
+  </p>
   <v-card
     class="mt-3"
     v-if="observationToShowItem"
