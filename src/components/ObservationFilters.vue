@@ -28,7 +28,7 @@
         <v-card-text>
           <p
             class="text-decoration-underline text-center dp__pointer"
-            @click="resetFilters(isActive)"
+            @click="resetFilters()"
           >
             <v-icon
               class="mr-1"
@@ -90,11 +90,9 @@ const activeFilters = computed(() => {
   return count
 })
 
-function resetFilters(isActive) {
-  isActive.value = false
+function resetFilters() {
   selectedBirds.value = []
   locationFilter.value = null
-  emit('updateFilters', {selectedBirds, locationFilter})
 }
 
 const emit = defineEmits(['updateFilters'])
