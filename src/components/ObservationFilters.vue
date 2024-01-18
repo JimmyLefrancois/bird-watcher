@@ -9,6 +9,7 @@
         v-bind="props"
         color="themeLightgreenColor"
         prepend-icon="mdi-filter"
+        class="mt-3"
       >
         Filtrer({{ activeFilters }})
       </v-btn>

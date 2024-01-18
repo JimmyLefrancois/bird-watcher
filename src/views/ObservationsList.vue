@@ -1,4 +1,5 @@
 <template>
+  <ObservationFilters @update-filters="updateFilters($event)" />
   <template v-if="filteredObservations && filteredObservations.length > 0">
     <v-card
       class="mt-3"
@@ -22,12 +23,6 @@
       Nouvelle observation
     </v-btn>
   </template>
-  <v-footer
-    color="transparent"
-    :app="true"
-  >
-    <ObservationFilters @update-filters="updateFilters($event)" />
-  </v-footer>
 </template>
 
 <script setup>
@@ -74,11 +69,6 @@ function getObservationsFilteredByBirds(observation)
 function getObservationsFilteredByLocation(observation)
 {
   return observation.location.toLowerCase().indexOf(locationFilter.value.toLowerCase()) >= 0;
-}
-
-function blur()
-{
-  document.activeElement.blur();
 }
 
 </script>
