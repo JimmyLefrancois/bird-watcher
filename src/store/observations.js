@@ -19,12 +19,15 @@ export const useObservationsStore = defineStore('observations', () => {
   const { currentUser } = storeToRefs(userStore)
   const currentObservation = useStorage('currentObservation', null)
   const editingObservation = useStorage('editingObservation', null)
+  const observationToShow = useStorage('observationDisplayed', null)
   const userObservationsQuery = computed(() => currentUser.value && query(collection(db, 'observations'), where("user", "==", currentUser.value.uid)))
   const observationsList = useFirestore(userObservationsQuery, null)
   const currentObservationQuery = computed(() => currentObservation.value && doc(db, 'observations', currentObservation.value))
   const currentObservationListItem = useFirestore(currentObservationQuery, null)
   const currentEditingObservationQuery = computed(() => editingObservation.value && doc(db, 'observations', editingObservation.value))
   const currentEditingObservationListItem = useFirestore(currentEditingObservationQuery, null)
+  const observationToShowQuery = computed(() => observationToShow.value && doc(db, 'observations', observationToShow.value))
+  const observationToShowItem = useFirestore(observationToShowQuery, null)
 
   const endedObservations = computed(() => observationsList.value && observationsList.value.filter((observation) => {
     return observation.endDate !== null
@@ -97,9 +100,11 @@ export const useObservationsStore = defineStore('observations', () => {
     clearCurrentObservation,
     currentObservation,
     editingObservation,
+    observationToShow,
     endedObservations,
     currentObservationListItem,
     currentEditingObservationListItem,
+    observationToShowItem,
     observationsList,
     addObservation,
     updateBirdsListFromCurrentObservation,
