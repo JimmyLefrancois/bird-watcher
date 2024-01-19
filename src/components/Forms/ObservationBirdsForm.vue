@@ -107,7 +107,7 @@ const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
 
-birdsList.unshift({value: -1, text: "Oiseau non reconnue", link: "#"})
+birdsList.unshift({value: -1, text: "Oiseau non reconnu", link: "#"})
 
 function normalizedFilter(itemTitle, queryText, item) {
   const bird = normalizeText(item.raw.text)
