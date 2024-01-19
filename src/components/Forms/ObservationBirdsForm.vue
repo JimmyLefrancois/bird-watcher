@@ -61,6 +61,7 @@
       :items="birdsList"
       item-value="value"
       item-title="text"
+      :custom-filter="normalizedFilter"
       class="mt-3"
       hide-details
       label="Chercher et ajouter un oiseau"
@@ -94,8 +95,6 @@ import BirdItemRow from "@/components/BirdItemRow";
 import EndObservation from "@/components/EndObservation";
 import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
-import {minLength, required} from "@vuelidate/validators";
-import {useVuelidate} from "@vuelidate/core";
 import CancelObservation from "@/components/CancelObservation";
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
@@ -111,16 +110,18 @@ const observationLoader = ref(false)
 
 birdsList.unshift({value: -1, text: "Oiseau non reconnue", link: "#"})
 
-//const rules = {
-//  birds: {minLengthValue: minLength(1), required}
-//}
+function normalizedFilter(itemTitle, queryText, item) {
+  const bird = normalizeText(item.raw.text)
+  const birdQuery = normalizeText(queryText)
+  return bird.indexOf(birdQuery) > -1
+}
 
-//const v$ = useVuelidate(rules, currentObservationListItem)
+function normalizeText(text) {
+  return text.normalize('NFD').replace(/\p{Diacritic}/gu, "").toLowerCase().replace(/[^a-zA-Z0-9 ]/g, ' ')
+}
 
 async function finaliseObservation()
 {
-  //v$.value.$touch()
-  //if (!v$.value.$invalid) {
   observationLoader.value = true
   try {
     await endObservation()
@@ -133,8 +134,6 @@ async function finaliseObservation()
     errorSnackbar()
   }
   observationLoader.value = false
-
-  //}
 }
 
 async function cancelObservation()
