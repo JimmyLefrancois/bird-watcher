@@ -37,7 +37,7 @@
           </p>
           <v-autocomplete
             variant="solo-filled"
-            :items="birdsList"
+            :items="filteredBirdsList"
             item-value="value"
             item-title="text"
             class="mt-3 mb-3"
@@ -74,9 +74,31 @@
 <script setup>
 import {birdsList} from '@/conf/birds.js'
 import {computed, ref} from "vue";
+import { useObservationsStore } from "@/store/observations";
+import {storeToRefs} from "pinia";
 
+const observationStore = useObservationsStore()
+const { observationsList } = storeToRefs(observationStore)
 const selectedBirds = ref([])
 const locationFilter = ref(null)
+
+const filteredBirdsList = computed(() => {
+  if (observationsList.value) {
+    let observedBirdsFromAllMyObservations = []
+
+    observationsList.value.forEach((observation) => {
+      observation.observedBirds.forEach((bird => {
+        observedBirdsFromAllMyObservations.push(bird.id)
+      }))
+    })
+
+    return birdsList.filter((bird) => {
+      return observedBirdsFromAllMyObservations.includes(bird.value)
+    })
+  } else {
+    return []
+  }
+})
 
 const activeFilters = computed(() => {
   let count = 0
