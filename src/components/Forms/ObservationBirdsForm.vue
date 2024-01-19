@@ -21,7 +21,6 @@
         cols="2"
       >
         <CancelObservation
-          :observation-loader="observationLoader"
           @cancel-observation="cancelObservation"
         />
       </v-col>

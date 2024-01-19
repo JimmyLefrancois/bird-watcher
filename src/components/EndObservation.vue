@@ -48,7 +48,7 @@
 
   const emit = defineEmits(['endObservation'])
   defineProps({
-    observationLoader: {type: Object, default: null}
+    observationLoader: {type: Boolean, default: null}
   })
 
   function endObservation() {
