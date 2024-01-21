@@ -46,6 +46,12 @@
             :to="{'name': 'mes-observations'}"
             prepend-icon="mdi-format-list-bulleted"
           />
+          <v-list-item
+            @click="drawer = false"
+            title="Mes lieux d'observations"
+            :to="{'name': 'mes-lieux-d-observation'}"
+            prepend-icon="mdi-map-marker-multiple"
+          />
           <v-list-subheader>Mon compte</v-list-subheader>
           <template v-if="!currentUser || currentUser.isAnonymous">
             <v-list-item
