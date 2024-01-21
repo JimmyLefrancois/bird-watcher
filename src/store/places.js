@@ -1,7 +1,8 @@
 import {defineStore, storeToRefs} from "pinia";
 import {useUsersStore} from "@/store/users";
+import {useObservationsStore} from "@/store/observations";
 import {computed} from "vue";
-import {collection, query, where} from "firebase/firestore";
+import {collection, doc, query, where} from "firebase/firestore";
 import {db} from "@/conf/firebase";
 import {useFirestore} from "@vueuse/firebase/useFirestore";
 import {addPlaceRequest, removePlaceRequest} from "@/conf/requests/places";
@@ -9,6 +10,13 @@ import {addPlaceRequest, removePlaceRequest} from "@/conf/requests/places";
 export const useObservationsPlacesStore = defineStore('places', () => {
   const userStore = useUsersStore()
   const { currentUser } = storeToRefs(userStore)
+
+  const observationStore = useObservationsStore()
+  const { currentObservationListItem } = storeToRefs(observationStore)
+  // const placeFromObservationItem = computed(() => currentObservationListItem.value && useFirestore(doc(db, 'places', currentObservationListItem.value.existingLocation)))
+  const placeFromObservationQuery = computed(() => currentObservationListItem.value && doc(db, 'places', currentObservationListItem.value.existingLocation))
+  const placeFromObservationItem = useFirestore(placeFromObservationQuery, null)
+
   const userObservationsPlacesQuery = computed(() => currentUser.value && query(collection(db, 'places'), where("user", "==", currentUser.value.uid)))
   const observationsPlacesList = useFirestore(userObservationsPlacesQuery, null)
 
@@ -31,6 +39,7 @@ export const useObservationsPlacesStore = defineStore('places', () => {
   return {
     observationsPlacesList,
     addObservationPlace,
-    removePlace
+    removePlace,
+    placeFromObservationItem
   }
 })
