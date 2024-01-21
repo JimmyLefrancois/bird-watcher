@@ -11,7 +11,7 @@
     </template>
 
     <template #default="{ isActive }">
-      <v-card title="Supprimer l'observation">
+      <v-card title="Supprimer ce lieu">
         <v-card-text>
           Souhaitez-vous vraiment supprimer ce lieu ?
         </v-card-text>

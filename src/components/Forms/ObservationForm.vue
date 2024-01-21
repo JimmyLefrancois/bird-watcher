@@ -33,18 +33,34 @@
         <span>Billebaude</span>
       </v-btn>
     </v-btn-toggle>
-    <v-autocomplete
-      v-if="observation.type === 1 && observationsPlacesList"
-      variant="solo-filled"
-      :error-messages="v$.existingLocation.$errors.map(e => e.$message)"
-      v-model="observation.existingLocation"
-      :items="observationsPlacesList"
-      :clearable="true"
-      item-value="id"
-      item-title="name"
-      label="Lieu d'observation"
-      @blur="v$.existingLocation.$touch()"
-    />
+    <v-row>
+      <v-col cols="10">
+        <v-autocomplete
+          v-if="observation.type === 1 && observationsPlacesList"
+          variant="solo-filled"
+          :error-messages="v$.existingLocation.$errors.map(e => e.$message)"
+          v-model="observation.existingLocation"
+          :items="observationsPlacesList"
+          :clearable="true"
+          item-value="id"
+          item-title="name"
+          no-data-text="Aucun lieu enregistré."
+          label="Lieu d'observation"
+          @blur="v$.existingLocation.$touch()"
+        />
+      </v-col>
+      <v-col
+        cols="2"
+        class="pl-0 pt-5"
+      >
+        <CreatePlaceForm
+          v-if="observation.type === 1"
+          mode="condensed"
+          @add-place="console.log($event)"
+        />
+        <!--    todo fonction getPlace by id pour binder le v-model après ajout    -->
+      </v-col>
+    </v-row>
     <v-text-field
       v-if="observation.type === 2"
       v-model="observation.location"
@@ -77,6 +93,7 @@ import {useUsersStore} from "@/store/users";
 import {storeToRefs} from "pinia";
 import {useSnackbarStore} from "@/store/snackbar";
 import {useObservationsPlacesStore} from '@/store/places'
+import CreatePlaceForm from "@/components/Forms/CreatePlaceForm";
 
 const observationsPlacesStore = useObservationsPlacesStore()
 

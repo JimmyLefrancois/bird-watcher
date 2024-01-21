@@ -22,7 +22,10 @@ export const useObservationsPlacesStore = defineStore('places', () => {
 
   async function addObservationPlace(place) {
     try {
-      await addPlaceRequest(place)
+      const data = await addPlaceRequest(place)
+      console.log(data)
+      console.log(data.id)
+      return data
     } catch (error) {
       console.log(error)
     }

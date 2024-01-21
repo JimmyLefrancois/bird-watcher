@@ -2,6 +2,14 @@
   <v-dialog :fullscreen="true">
     <template #activator="{ props }">
       <v-btn
+        v-if="mode === 'condensed'"
+        v-bind="props"
+        size="small"
+        color="themeLightgreenColor"
+        icon="mdi-plus"
+      />
+      <v-btn
+        v-else
         v-bind="props"
         prepend-icon="mdi-plus"
         color="themeLightgreenColor"
@@ -65,6 +73,10 @@ import {useSnackbarStore} from "@/store/snackbar";
 import {useUsersStore} from "@/store/users";
 import {storeToRefs} from "pinia";
 
+defineProps({
+  mode: {type: String, default: 'full'}
+})
+
 const userStore = useUsersStore();
 const {currentUser} = storeToRefs(userStore)
 
@@ -73,6 +85,7 @@ const { addObservationPlace } = observationsPlacesStore
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
 const observationLoader = ref(false)
+const emit = defineEmits(['addPlace'])
 
 const place = ref({
   name: null,
@@ -94,12 +107,13 @@ async function addPlace(isActive) {
   if (!v$.value.$invalid) {
     observationLoader.value = true
     try {
-      await addObservationPlace(place.value)
+      const addedPlace = await addObservationPlace(place.value)
       updateSnackbar({
         type: 'success',
         text: 'Votre lieu d\'observation a bien été ajouté.'
       })
       isActive.value=false
+      emit('addPlace', addedPlace.key)
     } catch (error) {
       errorSnackbar()
     }
