@@ -4,14 +4,8 @@
       class="py-3 text-center"
       style="color: #37474f"
     >
-      <span v-if="currentObservationListItem.type === 1 && placeFromObservationItem">
-        <v-icon icon="mdi-home" />
-        {{ placeFromObservationItem.name }}
-      </span>
-      <span v-else>
-        <v-icon icon="mdi-walk" />
-        {{ currentObservationListItem.location }}
-      </span>
+      <v-icon :icon="observationLocationName.icon" />
+      {{ observationLocationName.name }}
     </h3>
     <v-row class="mb-1">
       <v-col
@@ -95,7 +89,7 @@
 <script setup>
 import {birdsList} from '@/conf/birds.js'
 import {sortBirds} from "@/helpers/birdHelpers";
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import BirdItemRow from "@/components/BirdItemRow";
 import EndObservation from "@/components/EndObservation";
 import {useObservationsStore} from "@/store/observations";
@@ -122,6 +116,26 @@ const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
 
 birdsList.unshift({value: -1, text: "Oiseau non reconnu", link: "#"})
+
+const observationLocationName = computed(() => {
+  if (placeFromObservationItem.value) {
+    if (currentObservationListItem.value.type === 1) {
+      return {
+        name: placeFromObservationItem.value.name,
+        icon: 'mdi-home'
+      }
+    } else {
+      return {
+        name: currentObservationListItem.value.location,
+        icon: 'mdi-walk'
+      }
+    }
+  } else {
+    return {
+
+    }
+  }
+})
 
 function normalizedFilter(itemTitle, queryText, item) {
   const bird = normalizeText(item.raw.text)
