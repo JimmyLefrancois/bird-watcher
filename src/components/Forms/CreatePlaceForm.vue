@@ -113,7 +113,7 @@ async function addPlace(isActive) {
         text: 'Votre lieu d\'observation a bien été ajouté.'
       })
       isActive.value=false
-      emit('addPlace', addedPlace.key)
+      emit('addPlace', addedPlace.id)
     } catch (error) {
       errorSnackbar()
     }

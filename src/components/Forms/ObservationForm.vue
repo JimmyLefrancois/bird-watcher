@@ -56,9 +56,8 @@
         <CreatePlaceForm
           v-if="observation.type === 1"
           mode="condensed"
-          @add-place="console.log($event)"
+          @add-place="getNewPlaceById($event)"
         />
-        <!--    todo fonction getPlace by id pour binder le v-model après ajout    -->
       </v-col>
     </v-row>
     <v-text-field
@@ -100,6 +99,7 @@ const observationsPlacesStore = useObservationsPlacesStore()
 const observationStore = useObservationsStore()
 const {addObservation} = observationStore
 const {errorSnackbar} = useSnackbarStore()
+const {getPlaceById} = observationsPlacesStore
 const {observationsPlacesList} = storeToRefs(observationsPlacesStore)
 
 const userStore = useUsersStore();
@@ -119,11 +119,16 @@ const rules = computed(() => {
   return tempsRules
 })
 
-// rules.value.push({type: {required}})
-
-// const rules = {
-//   location: {required},
-// }
+async function getNewPlaceById(id) {
+  try {
+    const addedPlace = await getPlaceById(id)
+    console.log(addedPlace)
+    observation.value.existingLocation = addedPlace.id
+  } catch (error) {
+    console.log(error)
+    errorSnackbar()
+  }
+}
 
 const observation = ref({
   id: null,
