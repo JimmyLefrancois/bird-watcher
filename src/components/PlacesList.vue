@@ -13,7 +13,7 @@
         <PlaceListItem
           v-for="(place, index) in observationsPlacesList"
           :key="index"
-          :place
+          :place="place"
         />
       </v-list>
       <p
