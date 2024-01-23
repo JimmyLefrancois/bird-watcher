@@ -9,7 +9,7 @@
       Vos lieux d'observations
     </v-card-title>
     <v-card-text class="pb-0">
-      <v-list v-if="observationsPlacesList.length > 0">
+      <v-list v-if="observationsPlacesList?.length > 0">
         <PlaceListItem
           v-for="(place, index) in observationsPlacesList"
           :key="index"
