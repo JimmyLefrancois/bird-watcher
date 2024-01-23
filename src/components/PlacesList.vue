@@ -15,7 +15,6 @@
         item-value="id"
         item-key="name"
         :headers="headers"
-        no-data-text="Aucun lieu enregistré. Cliquez sur le bouton ci-dessous pour créer votre premier lieu d'observation."
       >
         <template #item="{ item }">
           <tr>
@@ -30,6 +29,16 @@
         </template>
         <template #bottom />
       </v-data-table>
+      <template
+        v-else
+      >
+        <p class="mt-1">
+          Aucun lieu n'a encore été enregistré.
+        </p>
+        <p class="mt-1 mb-3">
+          Cliquez sur le bouton ci-dessous pour créer votre premier lieu d'observation.
+        </p>
+      </template>
     </v-card-text>
   </v-card>
 </template>
