@@ -13,7 +13,6 @@ export const useObservationsPlacesStore = defineStore('places', () => {
 
   const observationStore = useObservationsStore()
   const { currentObservationListItem } = storeToRefs(observationStore)
-  // const placeFromObservationItem = computed(() => currentObservationListItem.value && useFirestore(doc(db, 'places', currentObservationListItem.value.existingLocation)))
   const placeFromObservationQuery = computed(() => currentObservationListItem.value && doc(db, 'places', currentObservationListItem.value.existingLocation))
   const placeFromObservationItem = useFirestore(placeFromObservationQuery, null)
 
@@ -22,10 +21,15 @@ export const useObservationsPlacesStore = defineStore('places', () => {
 
   async function addObservationPlace(place) {
     try {
-      const data = await addPlaceRequest(place)
-      console.log(data)
-      console.log(data.id)
-      return data
+      return await addPlaceRequest(place)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function getPlaceById(id) {
+    try {
+      return doc(db, 'places', id)
     } catch (error) {
       console.log(error)
     }
@@ -43,6 +47,7 @@ export const useObservationsPlacesStore = defineStore('places', () => {
     observationsPlacesList,
     addObservationPlace,
     removePlace,
+    getPlaceById,
     placeFromObservationItem
   }
 })
