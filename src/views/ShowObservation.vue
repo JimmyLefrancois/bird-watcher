@@ -17,7 +17,22 @@
         <v-icon
           color="themeLightgreenColor"
           icon="mdi-map-marker"
-        /> Lieu : {{ observationToShowItem.location }}
+        />
+        Lieu :
+        <LocationName
+          :observation="observationToShowItem"
+          :display-icon="false"
+        />
+      </p>
+      <p>
+        <v-icon
+          color="themeLightgreenColor"
+          icon="mdi-binoculars"
+        />
+        Type :
+        <LocationType
+          :observation="observationToShowItem"
+        />
       </p>
       <p>
         <v-icon
@@ -25,8 +40,8 @@
           icon="mdi-calendar"
         /> {{ format(observationToShowItem.startDate, 'dd/MM/yyy HH:mm') }} au {{ format(observationToShowItem.endDate, 'dd/MM/yyy HH:mm') }}
       </p>
-      <h3 class="mt-5">
-        Oiseaux observés
+      <h3 class="mt-5 mb-1">
+        Oiseau{{ showPlurial('x') }} observé{{ showPlurial('s') }} ({{ observationToShowItem.observedBirds.length }} espèce{{ showPlurial('s') }})
       </h3>
       <v-list class="pt-0">
         <v-list-item
@@ -48,7 +63,7 @@
         <p>{{ observationToShowItem.commentaire }}</p>
       </template>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions class="d-flex justify-end">
       <v-btn
         color="themeDarkGreenColor"
         @click="router.push({ name: 'modifier-mon-observation', params: { observation: observationToShowItem.id } })"
@@ -74,15 +89,17 @@ import { findBird } from "@/helpers/birdHelpers";
 import router from "@/router";
 import RemoveObservation from "@/components/RemoveObservation";
 import {useSnackbarStore} from "@/store/snackbar";
-import {ref} from "vue";
+import {computed, ref} from "vue";
+import LocationName from "@/components/LocationName.vue";
+import LocationType from "@/components/LocationType.vue";
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const observationLoader = ref(false)
 
 const observationStore = useObservationsStore()
 const { removeObservation } = observationStore
 const { observationToShowItem } = storeToRefs(observationStore)
-
-async function deleteObservation(observation) {
+const showPlurial = (plurialLetter) => observationToShowItem.value.observedBirds.length > 1 ? plurialLetter : ''
+  async function deleteObservation(observation) {
   observationLoader.value = true
   try {
     await removeObservation(observation)
