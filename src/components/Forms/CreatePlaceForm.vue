@@ -42,7 +42,8 @@
               v-model="place.name"
               required
               @blur="v$.name.$touch()"
-              :error-messages="v$.name.$errors.length > 0 ? v$.name.$errors[0].$message :''"
+              :error-messages="v$.name.$errors.map(e => e.$message)"
+              :hide-details="v$.name.$errors.length === 0"
               variant="solo"
               label="Nom du lieu d'observation"
             />
@@ -50,6 +51,7 @@
               color="themeDarkGreenColor"
               :block="true"
               type="submit"
+              class="mt-3"
               :loading="observationLoader"
               :disabled="observationLoader"
               @click="addPlace(isActive)"

@@ -52,9 +52,9 @@
       <v-col
         cols="2"
         class="pl-0 pt-5"
+        v-if="observation.type === 1"
       >
         <CreatePlaceForm
-          v-if="observation.type === 1"
           mode="condensed"
           @add-place="getNewPlaceById($event)"
         />
@@ -64,14 +64,12 @@
       v-if="observation.type === 2"
       v-model="observation.location"
       :error-messages="v$.location.$errors.map(e => e.$message)"
-      required
       label="Lieu"
       @blur="v$.location.$touch()"
       variant="solo-filled"
     />
     <v-btn
       color="themeDarkGreenColor"
-      class="mt-1"
       :block="true"
       type="submit"
       :loading="observationLoader"
@@ -145,7 +143,7 @@ if (currentUser.value) {
   observation.value.user = currentUser.value.uid
 }
 
-const v$ = useVuelidate(rules, observation)
+const v$ = useVuelidate(rules, observation, { $scope: false })
 
 const submitObservation = async () => {
   v$.value.$touch()
