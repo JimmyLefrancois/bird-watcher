@@ -3,36 +3,10 @@
     @submit.prevent="submitObservation"
     class="mt-3"
   >
-    <v-btn-toggle
-      elevation="1"
-      style="width: 100%"
-      class="mb-3"
-      color="themeLightgreenColor"
-      :divided="true"
-      mandatory
-      :error-messages="v$.type.$errors.map(e => e.$message)"
-      @blur="v$.type.$touch()"
-      v-model="observation.type"
-    >
-      <v-btn
-        :value="1"
-        width="50%"
-      >
-        <v-icon>
-          mdi-home
-        </v-icon>
-        <span>Affût</span>
-      </v-btn>
-      <v-btn
-        :value="2"
-        width="50%"
-      >
-        <v-icon>
-          mdi-walk
-        </v-icon>
-        <span>Billebaude</span>
-      </v-btn>
-    </v-btn-toggle>
+    <TypeSortie
+      :scope="validationScope"
+      @set-type-sortie="observation.type = $event"
+    />
     <v-row>
       <v-col cols="10">
         <v-autocomplete
@@ -91,42 +65,18 @@ import {storeToRefs} from "pinia";
 import {useSnackbarStore} from "@/store/snackbar";
 import {useObservationsPlacesStore} from '@/store/places'
 import CreatePlaceForm from "@/components/Forms/CreatePlaceForm";
+import TypeSortie from "@/components/Forms/TypeSortie.vue";
 
 const observationsPlacesStore = useObservationsPlacesStore()
-
 const observationStore = useObservationsStore()
-const {addObservation} = observationStore
 const {errorSnackbar} = useSnackbarStore()
+const userStore = useUsersStore();
+const {addObservation} = observationStore
 const {getPlaceById} = observationsPlacesStore
 const {observationsPlacesList} = storeToRefs(observationsPlacesStore)
-
-const userStore = useUsersStore();
 const {currentUser} = storeToRefs(userStore)
 const observationLoader = ref(false)
-
-const rules = computed(() => {
-  const tempsRules = {
-    type: {required}
-  }
-  if (observation.value.type === 1) {
-    tempsRules.existingLocation = {required}
-  } else if (observation.value.type === 2) {
-    tempsRules.location = {required}
-  }
-
-  return tempsRules
-})
-
-async function getNewPlaceById(id) {
-  try {
-    const addedPlace = await getPlaceById(id)
-    console.log(addedPlace)
-    observation.value.existingLocation = addedPlace.id
-  } catch (error) {
-    console.log(error)
-    errorSnackbar()
-  }
-}
+const validationScope = 'observationScope'
 
 const observation = ref({
   id: null,
@@ -139,11 +89,32 @@ const observation = ref({
   observedBirds: [],
 })
 
+const rules = computed(() => {
+  const tempsRules = {}
+  if (observation.value.type === 1) {
+    tempsRules.existingLocation = {required}
+  } else if (observation.value.type === 2) {
+    tempsRules.location = {required}
+  }
+
+  return tempsRules
+})
+
+const v$ = useVuelidate(rules, observation, { $scope: validationScope })
+
+async function getNewPlaceById(id) {
+  try {
+    const addedPlace = await getPlaceById(id)
+    observation.value.existingLocation = addedPlace.id
+  } catch (error) {
+    console.log(error)
+    errorSnackbar()
+  }
+}
+
 if (currentUser.value) {
   observation.value.user = currentUser.value.uid
 }
-
-const v$ = useVuelidate(rules, observation, { $scope: false })
 
 const submitObservation = async () => {
   v$.value.$touch()
@@ -180,5 +151,3 @@ watch(
 
 </script>
 
-<style>
-</style>

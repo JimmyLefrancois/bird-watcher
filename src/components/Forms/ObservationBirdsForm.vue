@@ -4,8 +4,7 @@
       class="py-3 text-center"
       style="color: #37474f"
     >
-      <v-icon :icon="observationLocationName.icon" />
-      {{ observationLocationName.name }}
+      <LocationName :observation="currentObservationListItem" />
     </h3>
     <v-row class="mb-1">
       <v-col
@@ -89,20 +88,18 @@
 <script setup>
 import {birdsList} from '@/conf/birds.js'
 import {sortBirds} from "@/helpers/birdHelpers";
-import {computed, ref, watch} from "vue";
 import BirdItemRow from "@/components/BirdItemRow";
 import EndObservation from "@/components/EndObservation";
 import {useObservationsStore} from "@/store/observations";
-import {useObservationsPlacesStore} from "@/store/places";
 import {storeToRefs} from "pinia";
 import CancelObservation from "@/components/CancelObservation";
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
 import AddCommentaireToObservation from "@/components/AddCommentaireToObservation";
+import LocationName from "@/components/LocationName.vue";
+import {ref, watch} from "vue";
 
 const observationStore = useObservationsStore()
-const observationPlaceStore = useObservationsPlacesStore()
-const {placeFromObservationItem} = storeToRefs(observationPlaceStore)
 const {
   updateBirdsListFromCurrentObservation,
   endObservation,
@@ -116,26 +113,6 @@ const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
 
 birdsList.unshift({value: -1, text: "Oiseau non reconnu", link: "#"})
-
-const observationLocationName = computed(() => {
-  if (placeFromObservationItem.value) {
-    if (currentObservationListItem.value.type === 1) {
-      return {
-        name: placeFromObservationItem.value.name,
-        icon: 'mdi-home'
-      }
-    } else {
-      return {
-        name: currentObservationListItem.value.location,
-        icon: 'mdi-walk'
-      }
-    }
-  } else {
-    return {
-
-    }
-  }
-})
 
 function normalizedFilter(itemTitle, queryText, item) {
   const bird = normalizeText(item.raw.text)

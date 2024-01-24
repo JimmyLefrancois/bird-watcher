@@ -3,7 +3,10 @@
     <v-row justify="space-between">
       <v-col cols="10">
         <span style="font-size: 16px">
-          {{ observation.location }} |
+          <LocationName
+            :observation="observation"
+            :display-icon="false"
+          /> |
         </span>
         <span
           style="font-size: 14px;"
@@ -62,7 +65,7 @@
   <v-expand-transition>
     <div v-show="show">
       <v-divider />
-      <v-card-text class="pt-2">
+      <v-card-text class="pt-2 pb-0">
         <ul style="list-style-type: none">
           <li
             v-for="(observedBird, indexObservedBird) in observation.observedBirds"
@@ -97,6 +100,7 @@ import { useObservationsStore } from "@/store/observations";
 import RemoveObservation from "@/components/RemoveObservation";
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
+import LocationName from "@/components/LocationName.vue";
 const store = useObservationsStore()
 const { removeObservation } = store
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
