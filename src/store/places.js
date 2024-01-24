@@ -1,6 +1,5 @@
 import {defineStore, storeToRefs} from "pinia";
 import {useUsersStore} from "@/store/users";
-import {useObservationsStore} from "@/store/observations";
 import {computed} from "vue";
 import {collection, doc, query, where} from "firebase/firestore";
 import {db} from "@/conf/firebase";
@@ -11,11 +10,6 @@ export const useObservationsPlacesStore = defineStore('places', () => {
   const userStore = useUsersStore()
   const { currentUser } = storeToRefs(userStore)
 
-  const observationStore = useObservationsStore()
-  const { currentObservationListItem } = storeToRefs(observationStore)
-  const placeFromObservationQuery = computed(() => currentObservationListItem.value && doc(db, 'places', currentObservationListItem.value.existingLocation))
-  const placeFromObservationItem = useFirestore(placeFromObservationQuery, null)
-
   const userObservationsPlacesQuery = computed(() => currentUser.value && query(collection(db, 'places'), where("user", "==", currentUser.value.uid)))
   const observationsPlacesList = useFirestore(userObservationsPlacesQuery, null)
 
@@ -25,6 +19,14 @@ export const useObservationsPlacesStore = defineStore('places', () => {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  function getPlaceByObservation(observation) {
+    if (observation.type === 1) {
+      const query = doc(db, 'places', observation.existingLocation)
+      return useFirestore(query, null)
+    }
+    return null
   }
 
   async function getPlaceById(id) {
@@ -44,10 +46,10 @@ export const useObservationsPlacesStore = defineStore('places', () => {
   }
 
   return {
+    getPlaceByObservation,
     observationsPlacesList,
     addObservationPlace,
     removePlace,
-    getPlaceById,
-    placeFromObservationItem
+    getPlaceById
   }
 })
