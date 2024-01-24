@@ -26,7 +26,7 @@ import { findBird } from "@/helpers/birdHelpers";
 import { useObservationsStore } from "@/store/observations";
 import {storeToRefs} from "pinia";
 import {watch, computed} from "vue";
-import RemoveBirdFromObservation from "@/components/RemoveBirdFromObservation";
+import RemoveBirdFromObservation from "@/components/Dialogs/RemoveBirdFromObservation.vue";
 import router from "@/router";
 
 const observationStore = useObservationsStore()

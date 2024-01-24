@@ -46,7 +46,7 @@
 <script setup>
 import { useObservationsPlacesStore } from '@/store/places'
 import {storeToRefs} from "pinia";
-import RemovePlace from "@/components/RemovePlace.vue";
+import RemovePlace from "@/components/Dialogs/RemovePlace.vue";
 import {ref} from "vue";
 import {useSnackbarStore} from "@/store/snackbar";
 

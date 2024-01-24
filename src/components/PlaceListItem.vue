@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import RemovePlace from "@/components/RemovePlace"
+import RemovePlace from "@/components/Dialogs/RemovePlace.vue"
 import {ref} from "vue";
 import {useSnackbarStore} from "@/store/snackbar";
 import {useObservationsPlacesStore } from "@/store/places";
