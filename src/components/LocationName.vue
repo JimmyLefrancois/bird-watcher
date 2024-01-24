@@ -9,6 +9,7 @@
 <script setup>
 import {useObservationsPlacesStore} from "@/store/places";
 import {computed} from "vue";
+import {capitalize} from "lodash";
 
 const observationPlaceStore = useObservationsPlacesStore()
 const {getPlaceByObservation} = observationPlaceStore
@@ -29,12 +30,12 @@ const placeByObservation = getPlaceByObservation(props.observation)
 const observationLocationName = computed(() => {
   if (placeByObservation?.value) {
     return {
-      name: placeByObservation.value.name,
+      name: capitalize(placeByObservation.value.name),
       icon: 'mdi-home'
     }
   } else {
     return {
-      name: props.observation.location,
+      name: capitalize(props.observation.location),
       icon: 'mdi-walk'
     }
   }
