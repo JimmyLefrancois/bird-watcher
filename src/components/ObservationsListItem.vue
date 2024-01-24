@@ -6,7 +6,7 @@
           <LocationName
             :observation="observation"
             :display-icon="false"
-          /> |
+          /> ● <LocationType :observation="observation" /> ●
         </span>
         <span
           style="font-size: 14px;"
@@ -24,7 +24,9 @@
       </v-col>
     </v-row>
   </v-card-title>
-  <v-card-subtitle style="font-size: 11px;">
+  <v-card-subtitle
+    style="font-size: 11px; opacity: 1"
+  >
     Du {{ format(observation.startDate, 'dd/MM/yyy HH:mm') }} au {{ format(observation.endDate, 'dd/MM/yyy HH:mm') }}
   </v-card-subtitle>
   <v-card-actions class="py-0">
@@ -101,6 +103,7 @@ import RemoveObservation from "@/components/RemoveObservation";
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
 import LocationName from "@/components/LocationName.vue";
+import LocationType from "@/components/LocationType.vue";
 const store = useObservationsStore()
 const { removeObservation } = store
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
