@@ -129,6 +129,8 @@ const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
 
+birdsList.unshift({value: -1, text: "Oiseau non reconnu", link: "#"})
+
 const rules = {
   observedBirds: {minLength: minLength(1), required},
   location: {required},
