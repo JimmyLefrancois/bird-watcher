@@ -99,7 +99,7 @@ const show = ref(false)
 import {findBird} from "@/helpers/birdHelpers"
 import { format } from "date-fns";
 import { useObservationsStore } from "@/store/observations";
-import RemoveObservation from "@/components/RemoveObservation";
+import RemoveObservation from "@/components/Dialogs/RemoveObservation.vue";
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
 import LocationName from "@/components/LocationName.vue";

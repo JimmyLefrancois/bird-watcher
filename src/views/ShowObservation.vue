@@ -87,9 +87,9 @@ import {storeToRefs} from "pinia";
 import { format } from 'date-fns'
 import { findBird } from "@/helpers/birdHelpers";
 import router from "@/router";
-import RemoveObservation from "@/components/RemoveObservation";
+import RemoveObservation from "@/components/Dialogs/RemoveObservation.vue";
 import {useSnackbarStore} from "@/store/snackbar";
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import LocationName from "@/components/LocationName.vue";
 import LocationType from "@/components/LocationType.vue";
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()

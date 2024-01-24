@@ -123,7 +123,7 @@ import {minLength, required} from "@vuelidate/validators";
 import { format } from 'date-fns'
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
-import AddCommentaireToObservation from "@/components/AddCommentaireToObservation";
+import AddCommentaireToObservation from "@/components/Dialogs/AddCommentaireToObservation.vue";
 import TypeSortie from "@/components/Forms/TypeSortie.vue";
 import ChoosePlaceOrLocation from "@/components/Forms/ChoosePlaceOrLocation.vue";
 

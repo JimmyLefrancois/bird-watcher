@@ -89,13 +89,13 @@
 import {birdsList} from '@/conf/birds.js'
 import {sortBirds} from "@/helpers/birdHelpers";
 import BirdItemRow from "@/components/BirdItemRow";
-import EndObservation from "@/components/EndObservation";
+import EndObservation from "@/components/Dialogs/EndObservation.vue";
 import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
-import CancelObservation from "@/components/CancelObservation";
+import CancelObservation from "@/components/Dialogs/CancelObservation.vue";
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
-import AddCommentaireToObservation from "@/components/AddCommentaireToObservation";
+import AddCommentaireToObservation from "@/components/Dialogs/AddCommentaireToObservation.vue";
 import LocationName from "@/components/LocationName.vue";
 import {ref, watch} from "vue";
 
