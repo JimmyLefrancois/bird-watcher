@@ -42,14 +42,24 @@ const props = defineProps({
   scope: {
     type: String,
     default: null
+  },
+  observation: {
+    type: Object,
+    default: null
   }
 })
+
 const type = ref(null)
+
+if (props.observation) {
+  type.value = props.observation.type
+}
+
 const rules = {
   type: {required}
 }
 
-const v$ = useVuelidate(rules, type)
+const v$ = useVuelidate(rules, {type}, { $scope: props.scope })
 
 function setType() {
   emits('setTypeSortie', type)
