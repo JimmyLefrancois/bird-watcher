@@ -102,7 +102,7 @@ const rules = {
   name: {required},
 }
 
-let v$ = useVuelidate(rules, place)
+let v$ = useVuelidate(rules, place, { $scope: false })
 
 async function addPlace(isActive) {
   v$.value.$touch()
