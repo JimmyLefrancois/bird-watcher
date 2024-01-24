@@ -13,15 +13,19 @@
       elevation="2"
       :block="true"
       text="Modifier la sortie"
+      class="mb-3"
     />
-    <v-text-field
-      class="pt-5"
-      v-model="currentEditingObservationListItem.location"
-      :error-messages="v$.location.$errors.length > 0 ? v$.location.$errors[0].$message :''"
-      required
-      label="Lieu"
-      @blur="v$.location.$touch()"
-      variant="solo-filled"
+    <TypeSortie
+      :scope="validationScope"
+      :observation="currentEditingObservationListItem"
+      @set-type-sortie="currentEditingObservationListItem.type = $event"
+    />
+    <ChoosePlaceOrLocation
+      :observation="currentEditingObservationListItem"
+      @update-existing-location="currentEditingObservationListItem.existingLocation = $event"
+      @update-location="currentEditingObservationListItem.location = $event"
+      :scope="validationScope"
+      :creation-available="false"
     />
     <v-dialog
       v-model="displayBirdRemoveDialog"
@@ -120,6 +124,8 @@ import { format } from 'date-fns'
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
 import AddCommentaireToObservation from "@/components/AddCommentaireToObservation";
+import TypeSortie from "@/components/Forms/TypeSortie.vue";
+import ChoosePlaceOrLocation from "@/components/Forms/ChoosePlaceOrLocation.vue";
 
 const observationStore = useObservationsStore()
 const { editObservation } = observationStore
@@ -128,10 +134,12 @@ const { currentEditingObservationListItem } = storeToRefs(observationStore)
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
+const validationScope = 'observationScope'
+
+birdsList.unshift({value: -1, text: "Oiseau non reconnu", link: "#"})
 
 const rules = {
   observedBirds: {minLength: minLength(1), required},
-  location: {required},
   startDate: {required},
   endDate: {required},
 }
@@ -143,7 +151,7 @@ function setFormatedEndDate(date) {
   currentEditingObservationListItem.value.endDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
 }
 
-let v$ = useVuelidate(rules, currentEditingObservationListItem)
+let v$ = useVuelidate(rules, currentEditingObservationListItem, { $scope: validationScope })
 
 async function updateObservation()
 {

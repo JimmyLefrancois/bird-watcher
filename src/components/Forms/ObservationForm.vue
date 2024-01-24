@@ -3,17 +3,18 @@
     @submit.prevent="submitObservation"
     class="mt-3"
   >
-    <v-text-field
-      v-model="observation.location"
-      :error-messages="v$.location.$errors.length > 0 ? v$.location.$errors[0].$message :''"
-      required
-      label="Lieu"
-      @blur="v$.location.$touch()"
-      variant="solo-filled"
+    <TypeSortie
+      :scope="validationScope"
+      @set-type-sortie="observation.type = $event"
+    />
+    <ChoosePlaceOrLocation
+      :observation="observation"
+      @update-existing-location="observation.existingLocation = $event"
+      @update-location="observation.location = $event"
+      :scope="validationScope"
     />
     <v-btn
       color="themeDarkGreenColor"
-      class="mt-1"
       :block="true"
       type="submit"
       :loading="observationLoader"
@@ -26,40 +27,41 @@
 
 <script setup>
 import {ref, watch} from 'vue';
-import {useVuelidate} from '@vuelidate/core'
-import {required} from '@vuelidate/validators'
 import {format} from 'date-fns'
 import {useObservationsStore} from "@/store/observations";
 import {useUsersStore} from "@/store/users";
 import {storeToRefs} from "pinia";
-import { useSnackbarStore } from "@/store/snackbar";
+import {useSnackbarStore} from "@/store/snackbar";
+import TypeSortie from "@/components/Forms/TypeSortie.vue";
+import ChoosePlaceOrLocation from "@/components/Forms/ChoosePlaceOrLocation.vue";
+import {useVuelidate} from "@vuelidate/core";
 
 const observationStore = useObservationsStore()
-const { addObservation } = observationStore
 const {errorSnackbar} = useSnackbarStore()
-
 const userStore = useUsersStore();
+const {addObservation} = observationStore
 const {currentUser} = storeToRefs(userStore)
 const observationLoader = ref(false)
-
-const rules = {
-  location: {required},
-}
+const validationScope = 'observationScope'
 
 const observation = ref({
   id: null,
   startDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   endDate: null,
   location: null,
+  existingLocation: null,
+  type: null,
   commentaire: '',
   observedBirds: [],
 })
+
+const rules = {}
 
 if (currentUser.value) {
   observation.value.user = currentUser.value.uid
 }
 
-const v$ = useVuelidate(rules, observation.value)
+const v$ = useVuelidate(rules, observation, { $scope: validationScope })
 
 const submitObservation = async () => {
   v$.value.$touch()
@@ -68,7 +70,7 @@ const submitObservation = async () => {
     try {
       await addObservation(observation.value)
       observationLoader.value = false
-    }catch (error) {
+    } catch (error) {
       errorSnackbar()
     }
     observationLoader.value = false
@@ -84,5 +86,3 @@ watch(
 
 </script>
 
-<style>
-</style>

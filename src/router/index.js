@@ -45,6 +45,18 @@ const routes = [
     meta: { requiresAuth: true, title: 'Mes observations'},
   },
   {
+    path: '/mes-lieux-d-observation',
+    name: 'mes-lieux-d-observation',
+    component: () => import('@/views/MyPlaces'),
+    meta: { requiresAuth: true, title: 'Mes lieux d\'observation'},
+  },
+  {
+    path: '/ajouter-un-lieu-d-observation',
+    name: 'ajouter-un-lieu-d-observation',
+    component: () => import('@/components/Forms/CreatePlaceForm'),
+    meta: { requiresAuth: true, title: 'Ajouter un lieu d\'observation'},
+  },
+  {
     path: '/creer-mon-compte',
     name: 'creer-mon-compte',
     component: () => import('@/views/Auth/Register'),
@@ -74,7 +86,7 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   useHead({
-    title: to?.meta?.title || 'Mes observations ornitho'
+    title: `${to?.meta?.title} - Plumes en vue` || 'Plumes en vue'
   })
   const currentUser = await getCurrentUser();
   if (to.meta.requiresAuth && !currentUser) {

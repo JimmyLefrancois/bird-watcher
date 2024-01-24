@@ -4,8 +4,7 @@
       class="py-3 text-center"
       style="color: #37474f"
     >
-      <v-icon icon="mdi-map-marker" />
-      {{ currentObservationListItem.location }}
+      <LocationName :observation="currentObservationListItem" />
     </h3>
     <v-row class="mb-1">
       <v-col
@@ -88,8 +87,7 @@
 
 <script setup>
 import {birdsList} from '@/conf/birds.js'
-import { sortBirds } from "@/helpers/birdHelpers";
-import {ref, watch} from "vue";
+import {sortBirds} from "@/helpers/birdHelpers";
 import BirdItemRow from "@/components/BirdItemRow";
 import EndObservation from "@/components/EndObservation";
 import {useObservationsStore} from "@/store/observations";
@@ -98,10 +96,17 @@ import CancelObservation from "@/components/CancelObservation";
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
 import AddCommentaireToObservation from "@/components/AddCommentaireToObservation";
+import LocationName from "@/components/LocationName.vue";
+import {ref, watch} from "vue";
 
 const observationStore = useObservationsStore()
-const {updateBirdsListFromCurrentObservation, endObservation, removeObservation, clearCurrentObservation} = observationStore
-const { currentObservationListItem } = storeToRefs(observationStore)
+const {
+  updateBirdsListFromCurrentObservation,
+  endObservation,
+  removeObservation,
+  clearCurrentObservation
+} = observationStore
+const {currentObservationListItem} = storeToRefs(observationStore)
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
@@ -119,8 +124,7 @@ function normalizeText(text) {
   return text.normalize('NFD').replace(/\p{Diacritic}/gu, "").toLowerCase().replace(/[^a-zA-Z0-9 ]/g, ' ')
 }
 
-async function finaliseObservation()
-{
+async function finaliseObservation() {
   observationLoader.value = true
   try {
     await endObservation()
@@ -135,8 +139,7 @@ async function finaliseObservation()
   observationLoader.value = false
 }
 
-async function cancelObservation()
-{
+async function cancelObservation() {
   try {
     await removeObservation(currentObservationListItem.value)
     await clearCurrentObservation()
