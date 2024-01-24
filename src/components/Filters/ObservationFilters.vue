@@ -33,8 +33,15 @@
             <v-icon
               class="mr-1"
               icon="mdi-filter-off"
-            />Réinitialiser les filtres
+            />
+            Réinitialiser les filtres
           </p>
+          <TypeSortieFilter @set-type-sortie="typeFilter = $event" />
+          <PlaceOrLocationFilter
+            v-if="typeFilter !== null"
+            :type="typeFilter"
+            :key="typeFilter"
+          />
           <v-autocomplete
             variant="solo-filled"
             :items="filteredBirdsList"
@@ -48,15 +55,15 @@
             hide-details
             @click:clear="blur"
           />
-          <v-text-field
-            variant="solo-filled"
-            v-model="locationFilter"
-            label="Filtrer par lieu d'observation"
-            :clearable="true"
-            hide-details
-            class="mt-0"
-            @click:clear="blur"
-          />
+          <!--          <v-text-field-->
+          <!--            variant="solo-filled"-->
+          <!--            v-model="locationFilter"-->
+          <!--            label="Filtrer par lieu d'observation"-->
+          <!--            :clearable="true"-->
+          <!--            hide-details-->
+          <!--            class="mt-0"-->
+          <!--            @click:clear="blur"-->
+          <!--          />-->
           <v-btn
             color="themeDarkGreenColor"
             @click="setFilters(isActive)"
@@ -76,11 +83,14 @@ import {birdsList} from '@/conf/birds.js'
 import {computed, ref} from "vue";
 import { useObservationsStore } from "@/store/observations";
 import {storeToRefs} from "pinia";
+import TypeSortieFilter from "@/components/Filters/TypeSortieFilter.vue";
+import PlaceOrLocationFilter from "@/components/Filters/PlaceOrLocationFilter.vue";
 
 const observationStore = useObservationsStore()
 const { observationsList } = storeToRefs(observationStore)
 const selectedBirds = ref([])
 const locationFilter = ref(null)
+const typeFilter = ref(null)
 
 const filteredBirdsList = computed(() => {
   if (observationsList.value) {
@@ -124,7 +134,7 @@ defineProps({
 
 function setFilters(isActive) {
   isActive.value = false
-  emit('updateFilters', {selectedBirds, locationFilter})
+  emit('updateFilters', {selectedBirds, locationFilter, typeFilter})
 }
 </script>
 

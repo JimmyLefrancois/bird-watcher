@@ -31,7 +31,7 @@ import {storeToRefs} from "pinia";
 import ObservationsListItem from "@/components/ObservationsListItem";
 import {computed} from "vue";
 import { ref } from 'vue'
-import ObservationFilters from "@/components/ObservationFilters";
+import ObservationFilters from "@/components/Filters/ObservationFilters.vue";
 
 const observationStore = useObservationsStore()
 const { endedObservations } = storeToRefs(observationStore)
