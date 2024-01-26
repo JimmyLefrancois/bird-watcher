@@ -65,7 +65,7 @@
         @click="loginAsAnonymousUser"
         size="large"
       >
-        Continuer en anonyme
+        Continuer en invité
       </v-btn>
     </v-card-text>
   </v-card>
@@ -101,7 +101,7 @@ async function loginAsAnonymousUser() {
     await loginAsAnonymous()
     updateSnackbar({
       type: 'success',
-      text: 'Vous êtes désormais connecté en tant qu\'anonyme.'
+      text: 'Vous êtes désormais connecté en tant qu\'invité.'
     })
     await router.push({'name': 'accueil'})
   } catch (error) {

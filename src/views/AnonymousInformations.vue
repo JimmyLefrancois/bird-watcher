@@ -63,7 +63,7 @@
             variant="text"
             @click="isActive.value = false"
           >
-            Continuer en anonyme
+            Continuer en invité
           </v-btn>
         </v-card-actions>
       </v-card>
