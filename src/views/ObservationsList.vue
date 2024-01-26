@@ -66,6 +66,8 @@ const filteredObservations = computed(() => {
       }
       //exclusif - todo conditionner le &&
       return result.reduce((acc, current) => acc && current, true)
+    }).sort((a, b) => {
+      return a.startDate < b.startDate ? 1 : -1
     })
   }
   return []
