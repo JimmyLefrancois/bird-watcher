@@ -24,5 +24,5 @@ app.component('VueDatePicker', VueDatePicker);
 
 registerPlugins(app)
 
-registerSW({ immediate: true })
+registerSW({ immediate: true, onOfflineReady() {}, })
 app.mount('#app')
