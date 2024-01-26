@@ -1,22 +1,19 @@
 <template>
-  <v-card-title class="font-weight-regular pb-0">
+  <v-card-title
+    class="font-weight-regular pb-0 pt-0 mb-2"
+    style="background-color: #6C733D"
+  >
     <v-row justify="space-between">
       <v-col cols="10">
-        <span style="font-size: 16px">
+        <span
+          style="font-size: 16px"
+          class="text-white"
+        >
           <LocationName
             :observation="observation"
             :display-icon="false"
             :key="observation.id"
-          /> ● <LocationType
-            :observation="observation"
-            :key="observation.id"
-          /> ●
-        </span>
-        <span
-          style="font-size: 14px;"
-          class="text-grey-darken-1"
-        >
-          {{ observation.observedBirds.length }} espèce<span v-if="observation.observedBirds.length > 1">s</span>
+          />
         </span>
       </v-col>
       <v-col cols="2">
@@ -29,9 +26,21 @@
     </v-row>
   </v-card-title>
   <v-card-subtitle
-    style="font-size: 11px; opacity: 1"
+    style="font-size: 14px; opacity: 1"
   >
-    Du {{ format(observation.startDate, 'dd/MM/yyy HH:mm') }} au {{ format(observation.endDate, 'dd/MM/yyy HH:mm') }}
+    <p class="mb-1">
+      <LocationType
+        :observation="observation"
+        :key="observation.id"
+      /> |
+      <span
+        style="font-size: 14px;"
+        class="text-grey-darken-1"
+      >
+        {{ observation.observedBirds.length }} espèce<span v-if="observation.observedBirds.length > 1">s</span>
+      </span>
+    </p>
+    <p>Du {{ format(observation.startDate, 'dd/MM/yyy HH:mm') }} au {{ format(observation.endDate, 'dd/MM/yyy HH:mm') }}</p>
   </v-card-subtitle>
   <v-card-actions class="py-0">
     <v-btn

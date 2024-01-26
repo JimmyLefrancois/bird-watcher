@@ -4,9 +4,8 @@
       <v-btn
         v-if="mode === 'condensed'"
         v-bind="props"
-        size="small"
         variant="text"
-        color="red"
+        color="white"
         density="compact"
         icon="mdi-delete"
       />
