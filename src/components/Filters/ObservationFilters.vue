@@ -11,7 +11,7 @@
         prepend-icon="mdi-filter"
         class="mt-3"
       >
-        Filtrer({{ activeFilters }})
+        Filtres ({{ activeFilters }})
       </v-btn>
     </template>
     <template #default="{ isActive }">
@@ -36,18 +36,25 @@
             />
             Réinitialiser les filtres
           </p>
-          <TypeSortieFilter @set-type-sortie="typeFilter = $event" />
-          <PlaceOrLocationFilter
-            v-if="typeFilter !== null"
-            :type="typeFilter"
-            :key="typeFilter"
-          />
+          <div class="mb-3">
+            <TypeSortieFilter v-model="typeFilter" />
+          </div>
+          <div
+            class="mt-3"
+            v-if="typeFilter"
+          >
+            <PlaceOrLocationFilter
+              :type="typeFilter"
+              v-model:location="locationFilter"
+              v-model:existingLocationFilter="existingLocationFilter"
+            />
+          </div>
           <v-autocomplete
             variant="solo-filled"
             :items="filteredBirdsList"
             item-value="value"
             item-title="text"
-            class="mt-3 mb-3"
+            class="mb-3"
             label="Filtrer par oiseaux observés"
             v-model="selectedBirds"
             :clearable="true"
@@ -55,15 +62,6 @@
             hide-details
             @click:clear="blur"
           />
-          <!--          <v-text-field-->
-          <!--            variant="solo-filled"-->
-          <!--            v-model="locationFilter"-->
-          <!--            label="Filtrer par lieu d'observation"-->
-          <!--            :clearable="true"-->
-          <!--            hide-details-->
-          <!--            class="mt-0"-->
-          <!--            @click:clear="blur"-->
-          <!--          />-->
           <v-btn
             color="themeDarkGreenColor"
             @click="setFilters(isActive)"
@@ -91,6 +89,7 @@ const { observationsList } = storeToRefs(observationStore)
 const selectedBirds = ref([])
 const locationFilter = ref(null)
 const typeFilter = ref(null)
+const existingLocationFilter = ref(null)
 
 const filteredBirdsList = computed(() => {
   if (observationsList.value) {
@@ -118,6 +117,12 @@ const activeFilters = computed(() => {
   if (locationFilter.value) {
     count++
   }
+  if (typeFilter.value) {
+    count++
+  }
+  if (existingLocationFilter.value) {
+    count++
+  }
 
   return count
 })
@@ -125,6 +130,8 @@ const activeFilters = computed(() => {
 function resetFilters() {
   selectedBirds.value = []
   locationFilter.value = null
+  typeFilter.value = null
+  existingLocationFilter.value = null
 }
 
 const emit = defineEmits(['updateFilters'])
@@ -134,10 +141,6 @@ defineProps({
 
 function setFilters(isActive) {
   isActive.value = false
-  emit('updateFilters', {selectedBirds, locationFilter, typeFilter})
+  emit('updateFilters', {selectedBirds, locationFilter, typeFilter, existingLocationFilter})
 }
 </script>
-
-<style scoped>
-
-</style>

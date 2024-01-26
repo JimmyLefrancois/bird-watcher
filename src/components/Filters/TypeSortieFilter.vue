@@ -7,7 +7,6 @@
     style="width: 100%"
     color="themeLightgreenColor"
     :divided="true"
-    @update:model-value="setType"
     v-model="type"
   >
     <v-btn
@@ -35,7 +34,7 @@ import {ref} from "vue";
 
 const emits = defineEmits(['setTypeSortie'])
 
-const type = ref(null)
+const type = defineModel()
 
 function setType() {
   emits('setTypeSortie', type)

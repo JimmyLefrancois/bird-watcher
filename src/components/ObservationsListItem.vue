@@ -6,7 +6,11 @@
           <LocationName
             :observation="observation"
             :display-icon="false"
-          /> ● <LocationType :observation="observation" /> ●
+            :key="observation.id"
+          /> ● <LocationType
+            :observation="observation"
+            :key="observation.id"
+          /> ●
         </span>
         <span
           style="font-size: 14px;"

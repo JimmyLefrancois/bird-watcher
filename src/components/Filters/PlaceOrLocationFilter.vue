@@ -4,29 +4,31 @@
       <v-autocomplete
         v-if="type === 1 && observationsPlacesList"
         variant="solo-filled"
-        v-model="localObservation.existingLocation"
+        v-model="existingLocationFilter"
         :items="observationsPlacesList"
         :clearable="true"
         item-value="id"
+        :hide-details="true"
         item-title="name"
         no-data-text="Aucun lieu enregistré."
         label="Lieu d'observation"
-        @update:model-value="updateExistingLocation"
+        class="mb-3"
       />
     </v-col>
   </v-row>
   <v-text-field
     v-if="type === 2"
-    v-model="localObservation.location"
+    v-model="location"
     label="Lieu"
+    :hide-details="true"
     variant="solo-filled"
-    @update:model-value="updateLocation"
+    class="mb-3"
   />
 </template>
 <script setup>
 import {useObservationsPlacesStore} from "@/store/places";
 import {storeToRefs} from "pinia";
-import {ref, watch} from "vue";
+import {watch} from "vue";
 const observationsPlacesStore = useObservationsPlacesStore()
 const {observationsPlacesList} = storeToRefs(observationsPlacesStore)
 
@@ -37,30 +39,16 @@ const props = defineProps({
   },
 })
 
-const localObservation = ref({
-  existingLocation: null,
-  location: null
-})
-
-const emits = defineEmits(['updateExistingLocation', 'updateLocation'])
-
-function updateLocation() {
-  emits('updateLocation', localObservation.value.location)
-}
-
-function updateExistingLocation() {
-  emits('updateExistingLocation', localObservation.value.existingLocation)
-}
+const location = defineModel('location', { required: false, type: String })
+const existingLocationFilter = defineModel('existingLocationFilter', { required: false, type: String })
 
 watch(
   () => props.type,
   (value) => {
     if (value === 1) {
-      localObservation.value.existingLocation = null
-      emits('updateLocation', null)
+      location.value = null
     } else {
-      localObservation.value.location = null
-      emits('updateExistingLocation', null)
+      existingLocationFilter.value = null
     }
   }
 )
