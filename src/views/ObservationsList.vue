@@ -31,16 +31,20 @@ import {storeToRefs} from "pinia";
 import ObservationsListItem from "@/components/ObservationsListItem";
 import {computed} from "vue";
 import { ref } from 'vue'
-import ObservationFilters from "@/components/ObservationFilters";
+import ObservationFilters from "@/components/Filters/ObservationFilters.vue";
 
 const observationStore = useObservationsStore()
 const { endedObservations } = storeToRefs(observationStore)
 const selectedBirds = ref([])
 const locationFilter = ref('')
+const existingLocationFilter = ref('')
+const typeFilter = ref(null)
 
 function updateFilters(filters) {
   selectedBirds.value = filters.selectedBirds.value
   locationFilter.value = filters.locationFilter.value
+  existingLocationFilter.value = filters.existingLocationFilter.value
+  typeFilter.value = filters.typeFilter.value
 }
 
 const filteredObservations = computed(() => {
@@ -53,6 +57,12 @@ const filteredObservations = computed(() => {
       }
       if (locationFilter.value && locationFilter.value !== '') {
         result.push(getObservationsFilteredByLocation(observation))
+      }
+      if (typeFilter?.value) {
+        result.push(getObservationsFilteredByType(observation))
+      }
+      if (existingLocationFilter.value && existingLocationFilter.value !== '') {
+        result.push(getObservationsFilteredByExistingLocation(observation))
       }
       //exclusif - todo conditionner le &&
       return result.reduce((acc, current) => acc && current, true)
@@ -68,7 +78,16 @@ function getObservationsFilteredByBirds(observation)
 
 function getObservationsFilteredByLocation(observation)
 {
-  return observation.location.toLowerCase().indexOf(locationFilter.value.toLowerCase()) >= 0;
+  return observation.location && observation.location.toLowerCase().indexOf(locationFilter.value.toLowerCase()) >= 0;
+}
+
+function getObservationsFilteredByExistingLocation(observation)
+{
+  return observation.existingLocation && observation.existingLocation === existingLocationFilter.value;
+}
+function getObservationsFilteredByType(observation)
+{
+  return observation.type === typeFilter.value;
 }
 
 </script>
