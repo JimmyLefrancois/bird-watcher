@@ -29,7 +29,7 @@
       >
         <v-btn
           icon="mdi-close"
-          @click="isActive.value = false"
+          @click="closeModal(isActive)"
         />
       </v-toolbar>
       <v-card>
@@ -41,7 +41,8 @@
             <v-text-field
               v-model="place.name"
               required
-              @blur="v$.name.$touch()"
+              :clearable="true"
+              @update:model-value="v$.name.$touch()"
               :error-messages="v$.name.$errors.map(e => e.$message)"
               :hide-details="v$.name.$errors.length === 0"
               variant="solo"
@@ -67,27 +68,26 @@
 
 <script setup>
 import { format } from 'date-fns'
-import {required} from "@vuelidate/validators";
+import {required, helpers} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import { useObservationsPlacesStore } from '@/store/places'
 import {useSnackbarStore} from "@/store/snackbar";
 import {useUsersStore} from "@/store/users";
 import {storeToRefs} from "pinia";
 
+const userStore = useUsersStore();
+const {currentUser} = storeToRefs(userStore)
+const observationsPlacesStore = useObservationsPlacesStore()
+const { addObservationPlace } = observationsPlacesStore
+const { observationsPlacesList } = storeToRefs(observationsPlacesStore)
+const {updateSnackbar, errorSnackbar} = useSnackbarStore()
+const observationLoader = ref(false)
+const emit = defineEmits(['addPlace'])
+
 defineProps({
   mode: {type: String, default: 'full'}
 })
-
-const userStore = useUsersStore();
-const {currentUser} = storeToRefs(userStore)
-
-const observationsPlacesStore = useObservationsPlacesStore()
-const { addObservationPlace } = observationsPlacesStore
-const {updateSnackbar, errorSnackbar} = useSnackbarStore()
-
-const observationLoader = ref(false)
-const emit = defineEmits(['addPlace'])
 
 const place = ref({
   name: null,
@@ -98,11 +98,29 @@ if (currentUser.value) {
   place.value.user = currentUser.value.uid
 }
 
+const existingNames = computed(() => {
+  return observationsPlacesList.value.map((place) => place.name.toLowerCase())
+})
+
+const mustBeUnique = (placeName) => !existingNames.value.includes(placeName.toLowerCase())
+
 const rules = {
-  name: {required},
+  name: {
+    required: helpers.withMessage('Ce champs est obligatoire.', required),
+    mustBeUnique: helpers.withMessage(({$model}) => `Le lieux ${$model} existe déjà`, mustBeUnique)
+  },
 }
 
 let v$ = useVuelidate(rules, place, { $scope: false })
+
+function closeModal(isActive) {
+  isActive.value=false
+  place.value = {
+    name: null,
+    createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm")
+  }
+  v$.value.$reset()
+}
 
 async function addPlace(isActive) {
   v$.value.$touch()
@@ -114,7 +132,7 @@ async function addPlace(isActive) {
         type: 'success',
         text: 'Votre lieu d\'observation a bien été ajouté.'
       })
-      isActive.value=false
+      closeModal(isActive)
       emit('addPlace', addedPlace.id)
     } catch (error) {
       errorSnackbar()
