@@ -115,10 +115,7 @@ let v$ = useVuelidate(rules, place, { $scope: false })
 
 function closeModal(isActive) {
   isActive.value=false
-  place.value = {
-    name: null,
-    createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm")
-  }
+  place.value.name = null
   v$.value.$reset()
 }
 
@@ -128,6 +125,7 @@ async function addPlace(isActive) {
     observationLoader.value = true
     try {
       const addedPlace = await addObservationPlace(place.value)
+      console.log(addedPlace)
       updateSnackbar({
         type: 'success',
         text: 'Votre lieu d\'observation a bien été ajouté.'
