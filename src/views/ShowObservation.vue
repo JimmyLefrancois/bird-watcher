@@ -45,7 +45,7 @@
       </h3>
       <v-list class="pt-0">
         <v-list-item
-          v-for="(bird, index) in observationToShowItem.observedBirds"
+          v-for="(bird, index) in sortedBirds"
           :key="index"
           class="pa-0"
         >
@@ -89,7 +89,7 @@ import { findBird } from "@/helpers/birdHelpers";
 import router from "@/router";
 import RemoveObservation from "@/components/Dialogs/RemoveObservation.vue";
 import {useSnackbarStore} from "@/store/snackbar";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import LocationName from "@/components/LocationName.vue";
 import LocationType from "@/components/LocationType.vue";
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
@@ -98,6 +98,14 @@ const observationLoader = ref(false)
 const observationStore = useObservationsStore()
 const { removeObservation } = observationStore
 const { observationToShowItem } = storeToRefs(observationStore)
+
+const sortedBirds = computed(() => {
+  const observedBirds = observationToShowItem.value.observedBirds
+  return observedBirds.sort((a,b) => {
+    return findBird(a.id).text > findBird(b.id).text ? 1 : -1
+  })
+})
+
 const showPlurial = (plurialLetter) => observationToShowItem.value.observedBirds.length > 1 ? plurialLetter : ''
   async function deleteObservation(observation) {
   observationLoader.value = true
