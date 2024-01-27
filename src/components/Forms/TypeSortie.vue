@@ -33,7 +33,7 @@
 </template>
 <script setup>
 import {ref} from "vue";
-import {required} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
 
 const emits = defineEmits(['setTypeSortie'])
@@ -56,7 +56,7 @@ if (props.observation) {
 }
 
 const rules = {
-  type: {required}
+  type: {required: helpers.withMessage('Ce champs est obligatoire.', required)}
 }
 
 const v$ = useVuelidate(rules, {type}, { $scope: props.scope })

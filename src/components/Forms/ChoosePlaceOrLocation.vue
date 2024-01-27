@@ -42,7 +42,7 @@ import CreatePlaceForm from "@/components/Forms/CreatePlaceForm.vue";
 import {useObservationsPlacesStore} from "@/store/places";
 import {storeToRefs} from "pinia";
 import {computed, ref, watch} from "vue";
-import {required} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
 import {useSnackbarStore} from "@/store/snackbar";
 const observationsPlacesStore = useObservationsPlacesStore()
@@ -75,9 +75,9 @@ const emits = defineEmits(['updateExistingLocation', 'updateLocation'])
 const rules = computed(() => {
   const tempsRules = {}
   if (props.observation.type === 1) {
-    tempsRules.existingLocation = {required}
+    tempsRules.existingLocation = {required: helpers.withMessage('Ce champs est obligatoire.', required)}
   } else if (props.observation.type === 2) {
-    tempsRules.location = {required}
+    tempsRules.location = {required: helpers.withMessage('Ce champs est obligatoire.', required)}
   }
 
   return tempsRules

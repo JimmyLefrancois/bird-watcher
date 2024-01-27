@@ -87,7 +87,7 @@
       :items="birdsList"
       item-value="value"
       item-title="text"
-      :error-messages="v$.observedBirds.$errors.length > 0 ? v$.observedBirds.$errors[0].$message :''"
+      :error-messages="v$.observedBirds.$errors.map(e => e.$message)"
       @blur="v$.observedBirds.$touch()"
       label="Chercher et ajouter un oiseau"
       v-model="selectedBird"
@@ -119,7 +119,7 @@ import BirdItemRow from "@/components/BirdItemRow";
 import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
 import {useVuelidate} from "@vuelidate/core";
-import {minLength, required} from "@vuelidate/validators";
+import {helpers, minLength, required} from "@vuelidate/validators";
 import { format } from 'date-fns'
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
@@ -139,9 +139,12 @@ const validationScope = 'observationScope'
 birdsList.unshift({value: -1, text: "Oiseau non reconnu", link: "#"})
 
 const rules = {
-  observedBirds: {minLength: minLength(1), required},
-  startDate: {required},
-  endDate: {required},
+  observedBirds: {
+    minLength: helpers.withMessage('Au moins un oiseau doit être dans la liste.', minLength(1)),
+    required: helpers.withMessage('Ce champs est obligatoire.', required)
+  },
+  startDate: {required: helpers.withMessage('Ce champs est obligatoire.', required)},
+  endDate: {required: helpers.withMessage('Ce champs est obligatoire.', required)},
 }
 
 function setFormatedStartDate(date) {
