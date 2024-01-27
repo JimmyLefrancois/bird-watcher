@@ -27,7 +27,7 @@
       <v-icon>
         mdi-walk
       </v-icon>
-      <span>Billebaude</span>
+      <span>Promenade</span>
     </v-btn>
   </v-btn-toggle>
 </template>

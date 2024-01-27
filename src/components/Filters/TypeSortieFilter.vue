@@ -25,18 +25,10 @@
       <v-icon>
         mdi-walk
       </v-icon>
-      <span>Billebaude</span>
+      <span>Promenade</span>
     </v-btn>
   </v-btn-toggle>
 </template>
 <script setup>
-import {ref} from "vue";
-
-const emits = defineEmits(['setTypeSortie'])
-
-const type = defineModel()
-
-function setType() {
-  emits('setTypeSortie', type)
-}
+const type = defineModel({type: Number, required: false})
 </script>

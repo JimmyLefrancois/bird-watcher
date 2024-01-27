@@ -1,5 +1,5 @@
 <template>
-  {{ observation.type === 1 ? 'Affût' : 'Billebaude' }}
+  {{ observation.type === 1 ? 'Affût' : 'Promenade' }}
 </template>
 
 <script setup>
