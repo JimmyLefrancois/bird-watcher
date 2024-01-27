@@ -92,7 +92,6 @@
       label="Chercher et ajouter un oiseau"
       v-model="selectedBird"
     />
-    {{ currentEditingObservationListItem.observedBirds.length }}
     <v-data-table
       :headers="headers"
       :custom-key-sort="sortBirds"
