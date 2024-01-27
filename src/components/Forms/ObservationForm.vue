@@ -53,6 +53,7 @@ const observation = ref({
   type: null,
   commentaire: '',
   observedBirds: [],
+  isPublic: false
 })
 
 const rules = {}
