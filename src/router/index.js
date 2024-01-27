@@ -59,13 +59,13 @@ const routes = [
   {
     path: '/creer-mon-compte',
     name: 'creer-mon-compte',
-    component: () => import('@/views/Auth/Register'),
+    component: () => import('@/views/Auth/RegisterView.vue'),
     meta: { title: 'Créer mon compte'},
   },
   {
     path: '/connexion',
     name: 'connexion',
-    component: () => import('@/views/Auth/Login'),
+    component: () => import('@/views/Auth/LoginView.vue'),
     meta: { title: 'Connexion'},
   },
   {

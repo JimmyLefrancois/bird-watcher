@@ -10,7 +10,7 @@
       >
         <v-text-field
           v-model="user.email"
-          :error-messages="v$.email.$errors.length > 0 ? v$.email.$errors[0].$message :''"
+          :error-messages="v$.email.$errors.map(e => e.$message)"
           required
           label="Adresse e-mail"
           prepend-inner-icon="mdi-email-outline"
@@ -20,7 +20,7 @@
         <v-text-field
           class="mt-3"
           v-model="user.password"
-          :error-messages="v$.password.$errors.length > 0 ? v$.password.$errors[0].$message :''"
+          :error-messages="v$.password.$errors.map(e => e.$message)"
           prepend-inner-icon="mdi-lock-outline"
           :required="true"
           :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import {required, minLength, email} from "@vuelidate/validators"
+import {required, email, helpers} from "@vuelidate/validators"
 import {ref} from 'vue'
 import {useVuelidate} from "@vuelidate/core";
 import { useUsersStore } from "@/store/users";
@@ -89,8 +89,13 @@ const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const userLoader = ref(false)
 
 const rules = {
-  email: {required, email},
-  password: {required, minLengthValue: minLength(13)},
+  email: {
+    required: helpers.withMessage('Ce champs est obligatoire.', required),
+    email: helpers.withMessage('Format incorrect.', email)
+  },
+  password: {
+    required: helpers.withMessage('Ce champs est obligatoire.', required)
+  },
 }
 
 const v$ = useVuelidate(rules, user.value)
