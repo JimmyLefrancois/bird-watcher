@@ -92,11 +92,13 @@
       label="Chercher et ajouter un oiseau"
       v-model="selectedBird"
     />
+    {{ currentEditingObservationListItem.observedBirds.length }}
     <v-data-table
       :headers="headers"
       :custom-key-sort="sortBirds"
       :items="currentEditingObservationListItem.observedBirds"
       class="mb-3"
+      :items-per-page="-1"
       no-data-text="Aucun oiseau observé."
     >
       <template #item="{ item }">
@@ -105,7 +107,6 @@
           @remove-bird="tryToRemoveBirdFromList($event)"
         />
       </template>
-      <template #bottom />
     </v-data-table>
     <AddCommentaireToObservation />
   </v-form>
@@ -205,3 +206,9 @@ watch(
 )
 
 </script>
+
+<style>
+.v-data-table-footer {
+  display: none !important;
+}
+</style>
