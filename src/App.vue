@@ -11,12 +11,6 @@
           @click.stop="drawer = !drawer"
         />
         <v-app-bar-title>{{ router.currentRoute.value.meta.title }}</v-app-bar-title>
-        <v-btn
-          v-if="currentUser"
-          @click="logoutUser"
-          density="compact"
-          icon="mdi-logout"
-        />
       </v-app-bar>
 
       <v-navigation-drawer
