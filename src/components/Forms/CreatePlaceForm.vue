@@ -125,7 +125,6 @@ async function addPlace(isActive) {
     observationLoader.value = true
     try {
       const addedPlace = await addObservationPlace(place.value)
-      console.log(addedPlace)
       updateSnackbar({
         type: 'success',
         text: 'Votre lieu d\'observation a bien été ajouté.'

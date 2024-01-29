@@ -38,10 +38,13 @@
         <v-icon
           color="themeLightgreenColor"
           icon="mdi-calendar"
-        /> {{ format(observationToShowItem.startDate, 'dd/MM/yyy HH:mm') }} au {{ format(observationToShowItem.endDate, 'dd/MM/yyy HH:mm') }}
+        />
+        {{ format(observationToShowItem.startDate, 'dd/MM/yyy HH:mm') }} au
+        {{ format(observationToShowItem.endDate, 'dd/MM/yyy HH:mm') }}
       </p>
       <h3 class="mt-5 mb-1">
-        Oiseau{{ showPlurial('x') }} observé{{ showPlurial('s') }} ({{ observationToShowItem.observedBirds.length }} espèce{{ showPlurial('s') }})
+        Oiseau{{ showPlurial('x') }} observé{{ showPlurial('s') }} ({{ observationToShowItem.observedBirds.length }}
+        espèce{{ showPlurial('s') }})
       </h3>
       <v-list class="pt-0">
         <v-list-item
@@ -82,32 +85,34 @@
 </template>
 
 <script setup>
-import { useObservationsStore } from "@/store/observations";
+import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
-import { format } from 'date-fns'
-import { findBird } from "@/helpers/birdHelpers";
+import {format} from 'date-fns'
+import {findBird} from "@/helpers/birdHelpers";
 import router from "@/router";
 import RemoveObservation from "@/components/Dialogs/RemoveObservation.vue";
 import {useSnackbarStore} from "@/store/snackbar";
 import {computed, ref} from "vue";
 import LocationName from "@/components/LocationName.vue";
 import LocationType from "@/components/LocationType.vue";
+
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const observationLoader = ref(false)
 
 const observationStore = useObservationsStore()
-const { removeObservation } = observationStore
-const { observationToShowItem } = storeToRefs(observationStore)
+const {removeObservation} = observationStore
+const {observationToShowItem} = storeToRefs(observationStore)
 
 const sortedBirds = computed(() => {
   const observedBirds = observationToShowItem.value.observedBirds
-  return observedBirds.sort((a,b) => {
+  return observedBirds.sort((a, b) => {
     return findBird(a.id).text > findBird(b.id).text ? 1 : -1
   })
 })
 
 const showPlurial = (plurialLetter) => observationToShowItem.value.observedBirds.length > 1 ? plurialLetter : ''
-  async function deleteObservation(observation) {
+
+async function deleteObservation(observation) {
   observationLoader.value = true
   try {
     await removeObservation(observation)
@@ -115,6 +120,7 @@ const showPlurial = (plurialLetter) => observationToShowItem.value.observedBirds
       type: 'success',
       text: 'Votre observation a bien été supprimé.'
     })
+    await router.push({name: 'mes-observations'})
   } catch (error) {
     errorSnackbar()
   }
