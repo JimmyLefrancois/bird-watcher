@@ -136,8 +136,6 @@ const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
 const validationScope = 'observationScope'
 
-birdsList.unshift({value: -1, text: "Oiseau non reconnu", link: "#"})
-
 const rules = {
   observedBirds: {
     minLength: helpers.withMessage('Au moins un oiseau doit être dans la liste.', minLength(1)),

@@ -1,6 +1,6 @@
 import orderBy from 'lodash/orderBy'
 
-export const birdsList = orderBy([
+const birdsListInit = orderBy([
   {value: 0, text: "Accenteur alpin", link: "../oiseaux/accenteur.alpin.html"},
   {value: 1, text: "Accenteur de Radde", link: "../oiseaux/accenteur.de.radde.html"},
   {value: 2, text: "Accenteur montanelle", link: "../oiseaux/accenteur.montanelle.html"},
@@ -1084,3 +1084,7 @@ export const birdsList = orderBy([
   {value: 1080, text: "Étourneau sansonnet", link: "../oiseaux/etourneau.sansonnet.html"},
   {value: 1081, text: "Étourneau unicolore", link: "../oiseaux/etourneau.unicolore.html"}
 ], ['text'], ['asc'])
+
+birdsListInit.unshift({value: -1, text: "Oiseau non reconnu", link: "#"})
+
+export const birdsList = birdsListInit
