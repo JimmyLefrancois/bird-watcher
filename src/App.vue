@@ -79,7 +79,7 @@
       >
         <v-col
           sm="12"
-          xl="6"
+          md="6"
         >
           <AnonymousInformations
             v-if="currentUser && currentUser.isAnonymous"
