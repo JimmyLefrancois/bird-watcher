@@ -66,17 +66,57 @@
       v-model="selectedBird"
     />
     <v-data-table
+      v-model:expanded="expanded"
       :headers="headers"
       :custom-key-sort="sortBirds"
-      :items="currentObservationListItem.observedBirds"
+      :items="birdsFromCurrentObservation"
       class="mt-3 mb-3"
       no-data-text="Aucun oiseau observé."
+      show-expand
     >
-      <template #item="{ item }">
-        <BirdItemRow
-          :bird="item"
-          @remove-bird="tryToRemoveBirdFromList($event)"
-        />
+      <template #item="{ item, toggleExpand, isExpanded, internalItem }">
+        <tr>
+          <BirdItemRow
+            :bird="item"
+            :key="item.id"
+            @remove-bird="tryToRemoveBirdFromList($event)"
+          />
+          <td>
+            <v-btn
+              variant="text"
+              :icon="isExpanded(internalItem) ? 'mdi-chevron-down' : 'mdi-chevron-up'"
+              @click="toggleExpand(internalItem)"
+            />
+          </td>
+        </tr>
+      </template>
+      <template #expanded-row="{ columns, item }">
+        <tr
+          v-for="(bird, index) in getBirdInformationById(item.id)"
+          :key="index"
+          style="background-color: rgb(236, 236, 236)"
+        >
+          <td
+            :colspan="columns.length"
+            class="pl-8"
+          >
+            Observé à {{ getHoursAndMinutes(bird.date) }}
+            <v-btn
+              class="ml-2"
+              density="compact"
+              icon="mdi-gender-male"
+              :color="bird.gender === 'male' ? 'themeDarkGreenColor' : 'white'"
+              @click="setGender('male', bird)"
+            />
+            <v-btn
+              class="ml-2"
+              density="compact"
+              icon="mdi-gender-female"
+              :color="bird.gender === 'female' ? 'themeDarkGreenColor' : 'white'"
+              @click="setGender('female', bird)"
+            />
+          </td>
+        </tr>
       </template>
       <template #bottom />
     </v-data-table>
@@ -97,7 +137,8 @@ import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
 import AddCommentaireToObservation from "@/components/Dialogs/AddCommentaireToObservation.vue";
 import LocationName from "@/components/LocationName.vue";
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
+import {format} from "date-fns";
 
 const observationStore = useObservationsStore()
 const {
@@ -111,6 +152,37 @@ const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
+const expanded = ref([])
+
+const birdsFromCurrentObservation = computed(() => {
+  return Object.entries(currentObservationListItem.value.observedBirds.reduce((acc, { id }) => {
+    acc[id] = (acc[id] || 0) + 1;
+    return acc;
+  }, {})).map( ([k,v]) => ({id: parseInt(k,10), count:v}));
+})
+
+function setGender(gender, bird) {
+  // const selectedBird = currentObservationListItem.value.observedBirds.find((observedBird) => bird.customId === observedBird.customId).gender = gender
+  const selectedBird = currentObservationListItem.value.observedBirds.find((observedBird) => bird.customId === observedBird.customId)
+  if (selectedBird.gender === gender) {
+    delete selectedBird.gender
+  } else {
+    selectedBird.gender = gender
+  }
+  updateBirdsListFromCurrentObservation(currentObservationListItem.value)
+}
+
+const getHoursAndMinutes = (date) => {
+  return format(new Date(date), 'HH:mm')
+}
+
+const getBirdInformationById = (id) => {
+  return currentObservationListItem.value.observedBirds.filter((bird) => {
+    return bird.id === id
+  }).sort((a, b) => {
+    return new Date(a.date) < new Date(b.date) ? 1 : -1
+  })
+}
 
 function normalizedFilter(itemTitle, queryText, item) {
   const bird = normalizeText(item.raw.text)
@@ -167,12 +239,7 @@ watch(
   (id) => {
     if (id !== null) {
       document.activeElement.blur();
-      const existingBird = currentObservationListItem.value.observedBirds.find(bird => bird.id === id)
-      if (existingBird) {
-        existingBird.count++
-      } else {
-        currentObservationListItem.value.observedBirds.push({id: id, count: 1})
-      }
+      currentObservationListItem.value.observedBirds.push({id: id, date: format(new Date(), "yyyy-MM-dd'T'HH:mm"), customId: crypto.randomUUID()})
       updateBirdsListFromCurrentObservation(currentObservationListItem.value)
       selectedBird.value = null
     }

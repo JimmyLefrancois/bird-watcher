@@ -52,7 +52,7 @@
           :key="index"
           class="pa-0"
         >
-          {{ findBird(bird.id).text }} |
+          {{ findBirdInBirdsList(bird.id).text }} |
           <span
             class="text-grey-darken-1"
             style="font-size: 13px;"
@@ -88,7 +88,7 @@
 import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
 import {format} from 'date-fns'
-import {findBird} from "@/helpers/birdHelpers";
+import {findBirdInBirdsList} from "@/helpers/birdHelpers";
 import router from "@/router";
 import RemoveObservation from "@/components/Dialogs/RemoveObservation.vue";
 import {useSnackbarStore} from "@/store/snackbar";
@@ -106,7 +106,7 @@ const {observationToShowItem} = storeToRefs(observationStore)
 const sortedBirds = computed(() => {
   const observedBirds = observationToShowItem.value.observedBirds
   return observedBirds.sort((a, b) => {
-    return findBird(a.id).text > findBird(b.id).text ? 1 : -1
+    return findBirdInBirdsList(a.id).text > findBirdInBirdsList(b.id).text ? 1 : -1
   })
 })
 

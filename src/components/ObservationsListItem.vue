@@ -87,7 +87,7 @@
             :key="indexObservedBird"
             class="mb-1"
           >
-            {{ findBird(observedBird.id).text }} -
+            {{ findBirdInBirdsList(observedBird.id).text }} -
             <span
               class="text-grey-darken-1"
               style="font-size: 13px;"
@@ -109,7 +109,7 @@
 <script setup>
 import { ref } from 'vue'
 const show = ref(false)
-import {findBird} from "@/helpers/birdHelpers"
+import {findBirdInBirdsList} from "@/helpers/birdHelpers"
 import { format } from "date-fns";
 import { useObservationsStore } from "@/store/observations";
 import RemoveObservation from "@/components/Dialogs/RemoveObservation.vue";
