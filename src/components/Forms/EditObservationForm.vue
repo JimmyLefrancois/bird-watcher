@@ -1,7 +1,7 @@
 <template>
   <v-form
     @submit.prevent="updateObservation"
-    v-if="currentEditingObservationListItem"
+    v-if="currentObservationToHandle"
     class="mt-4"
   >
     <v-btn
@@ -17,13 +17,13 @@
     />
     <TypeSortie
       :scope="validationScope"
-      :observation="currentEditingObservationListItem"
-      @set-type-sortie="currentEditingObservationListItem.type = $event"
+      :observation="currentObservationToHandle"
+      @set-type-sortie="currentObservationToHandle.type = $event"
     />
     <ChoosePlaceOrLocation
-      :observation="currentEditingObservationListItem"
-      @update-existing-location="currentEditingObservationListItem.existingLocation = $event"
-      @update-location="currentEditingObservationListItem.location = $event"
+      :observation="currentObservationToHandle"
+      @update-existing-location="currentObservationToHandle.existingLocation = $event"
+      @update-location="currentObservationToHandle.location = $event"
       :scope="validationScope"
       :creation-available="false"
     />
@@ -65,7 +65,7 @@
       class="mb-2"
       auto-apply
       format="dd/MM/yyy HH:mm"
-      :model-value="currentEditingObservationListItem.startDate"
+      :model-value="currentObservationToHandle.startDate"
       @update:model-value="setFormatedStartDate"
       @blur="v$.endDate.$touch()"
     />
@@ -78,7 +78,7 @@
       class="mb-5"
       auto-apply
       format="dd/MM/yyy HH:mm"
-      :model-value="currentEditingObservationListItem.endDate"
+      :model-value="currentObservationToHandle.endDate"
       @update:model-value="setFormatedEndDate"
       @blur="v$.startDate.$touch()"
     />
@@ -93,18 +93,43 @@
       v-model="selectedBird"
     />
     <v-data-table
+      v-model:expanded="expanded"
       :headers="headers"
       :custom-key-sort="sortBirds"
-      :items="currentEditingObservationListItem.observedBirds"
+      :items="birdsFromCurrentObservation"
       class="mb-3"
       :items-per-page="-1"
+      show-expand
       no-data-text="Aucun oiseau observé."
     >
-      <template #item="{ item }">
-        <BirdItemRow
-          :bird="item"
-          @remove-bird="tryToRemoveBirdFromList($event)"
-        />
+      <template #item="{ item, toggleExpand, isExpanded, internalItem }">
+        <tr>
+          <BirdItemRow
+            :bird="item"
+            :key="item.id"
+            @remove-bird="tryToRemoveBirdFromList($event)"
+          />
+          <td>
+            <v-btn
+              variant="text"
+              :icon="isExpanded(internalItem) ? 'mdi-chevron-down' : 'mdi-chevron-up'"
+              @click="toggleExpand(internalItem)"
+            />
+          </td>
+        </tr>
+      </template>
+      <template #expanded-row="{ columns, item }">
+        <tr
+          v-for="(bird, index) in getBirdInformationById(item.id)"
+          :key="index"
+          style="background-color: rgb(236, 236, 236)"
+        >
+          <BirdInformations
+            :bird="bird"
+            :columns="columns"
+            :key="bird.customId"
+          />
+        </tr>
       </template>
     </v-data-table>
     <AddCommentaireToObservation />
@@ -126,15 +151,17 @@ import {useSnackbarStore} from "@/store/snackbar";
 import AddCommentaireToObservation from "@/components/Dialogs/AddCommentaireToObservation.vue";
 import TypeSortie from "@/components/Forms/TypeSortie.vue";
 import ChoosePlaceOrLocation from "@/components/Forms/ChoosePlaceOrLocation.vue";
+import BirdInformations from "@/components/BirdInformations.vue";
 
 const observationStore = useObservationsStore()
-const { editObservation } = observationStore
+const { editObservation, getBirdInformationById } = observationStore
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
-const { currentEditingObservationListItem } = storeToRefs(observationStore)
+const { currentObservationToHandle, birdsFromCurrentObservation } = storeToRefs(observationStore)
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
 const validationScope = 'observationScope'
+const expanded = ref([])
 
 const rules = {
   observedBirds: {
@@ -146,13 +173,13 @@ const rules = {
 }
 
 function setFormatedStartDate(date) {
-  currentEditingObservationListItem.value.startDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
+  currentObservationToHandle.value.startDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
 }
 function setFormatedEndDate(date) {
-  currentEditingObservationListItem.value.endDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
+  currentObservationToHandle.value.endDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm")
 }
 
-let v$ = useVuelidate(rules, currentEditingObservationListItem, { $scope: validationScope })
+let v$ = useVuelidate(rules, currentObservationToHandle, { $scope: validationScope })
 
 async function updateObservation()
 {
@@ -175,7 +202,7 @@ async function updateObservation()
 }
 
 function removeBirdFormList() {
-  currentEditingObservationListItem.value.observedBirds.splice(birdToRemoveIndex.value, 1)
+  currentObservationToHandle.value.observedBirds.splice(birdToRemoveIndex.value, 1)
   birdToRemoveIndex.value = null
   displayBirdRemoveDialog.value = false
 }
@@ -187,19 +214,14 @@ function tryToRemoveBirdFromList(index) {
 
 const selectedBird = ref(null)
 
-const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Nombre et compte', key: 'count'}])
+const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Compteur', key: 'count'}])
 
 watch(
   () => selectedBird.value,
   (id) => {
     if (id !== null) {
       document.activeElement.blur();
-      const existingBird = currentEditingObservationListItem.value.observedBirds.find(bird => bird.id === id)
-      if (existingBird) {
-        existingBird.count++
-      } else {
-        currentEditingObservationListItem.value.observedBirds.push({id: id, count: 1})
-      }
+      currentObservationToHandle.value.observedBirds.push({id: id, date: format(new Date(), "yyyy-MM-dd'T'HH:mm"), customId: crypto.randomUUID()})
       selectedBird.value = null
     }
   }

@@ -10,9 +10,9 @@
     </template>
 
     <template #default="{ isActive }">
-      <v-card title="Retirer cette espèce">
+      <v-card>
         <v-card-text>
-          Souhaitez-vous vraiment retirer cette espèce de votre liste ?
+          Souhaitez-vous vraiment retirer cet oiseau ?
         </v-card-text>
 
         <v-card-actions>

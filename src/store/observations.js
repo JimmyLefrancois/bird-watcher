@@ -12,6 +12,7 @@ import {
   endObservationRequest, removeObservationRequest,
   updateBirdsListFromCurrentObservationRequest
 } from "@/conf/requests/observations";
+import router from "@/router";
 
 export const useObservationsStore = defineStore('observations', () => {
 
@@ -94,6 +95,33 @@ export const useObservationsStore = defineStore('observations', () => {
     }
   }
 
+  const currentObservationToHandle = router.currentRoute.value.name === 'nouvelle-observation' ? currentObservationListItem : currentEditingObservationListItem
+
+  function getBirdsFromCurrentObservation(observation) {
+    const observationToWatch = observation || currentObservationToHandle.value
+    return Object.entries(observationToWatch.observedBirds.reduce((acc, { id }) => {
+      acc[id] = (acc[id] || 0) + 1;
+      return acc;
+    }, {})).map( ([k,v]) => ({id: parseInt(k,10), count:v}));
+  }
+
+  const getBirdsFromObservation = (observation) => {
+    return getBirdsFromCurrentObservation(observation)
+  }
+
+  const birdsFromCurrentObservation = computed(() => {
+    return currentObservationToHandle.value ? getBirdsFromCurrentObservation() : null
+  })
+
+  const getBirdInformationById = (id, observation = null) => {
+    const observationToWatch = observation || currentObservationToHandle.value
+    return observationToWatch.observedBirds.filter((bird) => {
+      return bird.id === id
+    }).sort((a, b) => {
+      return new Date(a.date) < new Date(b.date) ? 1 : -1
+    })
+  }
+
   return {
     editObservation,
     endObservation,
@@ -109,6 +137,10 @@ export const useObservationsStore = defineStore('observations', () => {
     addObservation,
     updateBirdsListFromCurrentObservation,
     removeObservation,
-    addCommentaireToObservation
+    addCommentaireToObservation,
+    birdsFromCurrentObservation,
+    currentObservationToHandle,
+    getBirdsFromObservation,
+    getBirdInformationById
   }
 })

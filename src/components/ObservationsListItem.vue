@@ -37,7 +37,7 @@
         style="font-size: 14px;"
         class="text-grey-darken-1"
       >
-        {{ observation.observedBirds.length }} espèce<span v-if="observation.observedBirds.length > 1">s</span>
+        {{ birdsFromObservation.length }} espèce<span v-if="birdsFromObservation.length > 1">s</span>
       </span>
     </p>
     <p>Du {{ format(observation.startDate, 'dd/MM/yyy HH:mm') }} au {{ format(observation.endDate, 'dd/MM/yyy HH:mm') }}</p>
@@ -83,11 +83,11 @@
       <v-card-text class="pt-2 pb-0">
         <ul style="list-style-type: none">
           <li
-            v-for="(observedBird, indexObservedBird) in observation.observedBirds"
+            v-for="(observedBird, indexObservedBird) in birdsFromObservation"
             :key="indexObservedBird"
             class="mb-1"
           >
-            {{ findBird(observedBird.id).text }} -
+            {{ findBirdInBirdsList(observedBird.id).text }} -
             <span
               class="text-grey-darken-1"
               style="font-size: 13px;"
@@ -109,7 +109,7 @@
 <script setup>
 import { ref } from 'vue'
 const show = ref(false)
-import {findBird} from "@/helpers/birdHelpers"
+import {findBirdInBirdsList} from "@/helpers/birdHelpers"
 import { format } from "date-fns";
 import { useObservationsStore } from "@/store/observations";
 import RemoveObservation from "@/components/Dialogs/RemoveObservation.vue";
@@ -118,13 +118,15 @@ import {useSnackbarStore} from "@/store/snackbar";
 import LocationName from "@/components/LocationName.vue";
 import LocationType from "@/components/LocationType.vue";
 const store = useObservationsStore()
-const { removeObservation } = store
+const { removeObservation, getBirdsFromObservation } = store
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const observationLoader = ref(false)
 
-defineProps({
+const props = defineProps({
   observation: {type: Object, default: null}
 })
+
+const birdsFromObservation = getBirdsFromObservation(props.observation)
 
 async function deleteObservation(observation) {
   observationLoader.value = true
