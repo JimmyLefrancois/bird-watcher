@@ -6,7 +6,10 @@
       v-for="(observation, index) in filteredObservations"
       :key="index"
     >
-      <ObservationsListItem :observation="observation" />
+      <ObservationsListItem
+        :observation="observation"
+        :key="observation.id"
+      />
     </v-card>
   </template>
   <template v-if="filteredObservations && filteredObservations.length === 0">
