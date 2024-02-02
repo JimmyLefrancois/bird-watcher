@@ -110,8 +110,16 @@ export const useObservationsStore = defineStore('observations', () => {
   }
 
   const birdsFromCurrentObservation = computed(() => {
-    return getBirdsFromCurrentObservation()
+    return currentObservationToHandle.value ? getBirdsFromCurrentObservation() : null
   })
+
+  const getBirdInformationById = (id) => {
+    return currentObservationToHandle.value.observedBirds.filter((bird) => {
+      return bird.id === id
+    }).sort((a, b) => {
+      return new Date(a.date) < new Date(b.date) ? 1 : -1
+    })
+  }
 
   return {
     editObservation,
@@ -131,6 +139,7 @@ export const useObservationsStore = defineStore('observations', () => {
     addCommentaireToObservation,
     birdsFromCurrentObservation,
     currentObservationToHandle,
-    getBirdsFromObservation
+    getBirdsFromObservation,
+    getBirdInformationById
   }
 })
