@@ -131,7 +131,8 @@ const {
   updateBirdsListFromCurrentObservation,
   endObservation,
   removeObservation,
-  clearCurrentObservation
+  clearCurrentObservation,
+  getBirdInformationById
 } = observationStore
 const {currentObservationListItem, birdsFromCurrentObservation} = storeToRefs(observationStore)
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
@@ -141,14 +142,6 @@ const observationLoader = ref(false)
 const expanded = ref([])
 const selectedBird = ref(null)
 const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Compteur', key: 'count'}])
-
-const getBirdInformationById = (id) => {
-  return currentObservationListItem.value.observedBirds.filter((bird) => {
-    return bird.id === id
-  }).sort((a, b) => {
-    return new Date(a.date) < new Date(b.date) ? 1 : -1
-  })
-}
 
 function normalizedFilter(itemTitle, queryText, item) {
   const bird = normalizeText(item.raw.text)
