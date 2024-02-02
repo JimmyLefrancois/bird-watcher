@@ -13,8 +13,9 @@
       Résumé de votre observation
     </v-card-title>
     <v-card-text>
-      <p>
+      <p class="d-flex align-center">
         <v-icon
+          class="pr-2"
           color="themeLightgreenColor"
           icon="mdi-map-marker"
         />
@@ -24,8 +25,9 @@
           :display-icon="false"
         />
       </p>
-      <p>
+      <p class="d-flex align-center">
         <v-icon
+          class="pr-2"
           color="themeLightgreenColor"
           icon="mdi-binoculars"
         />
@@ -34,29 +36,50 @@
           :observation="observationToShowItem"
         />
       </p>
-      <p>
+      <p class="d-flex align-center">
         <v-icon
+          class="pr-2"
           color="themeLightgreenColor"
           icon="mdi-calendar"
         />
         {{ format(observationToShowItem.startDate, 'dd/MM/yyy HH:mm') }} au
         {{ format(observationToShowItem.endDate, 'dd/MM/yyy HH:mm') }}
       </p>
-      <h3 class="mt-5 mb-1">
+      <h3 class="mt-5 d-flex align-center">
         Oiseau{{ showPlurial('x') }} observé{{ showPlurial('s') }} ({{ observationToShowItem.observedBirds.length }}
         espèce{{ showPlurial('s') }})
+        <v-btn
+          :icon="displayDetails ? 'mdi-eye' : 'mdi-eye-off'"
+          variant="text"
+          :ripple="false"
+          @click="expand = !expand"
+        />
       </h3>
-      <v-list class="pt-0">
+      <v-list class="pt-1">
         <v-list-item
           v-for="(bird, index) in sortedBirds"
           :key="index"
           class="pa-0"
         >
-          {{ findBirdInBirdsList(bird.id).text }} |
-          <span
-            class="text-grey-darken-1"
-            style="font-size: 13px;"
-          >{{ bird.count }} individu<span v-if="bird.count > 1">s</span></span>
+          <p class="mb-0">
+            {{ findBirdInBirdsList(bird.id).text }} |
+            <span
+              class="text-grey-darken-1"
+              style="font-size: 13px;"
+            >{{ bird.count }} individu<span v-if="bird.count > 1">s</span></span>
+          </p>
+          <v-scroll-x-transition>
+            <v-list
+              class="py-0"
+              v-show="expand"
+            >
+              <ShowBirdDetails
+                v-for="(detailBird, detailIndex) in getBirdInformationById(bird.id, observationToShowItem)"
+                :key="detailIndex"
+                :bird="detailBird"
+              />
+            </v-list>
+          </v-scroll-x-transition>
         </v-list-item>
       </v-list>
       <template v-if="observationToShowItem.commentaire">
@@ -95,16 +118,18 @@ import {useSnackbarStore} from "@/store/snackbar";
 import {computed, ref} from "vue";
 import LocationName from "@/components/LocationName.vue";
 import LocationType from "@/components/LocationType.vue";
+import ShowBirdDetails from "@/components/Show/ShowBirdDetails.vue";
 
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const observationLoader = ref(false)
-
 const observationStore = useObservationsStore()
-const {removeObservation} = observationStore
+const {removeObservation, getBirdsFromObservation, getBirdInformationById} = observationStore
 const {observationToShowItem} = storeToRefs(observationStore)
+const displayDetails = ref(true)
+const expand = ref(false)
 
 const sortedBirds = computed(() => {
-  const observedBirds = observationToShowItem.value.observedBirds
+  const observedBirds = getBirdsFromObservation(observationToShowItem.value)
   return observedBirds.sort((a, b) => {
     return findBirdInBirdsList(a.id).text > findBirdInBirdsList(b.id).text ? 1 : -1
   })
