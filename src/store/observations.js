@@ -113,8 +113,9 @@ export const useObservationsStore = defineStore('observations', () => {
     return currentObservationToHandle.value ? getBirdsFromCurrentObservation() : null
   })
 
-  const getBirdInformationById = (id) => {
-    return currentObservationToHandle.value.observedBirds.filter((bird) => {
+  const getBirdInformationById = (id, observation) => {
+    const observationToWatch = observation || currentObservationToHandle.value
+    return observationToWatch.observedBirds.filter((bird) => {
       return bird.id === id
     }).sort((a, b) => {
       return new Date(a.date) < new Date(b.date) ? 1 : -1
