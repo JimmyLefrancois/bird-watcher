@@ -113,7 +113,7 @@ export const useObservationsStore = defineStore('observations', () => {
     return currentObservationToHandle.value ? getBirdsFromCurrentObservation() : null
   })
 
-  const getBirdInformationById = (id, observation) => {
+  const getBirdInformationById = (id, observation = null) => {
     const observationToWatch = observation || currentObservationToHandle.value
     return observationToWatch.observedBirds.filter((bird) => {
       return bird.id === id
