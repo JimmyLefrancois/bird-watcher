@@ -12,6 +12,7 @@ import {
   endObservationRequest, removeObservationRequest,
   updateBirdsListFromCurrentObservationRequest
 } from "@/conf/requests/observations";
+import router from "@/router";
 
 export const useObservationsStore = defineStore('observations', () => {
 
@@ -94,6 +95,15 @@ export const useObservationsStore = defineStore('observations', () => {
     }
   }
 
+  const currentObservationToHandle = router.currentRoute.value.name === 'nouvelle-observation' ? currentObservationListItem : currentEditingObservationListItem
+
+  const birdsFromCurrentObservation = computed(() => {
+    return Object.entries(currentObservationToHandle.value.observedBirds.reduce((acc, { id }) => {
+      acc[id] = (acc[id] || 0) + 1;
+      return acc;
+    }, {})).map( ([k,v]) => ({id: parseInt(k,10), count:v}));
+  })
+
   return {
     editObservation,
     endObservation,
@@ -109,6 +119,8 @@ export const useObservationsStore = defineStore('observations', () => {
     addObservation,
     updateBirdsListFromCurrentObservation,
     removeObservation,
-    addCommentaireToObservation
+    addCommentaireToObservation,
+    birdsFromCurrentObservation,
+    currentObservationToHandle
   }
 })
