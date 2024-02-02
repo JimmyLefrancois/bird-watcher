@@ -96,26 +96,11 @@
           :key="index"
           style="background-color: rgb(236, 236, 236)"
         >
-          <td
-            :colspan="columns.length"
-            class="pl-8"
-          >
-            Observé à {{ getHoursAndMinutes(bird.date) }}
-            <v-btn
-              class="ml-2"
-              density="compact"
-              icon="mdi-gender-male"
-              :color="bird.gender === 'male' ? 'themeDarkGreenColor' : 'white'"
-              @click="setGender('male', bird)"
-            />
-            <v-btn
-              class="ml-2"
-              density="compact"
-              icon="mdi-gender-female"
-              :color="bird.gender === 'female' ? 'themeDarkGreenColor' : 'white'"
-              @click="setGender('female', bird)"
-            />
-          </td>
+          <BirdInformations
+            :bird="bird"
+            :columns="columns"
+            :key="bird.customId"
+          />
         </tr>
       </template>
       <template #bottom />
@@ -137,8 +122,9 @@ import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
 import AddCommentaireToObservation from "@/components/Dialogs/AddCommentaireToObservation.vue";
 import LocationName from "@/components/LocationName.vue";
-import {computed, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import {format} from "date-fns";
+import BirdInformations from "@/components/BirdInformations.vue";
 
 const observationStore = useObservationsStore()
 const {
@@ -147,34 +133,14 @@ const {
   removeObservation,
   clearCurrentObservation
 } = observationStore
-const {currentObservationListItem} = storeToRefs(observationStore)
+const {currentObservationListItem, birdsFromCurrentObservation} = storeToRefs(observationStore)
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
 const expanded = ref([])
-
-const birdsFromCurrentObservation = computed(() => {
-  return Object.entries(currentObservationListItem.value.observedBirds.reduce((acc, { id }) => {
-    acc[id] = (acc[id] || 0) + 1;
-    return acc;
-  }, {})).map( ([k,v]) => ({id: parseInt(k,10), count:v}));
-})
-
-function setGender(gender, bird) {
-  // const selectedBird = currentObservationListItem.value.observedBirds.find((observedBird) => bird.customId === observedBird.customId).gender = gender
-  const selectedBird = currentObservationListItem.value.observedBirds.find((observedBird) => bird.customId === observedBird.customId)
-  if (selectedBird.gender === gender) {
-    delete selectedBird.gender
-  } else {
-    selectedBird.gender = gender
-  }
-  updateBirdsListFromCurrentObservation(currentObservationListItem.value)
-}
-
-const getHoursAndMinutes = (date) => {
-  return format(new Date(date), 'HH:mm')
-}
+const selectedBird = ref(null)
+const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Compteur', key: 'count'}])
 
 const getBirdInformationById = (id) => {
   return currentObservationListItem.value.observedBirds.filter((bird) => {
@@ -230,10 +196,6 @@ function tryToRemoveBirdFromList(index) {
   displayBirdRemoveDialog.value = true
 }
 
-const selectedBird = ref(null)
-
-const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Nombre et compte', key: 'count'}])
-
 watch(
   () => selectedBird.value,
   (id) => {
@@ -247,3 +209,21 @@ watch(
 )
 
 </script>
+
+<style>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.8s;
+}
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(100%);
+}
+.list-move {
+  transition: transform 0.5s;
+}
+.item-row {
+  display: table-row;
+}
+</style>
