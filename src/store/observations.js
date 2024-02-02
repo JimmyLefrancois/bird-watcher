@@ -97,11 +97,20 @@ export const useObservationsStore = defineStore('observations', () => {
 
   const currentObservationToHandle = router.currentRoute.value.name === 'nouvelle-observation' ? currentObservationListItem : currentEditingObservationListItem
 
-  const birdsFromCurrentObservation = computed(() => {
-    return Object.entries(currentObservationToHandle.value.observedBirds.reduce((acc, { id }) => {
+  function getBirdsFromCurrentObservation(observation) {
+    const observationToWatch = observation || currentObservationToHandle.value
+    return Object.entries(observationToWatch.observedBirds.reduce((acc, { id }) => {
       acc[id] = (acc[id] || 0) + 1;
       return acc;
     }, {})).map( ([k,v]) => ({id: parseInt(k,10), count:v}));
+  }
+
+  const getBirdsFromObservation = (observation) => {
+    return getBirdsFromCurrentObservation(observation)
+  }
+
+  const birdsFromCurrentObservation = computed(() => {
+    return getBirdsFromCurrentObservation()
   })
 
   return {
@@ -121,6 +130,7 @@ export const useObservationsStore = defineStore('observations', () => {
     removeObservation,
     addCommentaireToObservation,
     birdsFromCurrentObservation,
-    currentObservationToHandle
+    currentObservationToHandle,
+    getBirdsFromObservation
   }
 })
