@@ -7,21 +7,19 @@
       Une nouvelle version de Plumes en vue est disponible.
     </v-snackbar>
     <v-alert
-      class="py-4"
+      class="pt-3 pb-1"
       border="top"
-      prominent
-      style="font-size: 13px;"
-      color="themeGreyColor"
+      elevation="2"
+      style="font-size: 14px;"
+      border-color="themeDarkGreenColor"
+      color="themeWhiteColor"
     >
       Une nouvelle version de Plumes en vue est disponible.
-      <v-btn
-        class="pa-0"
-        variant="text"
-        size="small"
-        @click="updateServiceWorker()"
-      >
-        Actualiser
-      </v-btn>
+      <span
+        style="font-size: 15px; color: #6C733D"
+        class="font-weight-bold text-decoration-underline"
+        @click="updateAndClose()"
+      >Actualiser</span>
     </v-alert>
   </div>
 </template>
@@ -30,6 +28,11 @@
 import {useRegisterSW} from "virtual:pwa-register/vue";
 
 const {needRefresh, updateServiceWorker} = useRegisterSW();
+
+function updateAndClose() {
+  updateServiceWorker();
+  needRefresh.value = false;
+}
 
 </script>
 
