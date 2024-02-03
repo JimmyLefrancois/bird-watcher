@@ -3,9 +3,6 @@
     v-if="needRefresh"
     class="buttons flex align-middle mt-2"
   >
-    <v-snackbar>
-      Une nouvelle version de Plumes en vue est disponible.
-    </v-snackbar>
     <v-alert
       class="pt-3 pb-1"
       border="top"
