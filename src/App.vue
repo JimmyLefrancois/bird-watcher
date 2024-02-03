@@ -81,6 +81,7 @@
           sm="12"
           md="6"
         >
+          <ReloadPWa />
           <AnonymousInformations
             v-if="currentUser && currentUser.isAnonymous"
             :key="userKey"
@@ -101,6 +102,7 @@ import {storeToRefs} from "pinia";
 import AnonymousInformations from "@/views/AnonymousInformations";
 import BaseSnackbar from "@/components/BaseSnackbar";
 import {useSnackbarStore} from "@/store/snackbar";
+import ReloadPWa from "@/components/ReloadPWa.vue";
 
 const userStore = useUsersStore()
 const {currentUser, userKey} = storeToRefs(userStore)

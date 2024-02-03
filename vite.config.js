@@ -22,7 +22,6 @@ export default defineConfig({
       },
     }),
     VitePWA({
-      registerType: 'autoUpdate',
       injectRegister: 'auto',
       devOptions: {
         enabled: true
@@ -38,6 +37,7 @@ export default defineConfig({
         short_name: 'Plumes en vue',
         description: 'Recensez toutes vos observations ornithologiques au même endroit !',
         theme_color: '#9DA65D',
+        lang: 'fr',
         icons: [
           {
             src: 'pwa-64x64.png',
