@@ -134,7 +134,7 @@ async function deleteObservation(observation) {
     await removeObservation(observation)
     updateSnackbar({
       type: 'success',
-      text: 'Votre observation a bien été supprimé.'
+      text: 'Votre observation a bien été supprimée.'
     })
   } catch (error) {
     errorSnackbar()

@@ -190,7 +190,7 @@ async function updateObservation()
       await editObservation()
       updateSnackbar({
         type: 'success',
-        text: 'Votre observation a bien été modifié.'
+        text: 'Votre observation a bien été modifiée.'
       })
       await router.push({ name: 'observation', params: { observation: router.currentRoute.value.params.observation } })
     } catch (error) {
