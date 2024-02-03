@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="needRefresh"
-    class="buttons flex align-middle mt-2 md:mt-0"
+    class="buttons flex align-middle mt-2"
   >
     <v-snackbar>
       Une nouvelle version de Plumes en vue est disponible.
