@@ -84,9 +84,11 @@
           <td>
             <v-btn
               variant="text"
-              :icon="isExpanded(internalItem) ? 'mdi-chevron-down' : 'mdi-chevron-up'"
+              :append-icon="isExpanded(internalItem) ? 'mdi-chevron-down' : 'mdi-chevron-up'"
               @click="toggleExpand(internalItem)"
-            />
+            >
+              Détails
+            </v-btn>
           </td>
         </tr>
       </template>

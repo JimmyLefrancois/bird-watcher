@@ -3,8 +3,8 @@
     :colspan="columns.length"
   >
     <div class="d-flex">
-      <p class="d-flex align-center">
-        ⓘ Observé à {{ getHoursAndMinutes(bird.date) }}
+      <p class="d-flex align-center pl-4">
+        Observé à {{ getHoursAndMinutes(bird.date) }}
       </p>
       <v-btn
         density="compact"
