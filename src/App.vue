@@ -68,6 +68,14 @@
               prepend-icon="mdi-logout"
             />
           </template>
+          <v-list-item>
+            <v-switch
+              color="primary"
+              v-model="geolocationPermission"
+              label="Géolocalisation"
+              hide-details
+            />
+          </v-list-item>
         </v-list>
       </v-navigation-drawer>
       <v-spacer />
@@ -95,9 +103,10 @@
 </template>
 
 <script setup>
-import {onBeforeMount, ref} from "vue";
+import {onBeforeMount, ref, watch} from "vue";
 import router from "@/router"
 import {useUsersStore} from "@/store/users";
+import {useGeolocationStore} from "@/store/geolocation";
 import {storeToRefs} from "pinia";
 import AnonymousInformations from "@/views/AnonymousInformations";
 import BaseSnackbar from "@/components/BaseSnackbar";
@@ -105,8 +114,19 @@ import {useSnackbarStore} from "@/store/snackbar";
 import ReloadPWa from "@/components/ReloadPWa.vue";
 
 const userStore = useUsersStore()
+const locationStore = useGeolocationStore()
+const {requestLocation, stopLocation} = locationStore
+const {latitude, longitude, geolocationPermission} = storeToRefs(locationStore)
 const {currentUser, userKey} = storeToRefs(userStore)
 const drawer = ref(false)
+
+watch(geolocationPermission, async (value) => {
+  if (value) {
+    requestLocation()
+  } else {
+    stopLocation()
+  }
+})
 
 const store = useUsersStore()
 const {fetchUser, logout} = store
