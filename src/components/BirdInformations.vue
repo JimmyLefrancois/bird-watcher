@@ -7,23 +7,23 @@
         Observé à {{ getHoursAndMinutes(bird.date) }}
       </p>
       <v-btn
-        density="compact"
+        density="comfortable"
         icon="mdi-gender-male"
         :color="bird.gender === 'male' ? 'themeDarkGreenColor' : 'white'"
         @click="setGender('male', bird)"
         class="mx-2"
       />
       <v-btn
-        density="compact"
+        density="comfortable"
         icon="mdi-gender-female"
         :color="bird.gender === 'female' ? 'themeDarkGreenColor' : 'white'"
         @click="setGender('female', bird)"
-        class="me-auto"
+        class="mr-2"
       />
-      <!--      <AddCommentaireToBird-->
-      <!--        :bird="bird"-->
-      <!--        :key="bird.customId"-->
-      <!--      />-->
+      <AddCommentaireToBird
+        :bird="bird"
+        :key="bird.customId"
+      />
       <RemoveBirdFromObservation
         @remove-bird-from-observation="removeBirdFromObservedBirds"
         :key="bird.customId"
@@ -38,7 +38,6 @@ import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
 import {format} from "date-fns";
 import AddCommentaireToBird from "@/components/Dialogs/AddCommentaireToBird.vue";
-import {bi} from "../../dist/assets/index-YiKJJENn";
 
 const observationStore = useObservationsStore()
 const {currentObservationToHandle} = storeToRefs(observationStore)

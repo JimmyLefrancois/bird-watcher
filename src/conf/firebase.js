@@ -22,10 +22,10 @@ export const db = initializeFirestore(firebaseApp, {
   localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()})
 });
 
-// initializeAppCheck(firebaseApp, {
-//   provider: new ReCaptchaV3Provider ('6Ld_HUUpAAAAAKMvI2Gz_jZgFlXihPNHrMdGyVFu'),
-//   isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
-// });
+initializeAppCheck(firebaseApp, {
+  provider: new ReCaptchaV3Provider ('6Ld_HUUpAAAAAKMvI2Gz_jZgFlXihPNHrMdGyVFu'),
+  isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
+});
 
 export async function getCurrentUser() {
   return new Promise((resolve, reject) => {

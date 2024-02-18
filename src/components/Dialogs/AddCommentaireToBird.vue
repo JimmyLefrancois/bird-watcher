@@ -5,11 +5,10 @@
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
-        color="red"
-        density="compact"
-        icon="mdi-comment"
-        :disabled="birdCommentaryLoader"
-        :loading="birdCommentaryLoader"
+        color="themeLightgreenColor"
+        density="comfortable"
+        :icon="selectedBird.commentaire ? 'mdi-comment-text' : 'mdi-comment'"
+        class="me-auto pa-1"
       />
     </template>
 
@@ -24,7 +23,7 @@
             v-model="selectedBird.commentaire"
             class="mt-5 mb-0 pb-0"
             variant="solo-filled"
-            label="Commenter l'observation"
+            label="Ajouter un commentaire sur l'oiseau"
           />
         </v-card-text>
 
@@ -38,8 +37,6 @@
             Annuler
           </v-btn>
           <v-btn
-            :disabled="birdCommentaryLoader"
-            :loading="birdCommentaryLoader"
             color="themeLightgreenColor"
             prepend-icon="mdi-check"
             @click="addCommentaire(isActive)"
@@ -53,7 +50,7 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue'
+import {computed} from 'vue'
 import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
 
@@ -64,7 +61,6 @@ const props = defineProps({
   }
 })
 
-const birdCommentaryLoader = ref(false)
 const observationStore = useObservationsStore()
 const {updateBirdsListFromCurrentObservation} = observationStore
 const {currentObservationToHandle} = storeToRefs(observationStore)
@@ -73,7 +69,7 @@ const selectedBird = computed(() => {
   return currentObservationToHandle.value.observedBirds.find((observedBird) => props.bird.customId === observedBird.customId)
 })
 
-async function addCommentaire(bird, isActive) {
+async function addCommentaire(isActive) {
   updateBirdsListFromCurrentObservation(currentObservationToHandle.value)
   isActive.value = false
 }
