@@ -1,5 +1,7 @@
 <template>
-  <v-dialog width="500">
+  <v-dialog
+    fullscreen
+  >
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
