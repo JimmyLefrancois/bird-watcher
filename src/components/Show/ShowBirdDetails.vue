@@ -1,7 +1,8 @@
 <template>
   <v-list-item class="py-0">
     <v-list-item-subtitle>
-      ⓘ Observé à {{ getHoursAndMinutes(bird.date) }} | Sexe : {{ getGender() }}
+      Observé à {{ getHoursAndMinutes(bird.date) }} | Sexe : {{ getGender() }}
+      <span v-if="bird.commentaire"> | Commentaire : {{ bird.commentaire }}</span>
     </v-list-item-subtitle>
   </v-list-item>
 </template>
