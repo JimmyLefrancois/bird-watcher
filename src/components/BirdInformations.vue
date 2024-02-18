@@ -3,7 +3,7 @@
     :colspan="columns.length"
   >
     <div class="d-flex">
-      <p class="d-flex align-center pl-4">
+      <p class="d-flex align-center">
         Observé à {{ getHoursAndMinutes(bird.date) }}
       </p>
       <v-btn
@@ -20,6 +20,10 @@
         @click="setGender('female', bird)"
         class="me-auto"
       />
+      <!--      <AddCommentaireToBird-->
+      <!--        :bird="bird"-->
+      <!--        :key="bird.customId"-->
+      <!--      />-->
       <RemoveBirdFromObservation
         @remove-bird-from-observation="removeBirdFromObservedBirds"
         :key="bird.customId"
@@ -33,6 +37,8 @@ import RemoveBirdFromObservation from "@/components/Dialogs/RemoveBirdFromObserv
 import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
 import {format} from "date-fns";
+import AddCommentaireToBird from "@/components/Dialogs/AddCommentaireToBird.vue";
+import {bi} from "../../dist/assets/index-YiKJJENn";
 
 const observationStore = useObservationsStore()
 const {currentObservationToHandle} = storeToRefs(observationStore)
