@@ -3,7 +3,7 @@
   <td>
     <span class="mr-2">{{ bird.count }}</span>
     <v-btn
-      density="compact"
+      density="comfortable"
       class="mr-2"
       icon="mdi-plus"
       @click="addBird()"

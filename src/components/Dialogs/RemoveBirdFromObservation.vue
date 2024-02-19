@@ -4,7 +4,7 @@
       <v-btn
         v-bind="props"
         color="red"
-        density="compact"
+        density="comfortable"
         icon="mdi-delete"
       />
     </template>
