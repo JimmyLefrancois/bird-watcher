@@ -3,7 +3,7 @@
     border="top"
     icon="mdi-map-marker-radius"
     border-color="themeDarkGreenColor"
-    v-if="geolocationPermission !== 'granted'"
+    v-if="geolocationPermissionStore !== 'granted'"
   >
     Vous pouvez si vous le souhaitez activer la géolocalisation afin d'améliorer la précision des statistique en
     <span
@@ -16,23 +16,19 @@
 <script setup>
 import { useGeolocation } from '@vueuse/core'
 import {defineModel, watch} from "vue";
+import {useGeolocationStore} from "@/store/geolocation";
+import {storeToRefs} from "pinia";
+const locationStore = useGeolocationStore()
+const {geolocationPermissionStore} = storeToRefs(locationStore)
 const { coords, resume } = useGeolocation({immediate: false})
 
-const geolocationPermission = defineModel('geolocationPermission', { type: String })
 const coordinates = defineModel('coordinates', { type: Object })
-
-navigator.permissions.query({ name: "geolocation" }).then((result) => {
-  geolocationPermission.value = result.state
-  if (result.state === 'granted') {
-    resume()
-  }
-})
 
 watch(
   () => coords.value,
   (value) => {
-    if (geolocationPermission.value !== 'granted' && coords.value.accuracy !== 0) {
-      geolocationPermission.value = 'granted'
+    if (geolocationPermissionStore.value !== 'granted' && coords.value.accuracy !== 0) {
+      geolocationPermissionStore.value = 'granted'
     }
     coordinates.value.latitude = value.latitude
     coordinates.value.longitude = value.longitude

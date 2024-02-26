@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import {onBeforeMount, ref, watch} from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 import router from "@/router"
 import {useUsersStore} from "@/store/users";
 import {useGeolocationStore} from "@/store/geolocation";
@@ -115,18 +115,11 @@ import ReloadPWa from "@/components/ReloadPWa.vue";
 
 const userStore = useUsersStore()
 const locationStore = useGeolocationStore()
-const {requestLocation, stopLocation} = locationStore
-const {latitude, longitude, geolocationPermission} = storeToRefs(locationStore)
+const {geolocationPermissionStore} = storeToRefs(locationStore)
 const {currentUser, userKey} = storeToRefs(userStore)
 const drawer = ref(false)
 
-watch(geolocationPermission, async (value) => {
-  if (value) {
-    requestLocation()
-  } else {
-    stopLocation()
-  }
-})
+const geolocationPermission = computed(() => geolocationPermissionStore.value === 'granted')
 
 const store = useUsersStore()
 const {fetchUser, logout} = store
