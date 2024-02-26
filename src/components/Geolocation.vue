@@ -24,6 +24,15 @@ const { coords, resume } = useGeolocation({immediate: false})
 
 const coordinates = defineModel('coordinates', { type: Object })
 
+watch(
+  () => geolocationPermissionStore.value,
+  (geolocationPermissionStore) => {
+    if (geolocationPermissionStore === 'granted' && coords.value.accuracy === 0) {
+      resume()
+    }
+  }
+)
+
 if (geolocationPermissionStore.value === 'granted' && coords.value.accuracy === 0) {
   resume()
 }
@@ -31,9 +40,6 @@ if (geolocationPermissionStore.value === 'granted' && coords.value.accuracy === 
 watch(
   () => coords.value,
   (value) => {
-    if (geolocationPermissionStore.value !== 'granted' && coords.value.accuracy !== 0) {
-      geolocationPermissionStore.value = 'granted'
-    }
     coordinates.value.latitude = value.latitude
     coordinates.value.longitude = value.longitude
   }
