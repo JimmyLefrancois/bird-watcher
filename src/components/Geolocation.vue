@@ -40,6 +40,9 @@ if (geolocationPermissionStore.value === 'granted' && coords.value.accuracy === 
 watch(
   () => coords.value,
   (value) => {
+    if (geolocationPermissionStore.value !== 'granted' && coords.value.accuracy !== 0) {
+      geolocationPermissionStore.value = 'granted'
+    }
     coordinates.value.latitude = value.latitude
     coordinates.value.longitude = value.longitude
   }
