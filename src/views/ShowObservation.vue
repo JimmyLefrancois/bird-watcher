@@ -62,7 +62,10 @@
           class="pa-0"
         >
           <p class="mb-2">
-            {{ findBirdInBirdsList(bird.id).text }} |
+            <span
+              class="font-weight-bold"
+              style="color: #5e5c5c"
+            >{{ findBirdInBirdsList(bird.id).text }}</span> |
             <span
               class="text-grey-darken-1"
               style="font-size: 13px;"
