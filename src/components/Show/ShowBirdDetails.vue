@@ -1,14 +1,18 @@
 <template>
   <v-list-item class="py-0">
-    <v-list-item-subtitle style="-webkit-line-clamp: none">
-      <p>Observé à {{ getHoursAndMinutes(bird.date) }} | Sexe : {{ getGender() }}</p>
-      <p
-        v-if="bird.commentaire"
-        class="font-weight-bold"
-      >
-        Commentaire : {{ bird.commentaire }}
-      </p>
-    </v-list-item-subtitle>
+    <p
+      style="color: #5e5c5c"
+      class="mb-1"
+    >
+      Observé à {{ getHoursAndMinutes(bird.date) }} | Sexe : {{ getGender() }}
+    </p>
+    <p
+      v-if="bird.commentaire"
+      style="font-weight: 500 !important;"
+      class="mb-0"
+    >
+      {{ bird.commentaire }}
+    </p>
   </v-list-item>
 </template>
 
