@@ -24,7 +24,10 @@
         />
       </v-col>
     </v-row>
-
+    <Geolocation
+      v-model:geolocation-permission="geolocationPermission"
+      v-model:coordinates="coordinates"
+    />
     <v-dialog
       v-model="displayBirdRemoveDialog"
       width="auto"
@@ -126,6 +129,9 @@ import LocationName from "@/components/LocationName.vue";
 import {ref, watch} from "vue";
 import {format} from "date-fns";
 import BirdInformations from "@/components/BirdInformations.vue";
+import Geolocation from "@/components/Geolocation.vue";
+import {useGeolocation} from "@vueuse/core";
+const { pause } = useGeolocation({immediate: false})
 
 const observationStore = useObservationsStore()
 const {
@@ -143,6 +149,8 @@ const observationLoader = ref(false)
 const expanded = ref([])
 const selectedBird = ref(null)
 const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Compteur', key: 'count'}])
+const geolocationPermission = ref('')
+const coordinates = ref({})
 
 function normalizedFilter(itemTitle, queryText, item) {
   const bird = normalizeText(item.raw.text)
@@ -195,7 +203,13 @@ watch(
   (id) => {
     if (id !== null) {
       document.activeElement.blur();
-      currentObservationListItem.value.observedBirds.push({id: id, date: format(new Date(), "yyyy-MM-dd'T'HH:mm"), customId: crypto.randomUUID()})
+      const birdToAdd = {id: id, date: format(new Date(), "yyyy-MM-dd'T'HH:mm"), customId: crypto.randomUUID()}
+      currentObservationListItem.value.observedBirds.push()
+      if (geolocationPermission.value === 'granted') {
+        birdToAdd.longitude = coordinates.value.longitude
+        birdToAdd.latitude = coordinates.value.latitude
+      }
+      currentObservationListItem.value.observedBirds.push(birdToAdd)
       updateBirdsListFromCurrentObservation(currentObservationListItem.value)
       selectedBird.value = null
     }
