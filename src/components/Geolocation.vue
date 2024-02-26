@@ -1,11 +1,11 @@
 <template>
   <v-alert
     border="top"
-    icon="mdi-map-marker-radius"
     border-color="themeDarkGreenColor"
     v-if="geolocationPermissionStore !== 'granted'"
+    style="font-size: 13px;"
   >
-    Vous pouvez si vous le souhaitez activer la géolocalisation afin d'améliorer la précision des statistique en
+    Vous pouvez si vous le souhaitez activer la géolocalisation afin d'améliorer la précision des statistiques de vos observations en
     <span
       @click="resume"
       style="text-decoration: underline; cursor: pointer"
