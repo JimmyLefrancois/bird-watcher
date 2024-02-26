@@ -46,7 +46,7 @@
         {{ format(observationToShowItem.endDate, 'dd/MM/yyy HH:mm') }}
       </p>
       <h3 class="mt-5 d-flex align-center">
-        Oiseau{{ showPlurial('x') }} observé{{ showPlurial('s') }} ({{ observationToShowItem.observedBirds.length }}
+        Oiseau{{ showPlurial('x') }} observé{{ showPlurial('s') }} ({{ observedBirds.length }}
         espèce{{ showPlurial('s') }})
         <v-btn
           :icon="displayDetails ? 'mdi-eye' : 'mdi-eye-off'"
@@ -61,7 +61,7 @@
           :key="index"
           class="pa-0"
         >
-          <p class="mb-0">
+          <p class="mb-2">
             {{ findBirdInBirdsList(bird.id).text }} |
             <span
               class="text-grey-darken-1"
@@ -115,7 +115,7 @@ import {findBirdInBirdsList} from "@/helpers/birdHelpers";
 import router from "@/router";
 import RemoveObservation from "@/components/Dialogs/RemoveObservation.vue";
 import {useSnackbarStore} from "@/store/snackbar";
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import LocationName from "@/components/LocationName.vue";
 import LocationType from "@/components/LocationType.vue";
 import ShowBirdDetails from "@/components/Show/ShowBirdDetails.vue";
@@ -128,11 +128,10 @@ const {observationToShowItem} = storeToRefs(observationStore)
 const displayDetails = ref(true)
 const expand = ref(false)
 
-const sortedBirds = computed(() => {
-  const observedBirds = getBirdsFromObservation(observationToShowItem.value)
-  return observedBirds.sort((a, b) => {
-    return findBirdInBirdsList(a.id).text > findBirdInBirdsList(b.id).text ? 1 : -1
-  })
+const observedBirds = getBirdsFromObservation(observationToShowItem.value)
+
+const sortedBirds = observedBirds.sort((a, b) => {
+  return findBirdInBirdsList(a.id).text > findBirdInBirdsList(b.id).text ? 1 : -1
 })
 
 const showPlurial = (plurialLetter) => observationToShowItem.value.observedBirds.length > 1 ? plurialLetter : ''
