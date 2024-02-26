@@ -28,27 +28,27 @@
             variant="solo-filled"
             label="Commenter l'observation"
           />
+          <div class="d-flex justify-space-between mt-5">
+            <v-btn
+              variant="outlined"
+              color="red"
+              prepend-icon="mdi-cancel"
+              @click="isActive.value = false"
+            >
+              Annuler
+            </v-btn>
+            <v-btn
+              variant="outlined"
+              :disabled="observationLoader"
+              :loading="observationLoader"
+              color="themeLightgreenColor"
+              prepend-icon="mdi-check"
+              @click="addCommentaire(isActive)"
+            >
+              Ajouter
+            </v-btn>
+          </div>
         </v-card-text>
-
-        <v-card-actions class="pr-4">
-          <v-spacer />
-          <v-btn
-            color="red"
-            prepend-icon="mdi-cancel"
-            @click="isActive.value = false"
-          >
-            Annuler
-          </v-btn>
-          <v-btn
-            :disabled="observationLoader"
-            :loading="observationLoader"
-            color="themeLightgreenColor"
-            prepend-icon="mdi-check"
-            @click="addCommentaire(isActive)"
-          >
-            Ajouter
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </template>
   </v-dialog>

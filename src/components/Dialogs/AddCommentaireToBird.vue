@@ -25,25 +25,25 @@
             variant="solo-filled"
             label="Ajouter un commentaire sur l'oiseau"
           />
+          <div class="d-flex justify-space-between mt-5">
+            <v-btn
+              color="red"
+              variant="outlined"
+              prepend-icon="mdi-cancel"
+              @click="isActive.value = false"
+            >
+              Annuler
+            </v-btn>
+            <v-btn
+              variant="outlined"
+              color="themeLightgreenColor"
+              prepend-icon="mdi-check"
+              @click="addCommentaire(isActive)"
+            >
+              Ajouter
+            </v-btn>
+          </div>
         </v-card-text>
-
-        <v-card-actions class="pr-4">
-          <v-spacer />
-          <v-btn
-            color="red"
-            prepend-icon="mdi-cancel"
-            @click="isActive.value = false"
-          >
-            Annuler
-          </v-btn>
-          <v-btn
-            color="themeLightgreenColor"
-            prepend-icon="mdi-check"
-            @click="addCommentaire(isActive)"
-          >
-            Ajouter
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </template>
   </v-dialog>
