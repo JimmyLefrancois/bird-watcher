@@ -82,6 +82,7 @@
           <BirdItemRow
             :bird="item"
             :key="item.id"
+            :coordinates="coordinates"
             @remove-bird="tryToRemoveBirdFromList($event)"
           />
           <td>
@@ -130,10 +131,10 @@ import {ref, watch} from "vue";
 import {format} from "date-fns";
 import BirdInformations from "@/components/BirdInformations.vue";
 import Geolocation from "@/components/Geolocation.vue";
-import {useGeolocation} from "@vueuse/core";
-const { pause } = useGeolocation({immediate: false})
+import {useGeolocationStore} from "@/store/geolocation";
 
 const observationStore = useObservationsStore()
+const geolocationStore = useGeolocationStore()
 const {
   updateBirdsListFromCurrentObservation,
   endObservation,
@@ -142,6 +143,7 @@ const {
   getBirdInformationById
 } = observationStore
 const {currentObservationListItem, birdsFromCurrentObservation} = storeToRefs(observationStore)
+const {geolocationPermissionStore} = storeToRefs(geolocationStore)
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
@@ -149,7 +151,6 @@ const observationLoader = ref(false)
 const expanded = ref([])
 const selectedBird = ref(null)
 const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Compteur', key: 'count'}])
-const geolocationPermission = ref('')
 const coordinates = ref({})
 
 function normalizedFilter(itemTitle, queryText, item) {
@@ -205,7 +206,7 @@ watch(
       document.activeElement.blur();
       const birdToAdd = {id: id, date: format(new Date(), "yyyy-MM-dd'T'HH:mm"), customId: crypto.randomUUID()}
       currentObservationListItem.value.observedBirds.push()
-      if (geolocationPermission.value === 'granted') {
+      if (geolocationPermissionStore.value === 'granted') {
         birdToAdd.longitude = coordinates.value.longitude
         birdToAdd.latitude = coordinates.value.latitude
       }
