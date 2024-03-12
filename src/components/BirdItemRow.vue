@@ -23,19 +23,18 @@ const { currentObservationListItem, currentObservationToHandle } = storeToRefs(o
 const { updateBirdsListFromCurrentObservation } = observationStore
 
 const geolocationStore = useGeolocationStore()
-const {geolocationPermissionStore} = storeToRefs(geolocationStore)
+const {isUsingGeolocation, coordinates} = storeToRefs(geolocationStore)
 
 const props = defineProps({
   bird: {type: Object, default: null},
-  type: {type: String, default: 'create'},
-  coordinates: {type: Object, default: null}
+  type: {type: String, default: 'create'}
 })
 
 function addBird() {
   const birdToAdd = {id: props.bird.id, date: format(new Date(), "yyyy-MM-dd'T'HH:mm"), customId: crypto.randomUUID()}
-  if (geolocationPermissionStore.value === 'granted' && props.type === 'create') {
-    birdToAdd.longitude = props.coordinates.longitude
-    birdToAdd.latitude = props.coordinates.latitude
+  if (isUsingGeolocation.value && props.type === 'create') {
+    birdToAdd.longitude = coordinates.longitude
+    birdToAdd.latitude = coordinates.latitude
   }
   currentObservationToHandle.value.observedBirds.push(birdToAdd)
   if (!currentObservationToHandle.value.endDate) {
