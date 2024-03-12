@@ -1,7 +1,7 @@
 <template>
   <v-snackbar
     v-model="displayed"
-    :color="type"
+    :color="type === 'success' ? '#9DA65D' : 'error'"
     @update:model-value="snackbarStore.resetSnackbar()"
   >
     {{ text }}
