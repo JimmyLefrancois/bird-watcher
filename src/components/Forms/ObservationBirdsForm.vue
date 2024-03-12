@@ -24,10 +24,7 @@
         />
       </v-col>
     </v-row>
-    <Geolocation
-      v-model:geolocation-permission="geolocationPermission"
-      v-model:coordinates="coordinates"
-    />
+    <GeoLocation />
     <v-dialog
       v-model="displayBirdRemoveDialog"
       width="auto"
@@ -82,7 +79,6 @@
           <BirdItemRow
             :bird="item"
             :key="item.id"
-            :coordinates="coordinates"
             @remove-bird="tryToRemoveBirdFromList($event)"
           />
           <td>
@@ -130,8 +126,8 @@ import LocationName from "@/components/LocationName.vue";
 import {ref, watch} from "vue";
 import {format} from "date-fns";
 import BirdInformations from "@/components/BirdInformations.vue";
-import Geolocation from "@/components/Geolocation.vue";
 import {useGeolocationStore} from "@/store/geolocation";
+import GeoLocation from "@/components/GeoLocation.vue";
 
 const observationStore = useObservationsStore()
 const geolocationStore = useGeolocationStore()
@@ -143,7 +139,7 @@ const {
   getBirdInformationById
 } = observationStore
 const {currentObservationListItem, birdsFromCurrentObservation} = storeToRefs(observationStore)
-const {geolocationPermissionStore} = storeToRefs(geolocationStore)
+const {isUsingGeolocation, coordinates} = storeToRefs(geolocationStore)
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
@@ -151,7 +147,6 @@ const observationLoader = ref(false)
 const expanded = ref([])
 const selectedBird = ref(null)
 const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Compteur', key: 'count'}])
-const coordinates = ref({})
 
 function normalizedFilter(itemTitle, queryText, item) {
   const bird = normalizeText(item.raw.text)
@@ -206,7 +201,7 @@ watch(
       document.activeElement.blur();
       const birdToAdd = {id: id, date: format(new Date(), "yyyy-MM-dd'T'HH:mm"), customId: crypto.randomUUID()}
       currentObservationListItem.value.observedBirds.push()
-      if (geolocationPermissionStore.value === 'granted') {
+      if (isUsingGeolocation.value) {
         birdToAdd.longitude = coordinates.value.longitude
         birdToAdd.latitude = coordinates.value.latitude
       }

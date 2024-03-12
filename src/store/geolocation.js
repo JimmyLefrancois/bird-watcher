@@ -1,15 +1,60 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
+import {ref, watch} from "vue";
+import {useStorage} from "@vueuse/core";
 
 export const useGeolocationStore = defineStore('geolocation', () => {
 
-  const geolocationPermissionStore = ref('')
+  const currentGeolocationPermission = ref('')
+  const coordinates = ref(null)
+  const watchId = useStorage('watchId', -1)
+  const isUsingGeolocation = ref(false)
 
-  navigator.permissions.query({ name: "geolocation" }).then((result) => {
-    geolocationPermissionStore.value = result.state
-  })
+  function updateCurrentPermission() {
+    navigator.permissions.query({ name: "geolocation" }).then((result) => {
+      currentGeolocationPermission.value = result.state
+    })
+  }
+
+  updateCurrentPermission()
+
+  watch(
+    () => currentGeolocationPermission.value,
+    (currentGeolocationPermission) => {
+      if (currentGeolocationPermission === 'granted' && watchId.value && !isUsingGeolocation.value) {
+        watchPosition()
+        isUsingGeolocation.value = true
+      }
+    }
+  )
+
+  function watchPosition() {
+    watchId.value = navigator.geolocation.watchPosition(success)
+  }
+
+  function stopWatching() {
+    navigator.geolocation.clearWatch(watchId.value)
+    watchId.value = null
+    coordinates.value = null
+    isUsingGeolocation.value = false
+  }
+
+  function success(position) {
+    const { coords } = position;
+    coordinates.value = coords
+    if (currentGeolocationPermission.value !== 'granted') {
+      currentGeolocationPermission.value = 'granted'
+    }
+    if (!isUsingGeolocation.value) {
+      isUsingGeolocation.value = true
+    }
+  }
 
   return {
-    geolocationPermissionStore
+    currentGeolocationPermission,
+    watchPosition,
+    coordinates,
+    stopWatching,
+    isUsingGeolocation,
+    watchId
   }
 })
