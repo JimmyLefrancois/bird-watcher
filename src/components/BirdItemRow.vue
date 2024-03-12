@@ -27,12 +27,13 @@ const {geolocationPermissionStore} = storeToRefs(geolocationStore)
 
 const props = defineProps({
   bird: {type: Object, default: null},
+  type: {type: String, default: 'create'},
   coordinates: {type: Object, default: null}
 })
 
 function addBird() {
   const birdToAdd = {id: props.bird.id, date: format(new Date(), "yyyy-MM-dd'T'HH:mm"), customId: crypto.randomUUID()}
-  if (geolocationPermissionStore.value === 'granted') {
+  if (geolocationPermissionStore.value === 'granted' && props.type === 'create') {
     birdToAdd.longitude = props.coordinates.longitude
     birdToAdd.latitude = props.coordinates.latitude
   }

@@ -107,6 +107,7 @@
           <BirdItemRow
             :bird="item"
             :key="item.id"
+            type="edit"
             @remove-bird="tryToRemoveBirdFromList($event)"
           />
           <td>
