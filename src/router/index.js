@@ -75,6 +75,12 @@ const routes = [
     meta: { title: 'Réinitialiser mon mot de passe'},
   },
   {
+    path: '/gestion-de-mon-compte',
+    name: 'account',
+    component: () => import('@/views/Auth/AccountView.vue'),
+    meta: { title: 'Gestion de mon compte'},
+  },
+  {
     path: "/:catchAll(.*)",
     name: "notFound",
     component: () => import('@/views/NotFoundView.vue'),
