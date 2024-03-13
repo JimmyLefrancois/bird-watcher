@@ -137,16 +137,12 @@ function changePermission(value) {
 
 async function logoutUser() {
   try {
-    console.log('try')
     await logout()
-    console.log('loggedout')
     updateSnackbar({
       type: 'success',
       text: 'Vous avez correctement été déconnecté.'
     })
-    console.log('snack')
     await router.push({'name': 'connexion'})
-    console.log('router')
   } catch (error) {
     errorSnackbar()
   }
