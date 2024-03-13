@@ -69,6 +69,12 @@ const routes = [
     meta: { title: 'Connexion'},
   },
   {
+    path: '/reinitialiser-mon-mot-de-passe',
+    name: 'reset',
+    component: () => import('@/views/Auth/ResetView.vue'),
+    meta: { title: 'Réinitialiser mon mot de passe'},
+  },
+  {
     path: "/:catchAll(.*)",
     name: "notFound",
     component: () => import('@/views/NotFoundView.vue'),
