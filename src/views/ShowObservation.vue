@@ -137,7 +137,7 @@ const sortedBirds = observedBirds.sort((a, b) => {
   return findBirdInBirdsList(a.id).text > findBirdInBirdsList(b.id).text ? 1 : -1
 })
 
-const showPlurial = (plurialLetter) => observationToShowItem.value.observedBirds.length > 1 ? plurialLetter : ''
+const showPlurial = (plurialLetter) => observedBirds.length > 1 ? plurialLetter : ''
 
 async function deleteObservation(observation) {
   observationLoader.value = true
