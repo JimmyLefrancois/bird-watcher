@@ -99,7 +99,7 @@ async function registerUser() {
     } catch (error) {
       errorSnackbar()
     }
-    userLoader.value = true
+    userLoader.value = false
   }
 }
 </script>
