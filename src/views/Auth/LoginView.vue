@@ -46,14 +46,13 @@
     </v-card-text>
     <v-card-text class="text-center pt-1">
       <router-link
-        style="color: #6C733D"
+        style="color: #9DA65D"
         class="text-decoration-none"
         :to="{'name': 'reset'}"
       >
         Mot de passe oublié ?
       </router-link>
     </v-card-text>
-    <v-divider class="mb-3" />
     <v-card-text class="text-center pt-1">
       <router-link
         style="color: #6C733D"
