@@ -79,7 +79,6 @@
           <BirdItemRow
             :bird="item"
             :key="item.id"
-            @remove-bird="tryToRemoveBirdFromList($event)"
           />
           <td>
             <v-btn
@@ -187,11 +186,6 @@ function removeBirdFormList() {
   currentObservationListItem.value.observedBirds.splice(birdToRemoveIndex.value, 1)
   birdToRemoveIndex.value = null
   displayBirdRemoveDialog.value = false
-}
-
-function tryToRemoveBirdFromList(index) {
-  birdToRemoveIndex.value = index
-  displayBirdRemoveDialog.value = true
 }
 
 watch(
