@@ -1,5 +1,30 @@
 <template>
-  <v-card class="mt-3">
+  <div v-if="emailHasBeenSent">
+    <v-banner
+      color="themeLightgreenColor"
+      icon="mdi-email-check"
+      lines="two"
+      class="align-center mt-3"
+      elevation="1"
+      rounded
+    >
+      <v-banner-text>
+        Un e-mail vient de vous être envoyé afin de réinitialiser votre mot de passe.
+      </v-banner-text>
+    </v-banner>
+    <v-btn
+      class="mt-3"
+      color="themeLightgreenColor"
+      :to="{'name': 'accueil'}"
+      :block="true"
+    >
+      Retour à l'accueil
+    </v-btn>
+  </div>
+  <v-card
+    class="mt-3"
+    v-else
+  >
     <v-card-title style="color: #6C733D">
       Votre adresse e-mail
     </v-card-title>
@@ -53,6 +78,7 @@ import {useSnackbarStore} from "@/store/snackbar";
 const { resetPassword } = useUsersStore()
 const user = ref({email: null})
 const userLoader = ref(false)
+const emailHasBeenSent = ref(false)
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
 const rules = {
@@ -69,7 +95,7 @@ function reset() {
         type: 'success',
         text: 'Un e-mail vous a été envoyé pour réinitialiser votre mot de passe.'
       })
-      //todo afficher un genre de vcard de confirmation avec le message de confirmation
+      emailHasBeenSent.value = true
     } catch (error) {
       errorSnackbar()
     }
