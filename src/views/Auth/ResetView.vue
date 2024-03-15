@@ -69,6 +69,7 @@ function reset() {
         type: 'success',
         text: 'Un e-mail vous a été envoyé pour réinitialiser votre mot de passe.'
       })
+      //todo afficher un genre de vcard de confirmation avec le message de confirmation
     } catch (error) {
       errorSnackbar()
     }
