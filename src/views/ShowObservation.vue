@@ -118,7 +118,7 @@ import {findBirdInBirdsList} from "@/helpers/birdHelpers";
 import router from "@/router";
 import RemoveObservation from "@/components/Dialogs/RemoveObservation.vue";
 import {useSnackbarStore} from "@/store/snackbar";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import LocationName from "@/components/LocationName.vue";
 import LocationType from "@/components/LocationType.vue";
 import ShowBirdDetails from "@/components/Show/ShowBirdDetails.vue";
@@ -131,13 +131,19 @@ const {observationToShowItem} = storeToRefs(observationStore)
 const displayDetails = ref(true)
 const expand = ref(false)
 
-const observedBirds = getBirdsFromObservation(observationToShowItem.value)
+// const observedBirds = getBirdsFromObservation(observationToShowItem.value)
+const observedBirds = computed(() => {
+  if (observationToShowItem.value) {
+    return getBirdsFromObservation(observationToShowItem.value)
+  }
+  return []
+})
 
-const sortedBirds = observedBirds.sort((a, b) => {
+const sortedBirds = observedBirds.value.sort((a, b) => {
   return findBirdInBirdsList(a.id).text > findBirdInBirdsList(b.id).text ? 1 : -1
 })
 
-const showPlurial = (plurialLetter) => observedBirds.length > 1 ? plurialLetter : ''
+const showPlurial = (plurialLetter) => observedBirds.value.length > 1 ? plurialLetter : ''
 
 async function deleteObservation(observation) {
   observationLoader.value = true
