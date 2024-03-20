@@ -131,16 +131,22 @@ const {observationToShowItem} = storeToRefs(observationStore)
 const displayDetails = ref(true)
 const expand = ref(false)
 
-// const observedBirds = getBirdsFromObservation(observationToShowItem.value)
 const observedBirds = computed(() => {
   if (observationToShowItem.value) {
     return getBirdsFromObservation(observationToShowItem.value)
   }
-  return []
+  return null
 })
 
-const sortedBirds = observedBirds.value.sort((a, b) => {
-  return findBirdInBirdsList(a.id).text > findBirdInBirdsList(b.id).text ? 1 : -1
+const sortedBirds = computed(() => {
+  if (observedBirds.value) {
+    const birds = observedBirds.value
+    return birds.sort((a, b) => {
+      return findBirdInBirdsList(a.id).text > findBirdInBirdsList(b.id).text ? 1 : -1
+    })
+  } else {
+    return []
+  }
 })
 
 const showPlurial = (plurialLetter) => observedBirds.value.length > 1 ? plurialLetter : ''
