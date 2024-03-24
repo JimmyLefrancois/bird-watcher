@@ -95,7 +95,14 @@ export const useObservationsStore = defineStore('observations', () => {
     }
   }
 
-  const currentObservationToHandle = router.currentRoute.value.name === 'nouvelle-observation' ? currentObservationListItem : currentEditingObservationListItem
+  // const currentObservationToHandle = router.currentRoute.value.name === 'nouvelle-observation' ? currentObservationListItem : currentEditingObservationListItem
+  const currentObservationToHandle = computed(() => {
+    if (router.currentRoute.value.name === 'nouvelle-observation') {
+      return currentObservationListItem.value
+    } else {
+      return currentEditingObservationListItem.value
+    }
+  })
 
   function getBirdsFromCurrentObservation(observation) {
     const observationToWatch = observation || currentObservationToHandle.value
