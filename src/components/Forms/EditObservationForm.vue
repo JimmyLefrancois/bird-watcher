@@ -87,6 +87,7 @@
       :items="birdsList"
       item-value="value"
       item-title="text"
+      :custom-filter="normalizedFilter"
       :error-messages="v$.observedBirds.$errors.map(e => e.$message)"
       @blur="v$.observedBirds.$touch()"
       label="Chercher et ajouter un oiseau"
@@ -162,6 +163,16 @@ const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
 const validationScope = 'observationScope'
 const expanded = ref([])
+
+function normalizedFilter(itemTitle, queryText, item) {
+  const bird = normalizeText(item.raw.text)
+  const birdQuery = normalizeText(queryText)
+  return bird.indexOf(birdQuery) > -1
+}
+
+function normalizeText(text) {
+  return text.normalize('NFD').replace(/\p{Diacritic}/gu, "").toLowerCase().replace(/[^a-zA-Z0-9 ]/g, ' ')
+}
 
 const rules = {
   observedBirds: {
