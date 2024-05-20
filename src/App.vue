@@ -4,7 +4,7 @@
     <v-container :fluid="true">
       <v-app-bar
         color="themeLightgreenColor"
-        prominent
+        image="/green-background.jpg"
       >
         <v-app-bar-nav-icon
           variant="text"
