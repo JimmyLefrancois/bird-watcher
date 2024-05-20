@@ -13,6 +13,19 @@
       Résumé de votre observation
     </v-card-title>
     <v-card-text>
+      <div style="height:600px; width:800px">
+        <l-map
+          ref="map"
+          zoom="2"
+          :center="[47.41322, -1.219482]"
+        >
+          <l-tile-layer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            layer-type="base"
+            name="OpenStreetMap"
+          />
+        </l-map>
+      </div>
       <p class="d-flex align-center">
         <v-icon
           class="pr-2"
@@ -122,6 +135,8 @@ import {computed, ref} from "vue";
 import LocationName from "@/components/LocationName.vue";
 import LocationType from "@/components/LocationType.vue";
 import ShowBirdDetails from "@/components/Show/ShowBirdDetails.vue";
+import "leaflet/dist/leaflet.css";
+import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
 
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const observationLoader = ref(false)
@@ -130,6 +145,7 @@ const {removeObservation, getBirdsFromObservation, getBirdInformationById} = obs
 const {observationToShowItem} = storeToRefs(observationStore)
 const displayDetails = ref(true)
 const expand = ref(false)
+const zoom = ref(2)
 
 const observedBirds = computed(() => {
   if (observationToShowItem.value) {
