@@ -70,6 +70,7 @@
       :headers="headers"
       :custom-key-sort="sortBirds"
       :items="birdsFromCurrentObservation"
+      :items-per-page="-1"
       class="mt-3 mb-3"
       no-data-text="Aucun oiseau observé."
       show-expand
