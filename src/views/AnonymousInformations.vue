@@ -1,8 +1,6 @@
-<template>
+<template class="anonymous-infos">
   <v-dialog
-
     transition="dialog-top-transition"
-    width="auto"
     :fullscreen="true"
   >
     <template #activator="{ props }">
@@ -63,19 +61,10 @@
             variant="text"
             @click="isActive.value = false"
           >
-            Continuer en anonyme
+            Continuer en invité
           </v-btn>
         </v-card-actions>
       </v-card>
     </template>
   </v-dialog>
 </template>
-<script setup>
-
-</script>
-
-<style>
-.v-overlay__content {
-  width: 100% !important;
-}
-</style>

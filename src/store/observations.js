@@ -7,10 +7,12 @@ import {db} from '@/conf/firebase'
 import {useStorage} from "@vueuse/core";
 import {format} from 'date-fns'
 import {
+  addCommentaireToCurrentObservationRequest,
   addObservationRequest, editObservationRequest,
   endObservationRequest, removeObservationRequest,
   updateBirdsListFromCurrentObservationRequest
 } from "@/conf/requests/observations";
+import router from "@/router";
 
 export const useObservationsStore = defineStore('observations', () => {
 
@@ -18,12 +20,15 @@ export const useObservationsStore = defineStore('observations', () => {
   const { currentUser } = storeToRefs(userStore)
   const currentObservation = useStorage('currentObservation', null)
   const editingObservation = useStorage('editingObservation', null)
+  const observationToShow = useStorage('observationDisplayed', null)
   const userObservationsQuery = computed(() => currentUser.value && query(collection(db, 'observations'), where("user", "==", currentUser.value.uid)))
   const observationsList = useFirestore(userObservationsQuery, null)
   const currentObservationQuery = computed(() => currentObservation.value && doc(db, 'observations', currentObservation.value))
   const currentObservationListItem = useFirestore(currentObservationQuery, null)
   const currentEditingObservationQuery = computed(() => editingObservation.value && doc(db, 'observations', editingObservation.value))
   const currentEditingObservationListItem = useFirestore(currentEditingObservationQuery, null)
+  const observationToShowQuery = computed(() => observationToShow.value && doc(db, 'observations', observationToShow.value))
+  const observationToShowItem = useFirestore(observationToShowQuery, null)
 
   const endedObservations = computed(() => observationsList.value && observationsList.value.filter((observation) => {
     return observation.endDate !== null
@@ -51,6 +56,15 @@ export const useObservationsStore = defineStore('observations', () => {
       currentObservationListItem.value = null
     }
     currentObservation.value = null
+  }
+
+  async function addCommentaireToObservation(commentaire, mode) {
+    try {
+      const query = mode === 'create' ? currentObservationQuery.value : currentEditingObservationQuery.value
+      await addCommentaireToCurrentObservationRequest(query, commentaire)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async function endObservation() {
@@ -81,18 +95,59 @@ export const useObservationsStore = defineStore('observations', () => {
     }
   }
 
+  // const currentObservationToHandle = router.currentRoute.value.name === 'nouvelle-observation' ? currentObservationListItem : currentEditingObservationListItem
+  const currentObservationToHandle = computed(() => {
+    if (router.currentRoute.value.name === 'nouvelle-observation') {
+      return currentObservationListItem.value
+    } else {
+      return currentEditingObservationListItem.value
+    }
+  })
+
+  function getBirdsFromCurrentObservation(observation) {
+    const observationToWatch = observation || currentObservationToHandle.value
+    return Object.entries(observationToWatch.observedBirds.reduce((acc, { id }) => {
+      acc[id] = (acc[id] || 0) + 1;
+      return acc;
+    }, {})).map( ([k,v]) => ({id: parseInt(k,10), count:v}));
+  }
+
+  const getBirdsFromObservation = (observation) => {
+    return getBirdsFromCurrentObservation(observation)
+  }
+
+  const birdsFromCurrentObservation = computed(() => {
+    return currentObservationToHandle.value ? getBirdsFromCurrentObservation() : null
+  })
+
+  const getBirdInformationById = (id, observation = null) => {
+    const observationToWatch = observation || currentObservationToHandle.value
+    return observationToWatch.observedBirds.filter((bird) => {
+      return bird.id === id
+    }).sort((a, b) => {
+      return new Date(a.date) < new Date(b.date) ? 1 : -1
+    })
+  }
+
   return {
     editObservation,
     endObservation,
     clearCurrentObservation,
     currentObservation,
     editingObservation,
+    observationToShow,
     endedObservations,
     currentObservationListItem,
     currentEditingObservationListItem,
+    observationToShowItem,
     observationsList,
     addObservation,
     updateBirdsListFromCurrentObservation,
-    removeObservation
+    removeObservation,
+    addCommentaireToObservation,
+    birdsFromCurrentObservation,
+    currentObservationToHandle,
+    getBirdsFromObservation,
+    getBirdInformationById
   }
 })

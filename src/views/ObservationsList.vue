@@ -1,34 +1,15 @@
 <template>
-  <v-autocomplete
-    variant="solo-filled"
-    :items="birdsList"
-    item-value="value"
-    item-title="text"
-    class="mt-3 mb-3"
-    label="Filtrer par oiseau"
-    v-model="selectedBirds"
-    :clearable="true"
-    :multiple="true"
-    hide-details
-    @click:clear="blur"
-  />
-  <v-text-field
-    variant="solo-filled"
-    v-model="locationFilter"
-    label="Filtrer par lieu"
-    :clearable="true"
-    hide-details
-    class="mt-0"
-    @click:clear="blur"
-  />
-  <hr class="mt-3">
+  <ObservationFilters @update-filters="updateFilters($event)" />
   <template v-if="filteredObservations && filteredObservations.length > 0">
     <v-card
       class="mt-3"
       v-for="(observation, index) in filteredObservations"
       :key="index"
     >
-      <ObservationsListItem :observation="observation" />
+      <ObservationsListItem
+        :observation="observation"
+        :key="observation.id"
+      />
     </v-card>
   </template>
   <template v-if="filteredObservations && filteredObservations.length === 0">
@@ -51,14 +32,23 @@
 import { useObservationsStore } from "@/store/observations";
 import {storeToRefs} from "pinia";
 import ObservationsListItem from "@/components/ObservationsListItem";
-const observationStore = useObservationsStore()
-const { endedObservations } = storeToRefs(observationStore)
-import {birdsList} from '@/conf/birds.js'
 import {computed} from "vue";
 import { ref } from 'vue'
+import ObservationFilters from "@/components/Filters/ObservationFilters.vue";
 
+const observationStore = useObservationsStore()
+const { endedObservations } = storeToRefs(observationStore)
 const selectedBirds = ref([])
 const locationFilter = ref('')
+const existingLocationFilter = ref('')
+const typeFilter = ref(null)
+
+function updateFilters(filters) {
+  selectedBirds.value = filters.selectedBirds.value
+  locationFilter.value = filters.locationFilter.value
+  existingLocationFilter.value = filters.existingLocationFilter.value
+  typeFilter.value = filters.typeFilter.value
+}
 
 const filteredObservations = computed(() => {
   if (endedObservations.value) {
@@ -71,8 +61,16 @@ const filteredObservations = computed(() => {
       if (locationFilter.value && locationFilter.value !== '') {
         result.push(getObservationsFilteredByLocation(observation))
       }
+      if (typeFilter?.value) {
+        result.push(getObservationsFilteredByType(observation))
+      }
+      if (existingLocationFilter.value && existingLocationFilter.value !== '') {
+        result.push(getObservationsFilteredByExistingLocation(observation))
+      }
       //exclusif - todo conditionner le &&
       return result.reduce((acc, current) => acc && current, true)
+    }).sort((a, b) => {
+      return a.startDate < b.startDate ? 1 : -1
     })
   }
   return []
@@ -85,12 +83,16 @@ function getObservationsFilteredByBirds(observation)
 
 function getObservationsFilteredByLocation(observation)
 {
-  return observation.location.toLowerCase().indexOf(locationFilter.value.toLowerCase()) >= 0;
+  return observation.location && observation.location.toLowerCase().indexOf(locationFilter.value.toLowerCase()) >= 0;
 }
 
-function blur()
+function getObservationsFilteredByExistingLocation(observation)
 {
-  document.activeElement.blur();
+  return observation.existingLocation && observation.existingLocation === existingLocationFilter.value;
+}
+function getObservationsFilteredByType(observation)
+{
+  return observation.type === typeFilter.value;
 }
 
 </script>

@@ -1,8 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, browserLocalPersistence, setPersistence } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { initializeFirestore, persistentMultipleTabManager, persistentLocalCache } from "firebase/firestore";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
-
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -16,8 +15,12 @@ const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig)
 export const auth = getAuth(firebaseApp)
+auth.languageCode = 'fr'
 export const user = auth.currentUser
-export const db = getFirestore(firebaseApp);
+
+export const db = initializeFirestore(firebaseApp, {
+  localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()})
+});
 
 initializeAppCheck(firebaseApp, {
   provider: new ReCaptchaV3Provider ('6Ld_HUUpAAAAAKMvI2Gz_jZgFlXihPNHrMdGyVFu'),

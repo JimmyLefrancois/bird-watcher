@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {auth} from '@/conf/firebase'
 import {ref} from "vue";
-import { deleteUser } from "firebase/auth";
+import { deleteUser, sendPasswordResetEmail } from "firebase/auth";
 
 import {
   EmailAuthProvider,
@@ -29,6 +29,15 @@ export const useUsersStore = defineStore('users', () => {
     try {
       await signOut(auth)
       currentUser.value = null
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function resetPassword(email) {
+    console.log(email)
+    try {
+      await sendPasswordResetEmail(auth, email)
     } catch (error) {
       console.log(error)
     }
@@ -77,6 +86,6 @@ export const useUsersStore = defineStore('users', () => {
   }
 
   return {
-    currentUser, loginWithEmail, loginAsAnonymous, fetchUser, createAccount, logout, userKey, removeAccount, linkAnonymousAccountToCreatedAccount
+    currentUser, loginWithEmail, loginAsAnonymous, fetchUser, createAccount, logout, userKey, removeAccount, linkAnonymousAccountToCreatedAccount, resetPassword
   }
 })

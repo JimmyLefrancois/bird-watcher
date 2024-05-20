@@ -3,21 +3,16 @@
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
-        prepend-icon="mdi-check"
-        color="themeLightgreenColor"
-        elevation="2"
-        height="100%"
-        :block="true"
-        :disabled="observationLoader"
-        :loading="observationLoader"
-        text="Finaliser la sortie"
+        color="red"
+        density="comfortable"
+        icon="mdi-delete"
       />
     </template>
 
     <template #default="{ isActive }">
-      <v-card title="Terminer la sortie en cours">
+      <v-card>
         <v-card-text>
-          Souhaitez-vous finaliser la sortie en cours ?
+          Souhaitez-vous vraiment retirer cet oiseau ?
         </v-card-text>
 
         <v-card-actions>
@@ -34,9 +29,9 @@
             :loading="observationLoader"
             color="green"
             prepend-icon="mdi-check"
-            @click="endObservation"
+            @click="removeBirdFromObservation"
           >
-            Finaliser
+            Supprimer
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -45,13 +40,14 @@
 </template>
 
 <script setup>
+import { useObservationsStore } from "@/store/observations";
+import {storeToRefs} from "pinia";
+const store = useObservationsStore()
+const { observationLoader } = storeToRefs(store)
 
-  const emit = defineEmits(['endObservation'])
-  defineProps({
-    observationLoader: {type: Object, default: null}
-  })
+const emit = defineEmits(['remove-bird-from-observation'])
 
-  function endObservation() {
-      emit('endObservation')
-  }
+function removeBirdFromObservation() {
+  emit('remove-bird-from-observation')
+}
 </script>

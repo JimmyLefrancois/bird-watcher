@@ -2,17 +2,28 @@
   <v-dialog width="500">
     <template #activator="{ props }">
       <v-btn
+        v-if="mode === 'condensed'"
         v-bind="props"
-        color="red"
+        variant="text"
+        color="white"
         density="compact"
         icon="mdi-delete"
       />
+      <v-btn
+        v-else
+        v-bind="props"
+        color="red"
+        size="small"
+        prepend-icon="mdi-delete"
+      >
+        Supprimer
+      </v-btn>
     </template>
 
     <template #default="{ isActive }">
-      <v-card title="Retirer cette espèce">
+      <v-card title="Supprimer l'observation">
         <v-card-text>
-          Souhaitez-vous vraiment retirer cette espèce de votre liste ?
+          Souhaitez-vous vraiment supprimer cette observation ?
         </v-card-text>
 
         <v-card-actions>
@@ -29,7 +40,7 @@
             :loading="observationLoader"
             color="green"
             prepend-icon="mdi-check"
-            @click="removeBirdFromObservation"
+            @click="removeObservation"
           >
             Supprimer
           </v-btn>
@@ -40,14 +51,15 @@
 </template>
 
 <script setup>
-import { useObservationsStore } from "@/store/observations";
-import {storeToRefs} from "pinia";
-const store = useObservationsStore()
-const { observationLoader } = storeToRefs(store)
 
-const emit = defineEmits(['remove-bird-from-observation'])
+const emit = defineEmits(['removeObservation'])
 
-function removeBirdFromObservation() {
-  emit('remove-bird-from-observation')
+defineProps({
+  observationLoader: {type: Boolean, default: null},
+  mode: {type: String, default: null}
+})
+
+function removeObservation() {
+  emit('removeObservation')
 }
 </script>

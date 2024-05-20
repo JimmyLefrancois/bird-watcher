@@ -10,7 +10,7 @@
       >
         <v-text-field
           v-model="user.email"
-          :error-messages="v$.email.$errors.length > 0 ? v$.email.$errors[0].$message :''"
+          :error-messages="v$.email.$errors.map(e => e.$message)"
           required
           label="Adresse e-mail"
           prepend-inner-icon="mdi-email-outline"
@@ -20,7 +20,7 @@
         <v-text-field
           class="mt-3"
           v-model="user.password"
-          :error-messages="v$.password.$errors.length > 0 ? v$.password.$errors[0].$message :''"
+          :error-messages="v$.password.$errors.map(e => e.$message)"
           prepend-inner-icon="mdi-lock-outline"
           :required="true"
           :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -99,7 +99,7 @@ async function registerUser() {
     } catch (error) {
       errorSnackbar()
     }
-    userLoader.value = true
+    userLoader.value = false
   }
 }
 </script>

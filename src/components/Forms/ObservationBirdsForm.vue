@@ -4,10 +4,9 @@
       class="py-3 text-center"
       style="color: #37474f"
     >
-      <v-icon icon="mdi-map" />
-      {{ currentObservationListItem.location }}
+      <LocationName :observation="currentObservationListItem" />
     </h3>
-    <v-row>
+    <v-row class="mb-1">
       <v-col
         cols="10"
         class="pr-0"
@@ -21,12 +20,11 @@
         cols="2"
       >
         <CancelObservation
-          :observation-loader="observationLoader"
           @cancel-observation="cancelObservation"
         />
       </v-col>
     </v-row>
-
+    <GeoLocation />
     <v-dialog
       v-model="displayBirdRemoveDialog"
       width="auto"
@@ -55,64 +53,112 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-divider />
     <v-autocomplete
       variant="solo-filled"
       :items="birdsList"
       item-value="value"
       item-title="text"
-      class="mt-5"
+      :custom-filter="normalizedFilter"
+      class="mt-3"
+      hide-details
       label="Chercher et ajouter un oiseau"
       v-model="selectedBird"
     />
     <v-data-table
+      v-model:expanded="expanded"
       :headers="headers"
       :custom-key-sort="sortBirds"
-      :items="currentObservationListItem.observedBirds"
+      :items="birdsFromCurrentObservation"
+      :items-per-page="-1"
+      class="mt-3 mb-3"
       no-data-text="Aucun oiseau observé."
+      show-expand
     >
-      <template #item="{ item }">
-        <BirdItemRow
-          :bird="item"
-          @remove-bird="tryToRemoveBirdFromList($event)"
-        />
+      <template #item="{ item, toggleExpand, isExpanded, internalItem }">
+        <tr>
+          <BirdItemRow
+            :bird="item"
+            :key="item.id"
+          />
+          <td>
+            <v-btn
+              variant="plain"
+              :ripple="false"
+              :append-icon="isExpanded(internalItem) ? 'mdi-chevron-down' : 'mdi-chevron-up'"
+              @click="toggleExpand(internalItem)"
+            />
+          </td>
+        </tr>
+      </template>
+      <template #expanded-row="{ columns, item }">
+        <tr
+          v-for="(bird, index) in getBirdInformationById(item.id)"
+          :key="index"
+          style="background-color: rgb(236, 236, 236)"
+        >
+          <BirdInformations
+            :bird="bird"
+            :columns="columns"
+            :key="bird.customId"
+          />
+        </tr>
       </template>
       <template #bottom />
     </v-data-table>
+
+    <AddCommentaireToObservation />
   </div>
 </template>
 
 <script setup>
 import {birdsList} from '@/conf/birds.js'
-import { sortBirds } from "@/helpers/birdHelpers";
-import {ref, watch} from "vue";
+import {sortBirds} from "@/helpers/birdHelpers";
 import BirdItemRow from "@/components/BirdItemRow";
-import EndObservation from "@/components/EndObservation";
+import EndObservation from "@/components/Dialogs/EndObservation.vue";
 import {useObservationsStore} from "@/store/observations";
 import {storeToRefs} from "pinia";
-import {minLength, required} from "@vuelidate/validators";
-import {useVuelidate} from "@vuelidate/core";
-import CancelObservation from "@/components/CancelObservation";
+import CancelObservation from "@/components/Dialogs/CancelObservation.vue";
 import router from "@/router";
 import {useSnackbarStore} from "@/store/snackbar";
+import AddCommentaireToObservation from "@/components/Dialogs/AddCommentaireToObservation.vue";
+import LocationName from "@/components/LocationName.vue";
+import {ref, watch} from "vue";
+import {format} from "date-fns";
+import BirdInformations from "@/components/BirdInformations.vue";
+import {useGeolocationStore} from "@/store/geolocation";
+import GeoLocation from "@/components/GeoLocation.vue";
 
 const observationStore = useObservationsStore()
-const {updateBirdsListFromCurrentObservation, endObservation, removeObservation, clearCurrentObservation} = observationStore
-const { currentObservationListItem } = storeToRefs(observationStore)
+const geolocationStore = useGeolocationStore()
+const {
+  updateBirdsListFromCurrentObservation,
+  endObservation,
+  removeObservation,
+  clearCurrentObservation,
+  getBirdInformationById
+} = observationStore
+const {currentObservationListItem, birdsFromCurrentObservation} = storeToRefs(observationStore)
+const {isUsingGeolocation, coordinates} = storeToRefs(geolocationStore)
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 const birdToRemoveIndex = ref(null)
 const displayBirdRemoveDialog = ref(false)
 const observationLoader = ref(false)
+const expanded = ref([])
+const selectedBird = ref(null)
+const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Compteur', key: 'count'}])
 
-//const rules = {
-//  birds: {minLengthValue: minLength(1), required}
-//}
+function normalizedFilter(itemTitle, queryText, item) {
+  const bird = normalizeText(item.raw.text)
+  const birdQuery = normalizeText(queryText)
+  return bird.indexOf(birdQuery) > -1
+}
 
-//const v$ = useVuelidate(rules, currentObservationListItem)
+function normalizeText(text) {
+  return text.normalize('NFD').replace(/\p{Diacritic}/gu, "").toLowerCase().replace(/[^a-zA-Z0-9 ]/g, ' ')
+}
 
-async function finaliseObservation()
-{
-  //v$.value.$touch()
-  //if (!v$.value.$invalid) {
+async function finaliseObservation() {
   observationLoader.value = true
   try {
     await endObservation()
@@ -125,12 +171,9 @@ async function finaliseObservation()
     errorSnackbar()
   }
   observationLoader.value = false
-
-  //}
 }
 
-async function cancelObservation()
-{
+async function cancelObservation() {
   try {
     await removeObservation(currentObservationListItem.value)
     await clearCurrentObservation()
@@ -146,26 +189,18 @@ function removeBirdFormList() {
   displayBirdRemoveDialog.value = false
 }
 
-function tryToRemoveBirdFromList(index) {
-  birdToRemoveIndex.value = index
-  displayBirdRemoveDialog.value = true
-}
-
-const selectedBird = ref(null)
-
-const headers = ref([{title: 'Nom', key: 'id'}, {title: 'Nombre et compte', key: 'count'}])
-
 watch(
   () => selectedBird.value,
   (id) => {
     if (id !== null) {
       document.activeElement.blur();
-      const existingBird = currentObservationListItem.value.observedBirds.find(bird => bird.id === id)
-      if (existingBird) {
-        existingBird.count++
-      } else {
-        currentObservationListItem.value.observedBirds.push({id: id, count: 1})
+      const birdToAdd = {id: id, date: format(new Date(), "yyyy-MM-dd'T'HH:mm"), customId: crypto.randomUUID()}
+      currentObservationListItem.value.observedBirds.push()
+      if (isUsingGeolocation.value) {
+        birdToAdd.longitude = coordinates.value.longitude
+        birdToAdd.latitude = coordinates.value.latitude
       }
+      currentObservationListItem.value.observedBirds.push(birdToAdd)
       updateBirdsListFromCurrentObservation(currentObservationListItem.value)
       selectedBird.value = null
     }
@@ -173,3 +208,21 @@ watch(
 )
 
 </script>
+
+<style>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.8s;
+}
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(100%);
+}
+.list-move {
+  transition: transform 0.5s;
+}
+.item-row {
+  display: table-row;
+}
+</style>

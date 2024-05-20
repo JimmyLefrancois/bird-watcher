@@ -3,18 +3,21 @@
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
-        color="red"
-        size="small"
-        prepend-icon="mdi-delete"
-      >
-        Supprimer
-      </v-btn>
+        prepend-icon="mdi-check"
+        color="themeLightgreenColor"
+        elevation="2"
+        height="100%"
+        :block="true"
+        :disabled="observationLoader"
+        :loading="observationLoader"
+        text="Finaliser la sortie"
+      />
     </template>
 
     <template #default="{ isActive }">
-      <v-card title="Supprimer l'observation">
+      <v-card title="Terminer la sortie en cours">
         <v-card-text>
-          Souhaitez-vous vraiment supprimer cette observation ?
+          Souhaitez-vous finaliser la sortie en cours ?
         </v-card-text>
 
         <v-card-actions>
@@ -31,9 +34,9 @@
             :loading="observationLoader"
             color="green"
             prepend-icon="mdi-check"
-            @click="removeObservation"
+            @click="endObservation"
           >
-            Supprimer
+            Finaliser
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -43,13 +46,12 @@
 
 <script setup>
 
-const emit = defineEmits(['removeObservation'])
+  const emit = defineEmits(['endObservation'])
+  defineProps({
+    observationLoader: {type: Boolean, default: null}
+  })
 
-defineProps({
-  observationLoader: {type: Object, default: null}
-})
-
-function removeObservation() {
-  emit('removeObservation')
-}
+  function endObservation() {
+      emit('endObservation')
+  }
 </script>

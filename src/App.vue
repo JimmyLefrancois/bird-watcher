@@ -4,19 +4,13 @@
     <v-container :fluid="true">
       <v-app-bar
         color="themeLightgreenColor"
-        prominent
+        image="/green-background.jpg"
       >
         <v-app-bar-nav-icon
           variant="text"
           @click.stop="drawer = !drawer"
         />
         <v-app-bar-title>{{ router.currentRoute.value.meta.title }}</v-app-bar-title>
-        <v-btn
-          v-if="currentUser"
-          @click="logoutUser"
-          density="compact"
-          icon="mdi-logout"
-        />
       </v-app-bar>
 
       <v-navigation-drawer
@@ -27,7 +21,7 @@
           :nav="true"
           density="compact"
         >
-          <v-list-subheader>Mes observations ornitho</v-list-subheader>
+          <v-list-subheader>Plumes en vue</v-list-subheader>
           <v-list-item
             @click="drawer = false"
             title="Accueil"
@@ -45,6 +39,12 @@
             title="Mes observations"
             :to="{'name': 'mes-observations'}"
             prepend-icon="mdi-format-list-bulleted"
+          />
+          <v-list-item
+            @click="drawer = false"
+            title="Mes lieux d'observations"
+            :to="{'name': 'mes-lieux-d-observation'}"
+            prepend-icon="mdi-map-marker-multiple"
           />
           <v-list-subheader>Mon compte</v-list-subheader>
           <template v-if="!currentUser || currentUser.isAnonymous">
@@ -67,6 +67,15 @@
               @click="logoutUser"
               prepend-icon="mdi-logout"
             />
+            <v-list-item>
+              <v-switch
+                color="primary"
+                v-model="geolocationUsed"
+                label="Géolocalisation"
+                hide-details
+                @update:model-value="changePermission"
+              />
+            </v-list-item>
           </template>
         </v-list>
       </v-navigation-drawer>
@@ -79,8 +88,9 @@
       >
         <v-col
           sm="12"
-          xl="6"
+          md="6"
         >
+          <ReloadPWa />
           <AnonymousInformations
             v-if="currentUser && currentUser.isAnonymous"
             :key="userKey"
@@ -97,10 +107,17 @@
 import {onBeforeMount, ref} from "vue";
 import router from "@/router"
 import {useUsersStore} from "@/store/users";
+import {useGeolocationStore} from "@/store/geolocation";
 import {storeToRefs} from "pinia";
 import AnonymousInformations from "@/views/AnonymousInformations";
 import BaseSnackbar from "@/components/BaseSnackbar";
 import {useSnackbarStore} from "@/store/snackbar";
+import ReloadPWa from "@/components/ReloadPWa.vue";
+
+const geolocationStore = useGeolocationStore()
+const { isUsingGeolocation } = storeToRefs(geolocationStore)
+const { watchPosition, stopWatching } = geolocationStore
+const geolocationUsed = isUsingGeolocation
 
 const userStore = useUsersStore()
 const {currentUser, userKey} = storeToRefs(userStore)
@@ -110,18 +127,22 @@ const store = useUsersStore()
 const {fetchUser, logout} = store
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
+function changePermission(value) {
+  if (value) {
+    watchPosition()
+  } else {
+    stopWatching()
+  }
+}
+
 async function logoutUser() {
   try {
-    console.log('try')
+    await router.push({'name': 'connexion'})
     await logout()
-    console.log('loggedout')
     updateSnackbar({
       type: 'success',
       text: 'Vous avez correctement été déconnecté.'
     })
-    console.log('snack')
-    await router.push({'name': 'connexion'})
-    console.log('router')
   } catch (error) {
     errorSnackbar()
   }
