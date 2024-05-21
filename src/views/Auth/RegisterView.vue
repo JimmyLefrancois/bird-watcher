@@ -76,11 +76,11 @@ const user = ref({email: null, password: null})
 
 const rules = {
   email: {
-    required: helpers.withMessage('Ce champs est obligatoire.', required),
-    email: helpers.withMessage('Format incorrect.', email)
+    required: helpers.withMessage('Le champ adresse e-mail est obligatoire.', required),
+    email: helpers.withMessage('Le format de votre adresse e-mail incorrect.', email)
   },
   password: {
-    required: helpers.withMessage('Ce champs est obligatoire.', required),
+    required: helpers.withMessage('Le champ mot de passe est obligatoire.', required),
     minLengthValue: helpers.withMessage('Le mot de passe doit être composé de 13 caractères minimum.', minLength(13)),
   },
 }
