@@ -71,7 +71,7 @@
 <script setup>
 import {ref} from "vue";
 import {useVuelidate} from "@vuelidate/core";
-import {email, required} from "@vuelidate/validators";
+import {email, required, helpers} from "@vuelidate/validators";
 import {useUsersStore} from "@/store/users";
 import {useSnackbarStore} from "@/store/snackbar";
 
@@ -82,7 +82,10 @@ const emailHasBeenSent = ref(false)
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
 const rules = {
-  email: {required, email},
+  email: {
+    required: helpers.withMessage('Le champ adresse e-mail est obligatoire.', required),
+    email: helpers.withMessage('Le format de votre adresse e-mail incorrect.', email)
+  }
 }
 
 function reset() {

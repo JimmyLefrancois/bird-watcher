@@ -57,11 +57,11 @@ const loader = ref(false)
 
 const rules = {
   password: {
-    required: helpers.withMessage('Ce champs est obligatoire.', required),
-    minLengthValue: helpers.withMessage('13 caractères minimum', minLength(13))
+    required: helpers.withMessage('Le champ mot de passe est obligatoire.', required),
+    minLengthValue: helpers.withMessage('Le mot de passe doit être composé de 13 caractères minimum.', minLength(13))
   },
   confirmPassword: {
-    required: helpers.withMessage('Ce champs est obligatoire.', required),
+    required: helpers.withMessage('Le champ mot de passe est obligatoire.', required),
     sameAs: helpers.withMessage('Les deux mots de passe ne correspondent pas.', sameAs(computed(() => user.value.password)))
   }
 }
@@ -70,7 +70,7 @@ const v$ = useVuelidate(rules, user.value)
 
 const textFromMode = computed(() => {
   if (mode === 'resetPassword') {
-    return 'Réinitialer votre mot de passe'
+    return 'Réinitialiser votre mot de passe'
   }
   return ''
 })
@@ -93,7 +93,7 @@ async function handleResetPassword() {
       await signInWithEmailAndPassword(auth, accountEmail.value, user.value.password).then(() => {
         updateSnackbar({
           type: 'success',
-          text: 'Votre mot de passe a bien été réinialisé. Vous êtes désormais connecté.'
+          text: 'Votre mot de passe a bien été réinitialisé. Vous êtes désormais connecté.'
         })
         router.push({'name': 'accueil'})
       }).catch((error) => {
