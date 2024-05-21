@@ -8,19 +8,33 @@
         @submit.prevent="handleResetPassword"
         class="mt-3"
       >
-        <v-text-field
+      <v-text-field
+          class="mt-3"
           v-model="user.password"
-          type="password"
-          label="Nouveau mot de passe"
           :error-messages="v$.password.$errors.map(e => e.$message)"
+          prepend-inner-icon="mdi-lock-outline"
+          :required="true"
+          :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          counter
+          label="Mot de passe"
+          hide-details="auto"
           @blur="v$.password.$touch()"
+          @click:append-inner="showPassword = !showPassword"
         />
         <v-text-field
+          class="mt-3"
           v-model="user.confirmPassword"
-          type="password"
-          label="Confirmez votre nouveau mot de passe"
           :error-messages="v$.confirmPassword.$errors.map(e => e.$message)"
+          prepend-inner-icon="mdi-lock-outline"
+          :required="true"
+          :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          counter
+          label="Confirmez votre nouveau mot de passe"
+          hide-details="auto"
           @blur="v$.confirmPassword.$touch()"
+          @click:append-inner="showPassword = !showPassword"
         />
         <v-btn
           :loading="loader"
@@ -51,17 +65,18 @@ const mode = router.currentRoute.value.query.mode
 const actionCode = router.currentRoute.value.query.oobCode
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
+const showPassword = ref(false)
 const user = ref({password: null, confirmPassword: null})
 const accountEmail = ref(null)
 const loader = ref(false)
 
 const rules = {
   password: {
-    required: helpers.withMessage('Ce champs est obligatoire.', required),
-    minLengthValue: helpers.withMessage('13 caractères minimum', minLength(13))
+    required: helpers.withMessage('Le champ mot de passe est obligatoire.', required),
+    minLengthValue: helpers.withMessage('Le mot de passe doit être composé de 13 caractères minimum.', minLength(13))
   },
   confirmPassword: {
-    required: helpers.withMessage('Ce champs est obligatoire.', required),
+    required: helpers.withMessage('Le champ mot de passe est obligatoire.', required),
     sameAs: helpers.withMessage('Les deux mots de passe ne correspondent pas.', sameAs(computed(() => user.value.password)))
   }
 }
@@ -70,7 +85,7 @@ const v$ = useVuelidate(rules, user.value)
 
 const textFromMode = computed(() => {
   if (mode === 'resetPassword') {
-    return 'Réinitialer votre mot de passe'
+    return 'Réinitialiser votre mot de passe'
   }
   return ''
 })
@@ -93,7 +108,7 @@ async function handleResetPassword() {
       await signInWithEmailAndPassword(auth, accountEmail.value, user.value.password).then(() => {
         updateSnackbar({
           type: 'success',
-          text: 'Votre mot de passe a bien été réinialisé. Vous êtes désormais connecté.'
+          text: 'Votre mot de passe a bien été réinitialisé. Vous êtes désormais connecté.'
         })
         router.push({'name': 'accueil'})
       }).catch((error) => {

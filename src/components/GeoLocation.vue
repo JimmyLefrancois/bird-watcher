@@ -5,7 +5,7 @@
     v-if="!isUsingGeolocation"
     style="font-size: 13px;"
   >
-    Vous pouvez si vous le souhaitez activer la géolocalisation afin d'améliorer la précision des statistiques de vos observations en
+    Vous pouvez si vous le souhaitez, activer la géolocalisation afin d'améliorer la précision des statistiques de vos observations en
     <span
       @click="watchPosition"
       style="text-decoration: underline; cursor: pointer"
