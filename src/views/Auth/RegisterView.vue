@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import {required, minLength, email} from "@vuelidate/validators"
+import {required, minLength, email, helpers} from "@vuelidate/validators"
 import {ref} from 'vue'
 import {useVuelidate} from "@vuelidate/core"
 import {useUsersStore} from "@/store/users"
@@ -75,8 +75,14 @@ const showPassword = ref(false)
 const user = ref({email: null, password: null})
 
 const rules = {
-  email: {required, email},
-  password: {required, minLengthValue: minLength(13)},
+  email: {
+    required: helpers.withMessage('Ce champs est obligatoire.', required),
+    email: helpers.withMessage('Format incorrect.', email)
+  },
+  password: {
+    required: helpers.withMessage('Ce champs est obligatoire.', required),
+    minLengthValue: helpers.withMessage('Le mot de passe doit être composé de 13 caractères minimum.', minLength(13)),
+  },
 }
 
 const v$ = useVuelidate(rules, user.value)
