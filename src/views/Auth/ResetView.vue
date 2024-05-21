@@ -82,7 +82,10 @@ const emailHasBeenSent = ref(false)
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
 const rules = {
-  email: {required, email},
+  email: {
+    required: helpers.withMessage('Le champ adresse e-mail est obligatoire.', required),
+    email: helpers.withMessage('Le format de votre adresse e-mail est incorrect.', email)
+  }
 }
 
 function reset() {
