@@ -29,7 +29,7 @@
           label="Mot de passe"
           hide-details="auto"
           @blur="v$.password.$touch()"
-          @click:append="showPassword = !showPassword"
+          @click:append-inner="showPassword = !showPassword"
         />
         <v-btn
           :loading="userLoader"
