@@ -8,19 +8,33 @@
         @submit.prevent="handleResetPassword"
         class="mt-3"
       >
-        <v-text-field
+      <v-text-field
+          class="mt-3"
           v-model="user.password"
-          type="password"
-          label="Nouveau mot de passe"
           :error-messages="v$.password.$errors.map(e => e.$message)"
+          prepend-inner-icon="mdi-lock-outline"
+          :required="true"
+          :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          counter
+          label="Mot de passe"
+          hide-details="auto"
           @blur="v$.password.$touch()"
+          @click:append-inner="showPassword = !showPassword"
         />
         <v-text-field
+          class="mt-3"
           v-model="user.confirmPassword"
-          type="password"
-          label="Confirmez votre nouveau mot de passe"
           :error-messages="v$.confirmPassword.$errors.map(e => e.$message)"
+          prepend-inner-icon="mdi-lock-outline"
+          :required="true"
+          :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          counter
+          label="Confirmez votre nouveau mot de passe"
+          hide-details="auto"
           @blur="v$.confirmPassword.$touch()"
+          @click:append-inner="showPassword = !showPassword"
         />
         <v-btn
           :loading="loader"
