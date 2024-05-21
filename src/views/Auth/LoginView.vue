@@ -99,11 +99,11 @@ const userLoader = ref(false)
 
 const rules = {
   email: {
-    required: helpers.withMessage('Ce champs est obligatoire.', required),
-    email: helpers.withMessage('Format incorrect.', email)
+    required: helpers.withMessage('Le champ adresse e-mail est obligatoire.', required),
+    email: helpers.withMessage('Le format de votre adresse e-mail est incorrect.', email)
   },
   password: {
-    required: helpers.withMessage('Ce champs est obligatoire.', required)
+    required: helpers.withMessage('Le champ mot de passe est obligatoire.', required)
   },
 }
 
