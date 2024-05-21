@@ -65,6 +65,7 @@ const mode = router.currentRoute.value.query.mode
 const actionCode = router.currentRoute.value.query.oobCode
 const {updateSnackbar, errorSnackbar} = useSnackbarStore()
 
+const showPassword = ref(false)
 const user = ref({password: null, confirmPassword: null})
 const accountEmail = ref(null)
 const loader = ref(false)
