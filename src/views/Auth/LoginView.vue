@@ -136,7 +136,6 @@ async function logUser() {
       })
       await router.push({'name': 'accueil'})
     } catch (error) {
-      console.log('coucou 1')
       errorSnackbar('Combinaison e-mail/mot de passe incorrecte')
     }
     userLoader.value = false
