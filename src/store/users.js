@@ -44,11 +44,7 @@ export const useUsersStore = defineStore('users', () => {
   }
 
   async function loginWithEmail(user) {
-    try {
-      await signInWithEmailAndPassword(auth, user.email, user.password)
-    } catch (error) {
-      console.log(error)
-    }
+    await signInWithEmailAndPassword(auth, user.email, user.password)
   }
 
   async function loginAsAnonymous() {
