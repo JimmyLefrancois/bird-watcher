@@ -17,10 +17,10 @@ export const useSnackbarStore = defineStore('snackbar', {
       this.type = type
       this.text = text
     },
-    errorSnackbar () {
+    errorSnackbar (message = null) {
       this.updateSnackbar({
         type: 'error',
-        text: 'Une erreur est survenue'
+        text: message ? message : 'Une erreur est survenue'
       })
     },
     resetSnackbar () {
