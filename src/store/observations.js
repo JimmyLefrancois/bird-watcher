@@ -18,9 +18,6 @@ export const useObservationsStore = defineStore('observations', () => {
 
   const userStore = useUsersStore()
   const { currentUser } = storeToRefs(userStore)
-  const offline = !navigator.onLine
-  console.log('offline')
-  console.log(offline)
   const currentObservation = useStorage('currentObservation', null)
   const editingObservation = useStorage('editingObservation', null)
   const observationToShow = useStorage('observationDisplayed', null)
@@ -38,17 +35,12 @@ export const useObservationsStore = defineStore('observations', () => {
   }))
 
   async function addObservation(observation) {
-    if (offline) {
-      currentObservation.value = 'test'
-    } else {
-      try {
-        const data = await addObservationRequest(observation)
-        currentObservation.value = data.id
-      } catch (error) {
-        console.log(error)
-      }
+    try {
+      const data = await addObservationRequest(observation)
+      currentObservation.value = data.id
+    } catch (error) {
+      console.log(error)
     }
-
   }
 
   async function updateBirdsListFromCurrentObservation(observation) {
