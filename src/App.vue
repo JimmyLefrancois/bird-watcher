@@ -42,6 +42,12 @@
           />
           <v-list-item
             @click="drawer = false"
+            title="Statistiques"
+            :to="{'name': 'statistiques'}"
+            prepend-icon="mdi-chart-bar"
+          />
+          <v-list-item
+            @click="drawer = false"
             title="Mes lieux d'observations"
             :to="{'name': 'mes-lieux-d-observation'}"
             prepend-icon="mdi-map-marker-multiple"

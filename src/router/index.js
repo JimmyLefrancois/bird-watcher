@@ -57,6 +57,12 @@ const routes = [
     meta: { requiresAuth: true, title: 'Ajouter un lieu d\'observation'},
   },
   {
+    path: '/statistiques',
+    name: 'statistiques',
+    component: () => import('@/views/MyStats.vue'),
+    meta: { requiresAuth: true, title: 'Mes stats d\'observation'},
+  },
+  {
     path: '/creer-mon-compte',
     name: 'creer-mon-compte',
     component: () => import('@/views/Auth/RegisterView.vue'),
